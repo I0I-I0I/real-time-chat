@@ -4,26 +4,33 @@
 #include <unistd.h>
 #include <netdb.h>
 #include <arpa/inet.h>
-#include "./server/server.h"
-
-#define PORT "64229"
+#include "./socket/socket.h"
 
 int main() {
-	Server server(PORT);
+	Socket server("localhost",  "64229");
 
-	server.create();
+	server.create("server");
 
-	server.on("connection", [&server](int socket, char* buffer) -> void {
-		server.send_msg(socket, "HI\n");
+	server.on("connection", [&server](int socket) -> void {
+		server.send_msg(socket, "mHI from server\n");
 	});
-	server.on("message", [&server](int socket, char* buffer) -> void {
-		server.send_msg(socket, "OK\n");
+
+	server.on("chat", [&server](int socket) -> void {
+		while (true) {
+			server.receive_msg(socket);
+			if (server.buffer[0] == 'q')
+				break;
+			else if (server.buffer[0] == 'm')
+				server.send_msg(socket, "mOK\n");
+			else if (server.buffer[0] == 'e')
+				server.send_msg(socket, "mERROR\n");
+			else
+				server.send_msg(socket, "mWRONG MESSAGE TYPE\n");
+		}
 	});
-	server.on("error", [&server](int socket, char* buffer) -> void {
-		server.send_msg(socket, "ERROR\n");
-	});
-	server.on("close", [&server](int socket, char* buffer) -> void {
-		server.send_msg(socket, "BYE\n");
+
+	server.on("close", [&server](int socket) -> void {
+		server.send_msg(socket, "mBYE\n");
 	});
 
 	server.launch();

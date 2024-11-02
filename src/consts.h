@@ -16,6 +16,7 @@ constexpr const int ERROR_SEND = -16;
 constexpr const int ERROR_RECV = -17;
 constexpr const int ERROR_GET_ADDR = -18;
 constexpr const int ERROR_WRONG_TYPE_FOR_ON = -19;
+constexpr const int ERROR_CONNECT = -20;
 
 constexpr const int WRONG_COMMAND = -21;
 constexpr const int ERROR_NO_ARGS = -22;

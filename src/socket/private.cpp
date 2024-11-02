@@ -8,15 +8,15 @@
 #include "../logger/logger.h"
 #include "../consts.h"
 #include "./user/user.h"
-#include "./server.h"
+#include "./socket.h"
 
-void* Server::get_in_addr(struct sockaddr *sa) {
+void* Socket::get_in_addr(struct sockaddr *sa) {
 	if (sa->sa_family == AF_INET)
 		return &(((struct sockaddr_in*)sa)->sin_addr);
 	return  &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
-struct addrinfo* Server::get_addr() {
+struct addrinfo* Socket::get_addr() {
 	struct addrinfo hints, *servinfo, *p;
 	int rv;
 
@@ -25,15 +25,13 @@ struct addrinfo* Server::get_addr() {
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_flags = AI_PASSIVE;
 
-	if ((rv = getaddrinfo(NULL, this->port, &hints, &servinfo)) != 0) {
-		std::string str = gai_strerror(rv);
-		error_handler(ERROR_GET_ADDR, str, false);
-	}
+	if ((rv = getaddrinfo(NULL, this->port, &hints, &servinfo)) != 0)
+		error_handler(ERROR_GET_ADDR, gai_strerror(rv), false);
 
 	return servinfo;
 }
 
-int Server::setup_socket() {
+int Socket::setup_socket(std::string type) {
 	struct addrinfo *p;
 	int yes = 1;
 	int sock;
@@ -43,6 +41,7 @@ int Server::setup_socket() {
 			error_handler(ERROR_SOCKET, "", false);
 			continue;
 		}
+		if (type == "client") break;
 		if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
 			error_handler(ERROR_SETSOCKOPT);
 		if (bind(sock, p->ai_addr, p->ai_addrlen) == -1) {
@@ -59,64 +58,64 @@ int Server::setup_socket() {
 	return sock;
 }
 
-void Server::start_listening() {
-	if (listen(server_socket, this->backlog) == -1)
+void Socket::try_connect() {
+	char s[INET6_ADDRSTRLEN];
+
+	if (connect(this->main_socket, this->addr->ai_addr, this->addr->ai_addrlen) == -1) {
+		error_handler(ERROR_CONNECT);
+		close(this->main_socket);
+	}
+
+	inet_ntop(this->addr->ai_family, get_in_addr((struct sockaddr *)this->addr->ai_addr), s, sizeof s);
+	logger("client: connected to " + (std::string)s + ":" + this->port + '\n');
+}
+
+void Socket::start_listening() {
+	if (listen(main_socket, this->backlog) == -1)
 		error_handler(ERROR_LISTEN);
 }
 
-int Server::accept_connection() {
+int Socket::accept_connection() {
 	char s[INET_ADDRSTRLEN];
 	int socket;
 	socklen_t sin_size;
 	struct sockaddr_storage their_addr;
 
 	sin_size = sizeof their_addr;
-	socket = accept(this->server_socket, (struct sockaddr *)&their_addr, &sin_size);
+	socket = accept(this->main_socket, (struct sockaddr *)&their_addr, &sin_size);
 	if (socket == -1)
 		error_handler(ERROR_ACCEPT);
 
 	inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *)&their_addr), s, sizeof s);
-	logger("server: got connection from " + (std::string)s + '\n');
+	logger("server: got connection from " + (std::string)s + ":" + this->port + '\n');
 	return socket;
 }
 
-void Server::chating(int socket) {
-	while (true) {
-		this->receive_msg(socket);
-		if (this->buffer[0] == 'q')
-			break;
-		else if (this->buffer[0] == 'm')
-			this->callback_on["message"](socket, this->buffer);
-		else if (this->buffer[0] == 'e')
-			this->callback_on["error"](socket, this->buffer);
-		else
-			this->send_msg(socket, "WRONG MESSAGE TYPE\n");
-	}
-}
-
-void Server::connection_handler(User user) {
+void Socket::connection_handler(User user) {
 	int user_socket = user.get_user();
-	this->callback_on["connection"](user_socket, (char*)"");
-	this->chating(user_socket);
-	this->callback_on["close"](user_socket, (char*)"");
+
+	this->callback_on["connection"](user_socket);
+	this->callback_on["chat"](user_socket);
+	this->callback_on["close"](user_socket);
+
 	user.remove();
 	logger("Connection closed\n");
 }
 
-User Server::wait_for_connection() {
+User Socket::wait_for_connection() {
 	User user(this->accept_connection());
 	this->users.push_back(user);
 	return user;
 }
 
-void Server::remove_user(User user) {
+void Socket::remove_user(User user) {
 	this->users.erase(
 		std::remove(this->users.begin(), this->users.end(), user),
 		this->users.end()
 	);
 }
 
-void Server::get_connection() {
+void Socket::get_connection() {
 	User user = this->wait_for_connection();
 	std::thread (([this, user]() -> void {
 		this->connection_handler(user);
@@ -126,11 +125,19 @@ void Server::get_connection() {
 	logger("Count of users: " + std::to_string(this->users.size()) + '\n');
 }
 
-void Server::close_users() {
+User Socket::get_current_user(int socket) {
+	for (auto& user : this->users)
+		if (user.get_user() == socket)
+			return user;
+	logger("User not found\n", "ERROR");
+	return User();
+}
+
+void Socket::close_users() {
 	for (auto& user : this->users)
 		user.remove();
 }
 
-void Server::close_server() {
-	close(this->server_socket);
+void Socket::close_socket() {
+	close(this->main_socket);
 }

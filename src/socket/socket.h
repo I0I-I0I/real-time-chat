@@ -8,17 +8,18 @@
 
 #define BUFFER_SIZE 1024
 
-class Server {
+class Socket {
 private:
+	const char* host;
 	const char* port;
-	int server_socket;
-	std::vector<User> users;
 	int backlog;
+	int main_socket;
 	struct addrinfo* addr;
-	char* buffer = new char[BUFFER_SIZE];
+	std::string socket_type;
 
+	std::vector<User> users;
 	std::vector<std::string> callback_types;
-	std::map<std::string, std::function<void(int fd, char*)>> callback_on;
+	std::map<std::string, std::function<void(int fd)>> callback_on;
 
 	void *get_in_addr(struct sockaddr*);
 	struct addrinfo* get_addr();
@@ -28,36 +29,52 @@ private:
 	int accept_connection();
 	void get_connection();
 	void connection_handler(User);
-	void chating(int);
+	void chating(int socket);
 
 	User wait_for_connection();
 	void remove_user(User);
 
 	void close_users();
-	void close_server();
+	void close_socket();
+
+	User get_current_user(int socket);
+
+	void try_connect();
+
+	int setup_socket(std::string type);
+
 
 public:
-	Server(const char* port, int backlog = 5);
+	char* buffer = new char[BUFFER_SIZE];
+
+	Socket(const char* host, const char* port, int backlog = 5);
 
 	/**
 	 * @brief Setup server
+	 * @param type: "client", "server"
 	 */
-	void create();
+	void create(std::string type);
 
 	/**
 	 * @brief Start server
 	 */
 	void launch();
 
+	/**
+	 * @brief Create connection
+	 */
+	void connection();
+
 	void send_msg(int socket, std::string msg);
 	void receive_msg(int socket);
+	void ping(int socket, std::string msg);
 
 	/**
 	 * @brief response on type
-	 * @param type: "connection", "message", "error", "close"
-	 * @param callback: function(int, char*)
+	 * @param type: "connection", "open", "chat", "close"
+	 * @param callback: function(int socket)
 	 */
-	void on(std::string, std::function<void(int, char*)>);
+	void on(std::string, std::function<void(int socket)>);
 
 	/**
 	 * @brief Close all connections and stop server

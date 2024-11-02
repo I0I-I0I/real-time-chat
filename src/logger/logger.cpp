@@ -36,12 +36,15 @@ void error_handler(int error_type, std::string extra_msg = "", bool flag = true)
 		case ERROR_WRONG_TYPE_FOR_ON:
 			msg = "You are dummy ('on' wrong type)\n";
 			break;
+		case ERROR_CONNECT:
+			msg = "Connect failed";
+			break;
 		default:
 			msg = "How did I get here?\n";
 			msg = "Error code: ";
 	}
 	msg += extra_msg;
-	logger(msg, "error");
+	logger(msg, "ERROR");
 	if (flag)
 		exit(error_type);
 }
