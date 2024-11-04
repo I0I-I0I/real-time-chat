@@ -10,9 +10,12 @@ class User {
 private:
 	SOCKET socket;
 	int id;
+	std::string log_level;
+
+	void socket_logger(std::string msg, std::string type = "INFO");
 
 public:
-	User(SOCKET socket_ = 0);
+	User(SOCKET socket_, std::string log_level_ = "INFO");
 
 	SOCKET get_socket();
 	int get_id();

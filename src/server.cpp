@@ -3,7 +3,11 @@
 #include "./socket/socket.h"
 
 int main() {
-	Socket server("localhost",  "64229");
+	SocketOpts opts = {
+		.backlog = 5,
+		.timeout = 10000,
+	};
+	Socket server("localhost",  "64229", opts);
 
 	server.on("connection", [&server](SOCKET socket, std::string info) -> void {
 		server.send_msg(socket, "message", "HI from server\n");
@@ -18,7 +22,7 @@ int main() {
 	});
 
 	server.on("error", [&server](SOCKET socket, std::string info) -> void {
-		server.send_msg(socket, "error", "ERROR\n");
+		server.send_msg(socket, "message", "OK\n");
 	});
 
 	server.on("all", [&server](SOCKET socket, std::string info) -> void {

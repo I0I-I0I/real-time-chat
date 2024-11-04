@@ -42,22 +42,25 @@ void Socket::create(std::string type_) {
 	this->socket_type = type_;
 	this->addr = this->get_addr();
 	this->main_socket = this->setup_socket();
-	logger("Socket was created\n");
+	socket_logger("Socket was created\n");
 }
 
 SOCKET Socket::setup_socket() {
 	struct addrinfo *p;
 	int yes = 1;
 	SOCKET sock;
+	DWORD timeout = this->timeout;
 
 	for (p = this->addr; p != NULL; p = p->ai_next) {
 		if ((sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == INVALID_SOCKET) {
 			error_handler(ERROR_SOCKET, "", false);
 			continue;
 		}
+		if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout)) == SOCKET_ERROR)
+			error_handler(ERROR_SETSOCKOPT, std::to_string(WSAGetLastError()) + '\n', false);
 		if (this->socket_type == "client") break;
 		if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char*)&yes, sizeof(yes)) == SOCKET_ERROR)
-			error_handler(WSAGetLastError());
+			error_handler(ERROR_SETSOCKOPT, std::to_string(WSAGetLastError()) + '\n', false);
 		if (bind(sock, p->ai_addr, p->ai_addrlen) == -1) {
 			closesocket(sock);
 			error_handler(ERROR_BIND, "", false);
@@ -82,28 +85,28 @@ void Socket::try_to_connect() {
 	}
 
 	inet_ntop(this->addr->ai_family, get_in_addr((struct sockaddr *)this->addr->ai_addr), s, sizeof s);
-	logger("client: connected to " + (std::string)s + ":" + this->port + '\n');
+	socket_logger("client: connected to " + (std::string)s + ":" + this->port + '\n', "CONN");
 }
 
 void Socket::start_listening() {
 	if (listen(this->main_socket, this->backlog) == SOCKET_ERROR)
 		error_handler(ERROR_LISTEN);
-	logger("Server waiting on port " + std::string(this->port) + " \n");
+	socket_logger("Server waiting on port " + std::string(this->port) + " \n");
 }
 
 void Socket::connection_handler() {
-	this->callback_on["open"](this->main_socket, this->_buffer.msg);
-	this->callback_on["close"](this->main_socket, this->_buffer.msg);
+	this->callback_on["open"](this->main_socket, this->buffer.msg);
+	this->callback_on["close"](this->main_socket, this->buffer.msg);
 	this->close_socket();
-	logger("Connection closed\n");
+	socket_logger("Connection closed\n", "CONN");
 }
 
 void Socket::connection_handler(User user) {
 	SOCKET user_socket = user.get_socket();
-	this->callback_on["connection"](user_socket, this->_buffer.msg);
-	this->callback_on["close"](user_socket, this->_buffer.msg);
+	this->callback_on["connection"](user_socket, this->buffer.msg);
+	this->callback_on["close"](user_socket, this->buffer.msg);
 	this->remove_user(user);
-	logger("Connection closed\n");
+	socket_logger("Connection closed\n", "CONN");
 }
 
 SOCKET Socket::accept_connection() {
@@ -119,14 +122,14 @@ SOCKET Socket::accept_connection() {
 	}
 
 	inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *)&their_addr), s, sizeof s);
-	logger("server: got connection from " + (std::string)s + ":" + this->port + '\n');
+	socket_logger("server: got connection from " + (std::string)s + ":" + this->port + '\n', "CONN");
 	return socket;
 }
 
 User Socket::wait_for_connection() {
 	User user(this->accept_connection());
 	this->users.push_back(user);
-	logger("User " + std::to_string(user.get_id()) + " connected" + '\n');
+	socket_logger("User " + std::to_string(user.get_id()) + " connected" + '\n', "CONN");
 	return user;
 }
 
@@ -135,17 +138,17 @@ void Socket::get_connection() {
     std::thread ([this, user]() {
 		User user_copy = user;
 		this->connection_handler(user_copy);
-		logger("Count of users: " + std::to_string(this->users.size()) + '\n');
+		socket_logger("Count of users: " + std::to_string(this->users.size()) + '\n');
 	}).detach();
-	logger("Count of users: " + std::to_string(this->users.size()) + '\n');
+	socket_logger("Count of users: " + std::to_string(this->users.size()) + '\n');
 }
 
 User Socket::get_current_user(SOCKET socket) {
 	for (auto& user : this->users)
 		if (user.get_socket() == socket)
 			return user;
-	logger("User not found\n", "ERROR");
-	return User();
+	socket_logger("User not found\n", "ERROR");
+	return User(INVALID_SOCKET);
 }
 
 void Socket::remove_user(User& user) {
@@ -175,6 +178,9 @@ void Socket::log_date(SOCKET socket, std::string log_type, std::string msg) {
 	} else {
 		log_msg += ": " + msg;
 	}
-	logger(log_msg, log_type);
+	socket_logger(log_msg, "MSG");
 }
 
+void Socket::socket_logger(std::string msg, std::string type) {
+	set_log_level(this->log_level)(msg, type);
+}

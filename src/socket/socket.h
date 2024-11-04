@@ -11,9 +11,19 @@
 
 #define BUFFER_SIZE 1024
 
-constexpr const int CLOSE_CONNECTION = -1;
+constexpr const int CLOSE_CONNECTION = -101;
 
 using OnCallbackStruct = std::function<void(SOCKET, std::string)>;
+
+/**
+ * @param int backlog
+ * @param int timeout
+ */
+struct SocketOpts {
+	int backlog;
+	int timeout;
+	std::string log_level;
+};
 
 class Socket {
 private:
@@ -23,7 +33,9 @@ private:
 	SOCKET main_socket;
 	struct addrinfo* addr;
 	std::string socket_type;
-	PacketStruct _buffer;
+	PacketStruct buffer;
+	int timeout;
+	std::string log_level;
 
 	std::vector<User> users;
 	const std::vector<std::string> callback_types = { "connection", "open", "close", "*" };
@@ -52,10 +64,16 @@ private:
 	void close_socket();
 
 	void log_date(SOCKET socket, std::string log_type, std::string msg);
-	static void some_func(User& user, Socket* socket);
+	void socket_logger(std::string msg, std::string type = "INFO");
 
 public:
-	Socket(const char* host, const char* port, int backlog = 5);
+	/**
+	 * @brief Create socket
+	 * @param host
+	 * @param port
+	 * @param opts = { backlog = 5, timeout = 3000 } // defaults
+	 */
+	Socket(const char* host, const char* port, SocketOpts opts = {});
 
 	/**
 	 * @brief Start socket
@@ -63,7 +81,7 @@ public:
 	void start();
 
 	/**
-	 * @brief response on type
+	 * @brief response on message by type
 	 * @param type: "connection", "open", "close", "*" or custom
 	 * @param callback: function(int socket, std::string info)
 	 */
@@ -88,7 +106,7 @@ public:
 	/**
 	 * @brief Receive message
 	 * @param socket
-	 * @return CLOSE_CONNECTION on packet.type "close" or 0
+	 * @return CLOSE_CONNECTION on (packet.type == "close" || packet.msg == "") or otherwise return 0
 	 */
 	int receive_msg(SOCKET socket);
 

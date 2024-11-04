@@ -1,15 +1,18 @@
 #include <winsock2.h>
+#include <iostream>
 #include <ws2tcpip.h>
 #include <string>
 #include <cstring>
-#include "./logger/logger.h"
 #include "./packet/packet.h"
 #include "./socket.h"
 
-Socket::Socket(const char* host_, const char* port_, int backlog_) {
+Socket::Socket(const char* host_, const char* port_, SocketOpts opts) {
 	this->host = host_;
 	this->port = port_;
-	this->backlog = backlog_;
+	this->timeout = opts.timeout ? opts.timeout : 0;
+	this->backlog = opts.backlog ? opts.backlog : 5;
+	this->log_level = opts.log_level != "" ? opts.log_level : "ERROR";
+	std::cout << "Log level: " << this->log_level << std::endl;
 	this->users = {};
 	for (auto& type_ : this->callback_types)
 		this->callback_on[type_] = [](SOCKET, std::string) -> void {};
@@ -22,7 +25,7 @@ void Socket::start() {
 			this->get_connection();
 	} else if (this->socket_type == "client") {
 		this->try_to_connect();
-		logger("Connection was established\n");
+		socket_logger("Connection was established\n");
 		this->connection_handler();
 	}
 }
@@ -47,16 +50,16 @@ int Socket::receive_msg(SOCKET socket) {
 	PacketStruct packet = Packet::parce(buffer_char);
 	delete[] buffer_char;
 
-	this->_buffer.msg = packet.msg;
-	this->_buffer.type = packet.type;
+	this->buffer.msg = packet.msg;
+	this->buffer.type = packet.type;
 
 	this->log_date(socket, "RECV", packet.type + ":" + packet.msg);
 
 	if (packet.type == "close" || packet.msg == "") return CLOSE_CONNECTION;
 	try {
-		this->custom_callback_on[this->_buffer.type](socket, this->_buffer.msg);
+		this->custom_callback_on[this->buffer.type](socket, this->buffer.msg);
 	} catch (std::exception& e) {
-		this->callback_on["*"](socket, this->_buffer.msg);
+		this->callback_on["*"](socket, this->buffer.msg);
 	}
 	return 0;
 }
@@ -79,7 +82,7 @@ void Socket::on(std::string type, OnCallbackStruct callback) {
 void Socket::send_all(SOCKET socket, std::string type, std::string msg) {
 	for (auto& user : this->users) {
 		if (user.get_socket() == socket)
-			this->send_msg(user.get_socket(), "message", "OK\n");
+			this->send_msg(socket, "message", "OK\n");
 		this->send_msg(user.get_socket(), type, msg);
 	}
 }
