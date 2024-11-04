@@ -1,34 +1,45 @@
 #include <iostream>
 #include <string>
+#include <thread>
 #include "./socket/socket.h"
 
 int main() {
 	Socket client("localhost", "64229");
 
-	client.create("client");
+	std::thread t;
 
-	client.on("open", [&client](int socket) -> void {
+	client.on("open", [&t, &client](int socket, std::string _) -> void {
 		client.receive_msg(socket);
-		client.send_msg(socket, "mHi form client\n");
-	});
+		client.send_msg(socket, "message", "Hi form client\n");
 
-	client.on("chat", [&client](int socket) -> void {
+		t = std::thread([&client, socket]() -> void {
+			while (true) {
+				if (client.receive_msg(socket) == CLOSE_CONNECTION)
+					break;
+			}
+			std::cout << "I'm was CLOSED\n";
+		});
+
 		std::string msg;
+		std::string type;
 		while (true) {
-			client.receive_msg(socket);
-			std::cout << "Prompt> ";
 			std::getline(std::cin, msg);
 			if (msg == "q") break;
-			client.send_msg(socket, "m" + msg + "\n");
+			std::cout << "(type)> ";
+			std::getline(std::cin, type);
+			client.send_msg(socket, type, msg + '\n');
 		}
 	});
 
-	client.on("close", [&client](int socket) -> void {
-		client.send_msg(socket, "q\n");
-		client.receive_msg(socket);
+	client.on("*", [&client](int socket, std::string info) -> void {
 	});
 
-	client.connection();
+	client.on("close", [&t, &client](int socket, std::string info) -> void {
+		client.send_msg(socket, "close", "BYE\n");
+		t.join();
+	});
+
+	client.start();
 
 	return 0;
 }

@@ -1,12 +1,8 @@
-#include <functional>
 #include <string>
 #include <cstring>
 #include <sys/socket.h>
-#include <unistd.h>
-#include <netdb.h>
-#include <arpa/inet.h>
-#include "../consts.h"
-#include "../logger/logger.h"
+#include "./logger/logger.h"
+#include "./packet/packet.h"
 #include "./socket.h"
 
 Socket::Socket(const char* host_, const char* port_, int backlog_) {
@@ -14,81 +10,77 @@ Socket::Socket(const char* host_, const char* port_, int backlog_) {
 	this->port = port_;
 	this->backlog = backlog_;
 	this->users = {};
-	this->callback_types = { "connection", "open", "chat", "close" };
 	for (auto& type_ : this->callback_types)
-		this->callback_on[type_] = [](int) -> void {};
+		this->callback_on[type_] = [](int, std::string) -> void {};
 }
 
-void Socket::create(std::string type_) {
-	this->socket_type = type_;
-	this->addr = this->get_addr();
-	this->main_socket = this->setup_socket(this->socket_type);
-	logger("Socket was created\n");
-}
-
-void Socket::launch() {
-	this->start_listening();
-	logger("Waiting for connection...\n");
-	while (true)
-		this->get_connection();
-}
-
-void Socket::connection() {
-	this->try_connect();
-	logger("Connection was established\n");
-
-	this->callback_on["open"](this->main_socket);
-	this->callback_on["chat"](this->main_socket);
-	this->callback_on["close"](this->main_socket);
-
-	this->close_socket();
-	logger("Client was closed\n");
-}
-
-void Socket::send_msg(int socket, std::string msg) {
-	send(socket, msg.c_str(), msg.size(), 0);
-
-	std::string log_msg;
+void Socket::start() {
 	if (this->socket_type == "server") {
-		User current_user = this->get_current_user(socket);
-		log_msg = "Send"
-			"(" + std::to_string(current_user.get_id()) + ")"
-			": " + msg;
-	} else {
-		log_msg = "Send: " + msg;
+		this->start_listening();
+		while (true)
+			this->get_connection();
+	} else if (this->socket_type == "client") {
+		this->try_to_connect();
+		logger("Connection was established\n");
+		this->connection_handler_client();
 	}
-	logger(log_msg, "SEND");
 }
 
-void Socket::receive_msg(int socket) {
-	memset(this->buffer, 0, BUFFER_SIZE);
-	recv(socket, this->buffer, BUFFER_SIZE, 0);
+void Socket::send_msg(int socket, std::string type, std::string msg) {
+	PacketStruct packet;
+	packet.type = type;
+	packet.msg = msg;
 
-	std::string log_msg;
-	if (this->socket_type == "server") {
-		User current_user = this->get_current_user(socket);
-		log_msg = "Received"
-			"(" + std::to_string(current_user.get_id()) + ")"
-			": "+ std::string(this->buffer);
-	} else {
-		log_msg = "Received: " + std::string(this->buffer);
+	PacketStrStruct packet_str = Packet::create(packet);
+
+	send(socket, packet_str.msg, packet_str.length, 0);
+
+	this->log_date(socket, "SEND", packet.type + ":" + packet.msg);
+}
+
+int Socket::receive_msg(int socket) {
+	char* buffer_char = new char[BUFFER_SIZE];
+	memset(buffer_char, 0, BUFFER_SIZE);
+	recv(socket, buffer_char, BUFFER_SIZE, 0);
+
+	PacketStruct packet = Packet::parce(buffer_char);
+	delete[] buffer_char;
+
+	this->_buffer.msg = packet.msg;
+	this->_buffer.type = packet.type;
+
+	this->log_date(socket, "RECV", packet.type + ":" + packet.msg);
+
+	if (packet.type == "close") return CLOSE_CONNECTION;
+	try {
+		this->custom_callback_on[this->_buffer.type](socket, this->_buffer.msg);
+	} catch (std::exception& e) {
+		this->callback_on["*"](socket, this->_buffer.msg);
 	}
-	logger(log_msg, "RECV");
+	return 0;
 }
 
-void Socket::ping(int socket, std::string msg) {
-	this->send_msg(socket, msg);
-	this->receive_msg(socket);
-}
+void Socket::on(std::string type, OnCallbackStruct callback) {
+	if (type == "connection")
+		this->create("server");
+	else if (type == "open")
+		this->create("client");
 
-void Socket::on(std::string type, std::function<void(int socket)> callback) {
-	for (auto& type_ : this->callback_types) {
-		if (type_ == type) {
+	for (int i = 0; i < this->callback_types.size(); i++) {
+		if (this->callback_types[i] == type) {
 			this->callback_on[type] = callback;
 			return;
 		}
 	}
-	error_handler(ERROR_WRONG_TYPE_FOR_ON);
+	this->custom_callback_on[type] = callback;
+}
+
+void Socket::send_all(int socket, std::string type, std::string msg) {
+	for (User user : this->users) {
+		if (user.get_socket() == socket)
+			continue;
+		this->send_msg(user.get_socket(), type, msg);
+	}
 }
 
 void Socket::shutdown_server() {

@@ -1,15 +1,7 @@
-#include <iostream>
 #include <string>
-#include "../consts.h"
+#include "./logger.h"
 
-void logger(std::string msg, std::string type = "INFO") {
-	if (type == "ERROR")
-		std::cerr << "[" + type + "] " << msg;
-	else
-		std::cout << "[" + type + "] " << msg;
-}
-
-void error_handler(int error_type, std::string extra_msg = "", bool flag = true) {
+void error_handler(int error_type, std::string extra_msg, bool flag) {
 	std::string msg;
 	switch (error_type) {
 		case -1:
@@ -32,9 +24,6 @@ void error_handler(int error_type, std::string extra_msg = "", bool flag = true)
 			break;
 		case ERROR_ACCEPT:
 			msg = "server: accept";
-			break;
-		case ERROR_WRONG_TYPE_FOR_ON:
-			msg = "You are dummy ('on' wrong type)\n";
 			break;
 		case ERROR_CONNECT:
 			msg = "Connect failed";

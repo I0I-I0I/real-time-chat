@@ -1,39 +1,38 @@
-#include <cstring>
 #include <string>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <netdb.h>
-#include <arpa/inet.h>
 #include "./socket/socket.h"
 
 int main() {
 	Socket server("localhost",  "64229");
 
-	server.create("server");
-
-	server.on("connection", [&server](int socket) -> void {
-		server.send_msg(socket, "mHI from server\n");
-	});
-
-	server.on("chat", [&server](int socket) -> void {
+	server.on("connection", [&server](int socket, std::string info) -> void {
+		server.send_msg(socket, "message", "HI from server\n");
 		while (true) {
-			server.receive_msg(socket);
-			if (server.buffer[0] == 'q')
+			if (server.receive_msg(socket) == CLOSE_CONNECTION)
 				break;
-			else if (server.buffer[0] == 'm')
-				server.send_msg(socket, "mOK\n");
-			else if (server.buffer[0] == 'e')
-				server.send_msg(socket, "mERROR\n");
-			else
-				server.send_msg(socket, "mWRONG MESSAGE TYPE\n");
 		}
 	});
 
-	server.on("close", [&server](int socket) -> void {
-		server.send_msg(socket, "mBYE\n");
+	server.on("message", [&server](int socket, std::string info) -> void {
+		server.send_msg(socket, "message", "OK\n");
 	});
 
-	server.launch();
+	server.on("error", [&server](int socket, std::string info) -> void {
+		server.send_msg(socket, "error", "ERROR\n");
+	});
+
+	server.on("all", [&server](int socket, std::string info) -> void {
+		server.send_all(socket, "message", info);
+	});
+
+	server.on("*", [&server](int socket, std::string info) -> void {
+		server.send_msg(socket, "error", "Wrong message type\n");
+	});
+
+	server.on("close", [&server](int socket, std::string info) -> void {
+		server.send_msg(socket, "close", "BYE\n");
+	});
+
+	server.start();
 
 	return 0;
 }

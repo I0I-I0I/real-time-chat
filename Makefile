@@ -1,28 +1,34 @@
-all: create server client
+CXX = g++
+CXXFLAGS = -pthread -std=c++2a
 
-create:
-	@[ -d ./build ] || (mkdir ./build && echo "Directory './build' created.")
+SRCS =  src/socket/logger/logger.cpp \
+		src/socket/logger/error_handler.cpp \
+		src/socket/packet/packet.cpp \
+		src/socket/public.cpp \
+		src/socket/private.cpp \
+		src/socket/user/user.cpp
 
-server: 
+SERVER_SRCS = src/server.cpp $(SRCS)
+CLIENT_SRCS = src/client.cpp $(SRCS)
+
+BUILD_DIR = build
+SERVER_EXEC = $(BUILD_DIR)/server
+CLIENT_EXEC = $(BUILD_DIR)/client
+
+$(shell mkdir -p $(BUILD_DIR))
+
+all: server client
+
+server: $(SERVER_SRCS)
 	@echo "Compiling server..."
-	@g++\
-		./src/server.cpp\
-		./src/logger/logger.cpp\
-		./src/socket/public.cpp\
-		./src/socket/private.cpp\
-		./src/socket/user/user.cpp\
-		-o ./build/server -pthread -std=c++2a
+	@$(CXX) $(CXXFLAGS) $^ -o $(SERVER_EXEC)
 
-client: 
+client: $(CLIENT_SRCS)
 	@echo "Compiling client..."
-	@g++\
-		./src/client.cpp\
-		./src/logger/logger.cpp\
-		./src/socket/public.cpp\
-		./src/socket/private.cpp\
-		./src/socket/user/user.cpp\
-		-o ./build/client -pthread -std=c++2a
+	@$(CXX) $(CXXFLAGS) $^ -o $(CLIENT_EXEC)
 
 clean:
 	@echo "Cleaning..."
-	@rm -f ./build/*
+	@rm -f $(BUILD_DIR)/*
+
+.PHONY: all create server client clean
