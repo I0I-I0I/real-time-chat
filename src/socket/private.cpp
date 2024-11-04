@@ -91,14 +91,14 @@ void Socket::start_listening() {
 	logger("Server waiting on port " + std::string(this->port) + " \n");
 }
 
-void Socket::connection_handler_client() {
+void Socket::connection_handler() {
 	this->callback_on["open"](this->main_socket, this->_buffer.msg);
 	this->callback_on["close"](this->main_socket, this->_buffer.msg);
 	this->close_socket();
-	logger("Connection was closed\n");
+	logger("Connection closed\n");
 }
 
-void Socket::connection_handler_server(User user) {
+void Socket::connection_handler(User user) {
 	SOCKET user_socket = user.get_socket();
 	this->callback_on["connection"](user_socket, this->_buffer.msg);
 	this->callback_on["close"](user_socket, this->_buffer.msg);
@@ -134,7 +134,7 @@ void Socket::get_connection() {
 	User user = this->wait_for_connection();
     std::thread ([this, user]() {
 		User user_copy = user;
-		this->connection_handler_server(user_copy);
+		this->connection_handler(user_copy);
 		logger("Count of users: " + std::to_string(this->users.size()) + '\n');
 	}).detach();
 	logger("Count of users: " + std::to_string(this->users.size()) + '\n');

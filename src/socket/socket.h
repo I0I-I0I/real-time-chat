@@ -45,8 +45,8 @@ private:
 	User get_current_user(SOCKET socket);
 	void remove_user(User& user);
 
-	void connection_handler_client();
-	void connection_handler_server(User user);
+	void connection_handler();
+	void connection_handler(User user);
 
 	void close_users();
 	void close_socket();

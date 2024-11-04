@@ -23,7 +23,7 @@ void Socket::start() {
 	} else if (this->socket_type == "client") {
 		this->try_to_connect();
 		logger("Connection was established\n");
-		this->connection_handler_client();
+		this->connection_handler();
 	}
 }
 
@@ -52,7 +52,7 @@ int Socket::receive_msg(SOCKET socket) {
 
 	this->log_date(socket, "RECV", packet.type + ":" + packet.msg);
 
-	if (packet.type == "close") return CLOSE_CONNECTION;
+	if (packet.type == "close" || packet.msg == "") return CLOSE_CONNECTION;
 	try {
 		this->custom_callback_on[this->_buffer.type](socket, this->_buffer.msg);
 	} catch (std::exception& e) {
@@ -77,7 +77,7 @@ void Socket::on(std::string type, OnCallbackStruct callback) {
 }
 
 void Socket::send_all(SOCKET socket, std::string type, std::string msg) {
-	for (User user : this->users) {
+	for (auto& user : this->users) {
 		if (user.get_socket() == socket)
 			this->send_msg(user.get_socket(), "message", "OK\n");
 		this->send_msg(user.get_socket(), type, msg);

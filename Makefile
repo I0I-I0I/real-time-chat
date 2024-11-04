@@ -2,15 +2,19 @@ CXX = clang++
 CXXFLAGS = -std=c++11
 LDFLAGS = -lWs2_32
 
-SRCS =  src\\socket\\logger\\logger.cpp \
-		src\\socket\\logger\\error_handler.cpp \
-		src\\socket\\packet\\packet.cpp \
-		src\\socket\\public.cpp \
-		src\\socket\\private.cpp \
-		src\\socket\\user\\user.cpp
+SRCS = src\\socket\\logger\\logger.cpp \
+	   src\\socket\\logger\\error_handler.cpp \
+	   src\\socket\\packet\\packet.cpp \
+	   src\\socket\\public.cpp \
+	   src\\socket\\private.cpp \
+	   src\\socket\\user\\user.cpp
 
-SERVER_SRCS = src\\server.cpp $(SRCS)
-CLIENT_SRCS = src\\client.cpp $(SRCS)
+SERVER_SRCS = src\\server.cpp \
+			  $(SRCS)
+
+CLIENT_SRCS = src\\client.cpp \
+			  src\\block\\block.cpp \
+			  $(SRCS)
 
 BUILD_DIR = build
 SERVER_EXEC = $(BUILD_DIR)\\server
