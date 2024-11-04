@@ -1,15 +1,16 @@
 #include <cstdlib>
 #include <unistd.h>
+#include <winsock2.h>
 #include "../logger/logger.h"
 #include "./user.h"
 
-User::User(int socket_) {
+User::User(SOCKET socket_) {
 	this->socket = socket_;
 	this->id = std::rand() % 1000;
 }
 
 void User::remove() {
-	close(this->socket);
+	closesocket(this->socket);
 	logger("Remove user: " + std::to_string(this->id) + '\n');
 }
 
@@ -21,6 +22,6 @@ int User::get_id() {
 	return this->id;
 }
 
-int User::get_socket() {
+SOCKET User::get_socket() {
 	return this->socket;
 }

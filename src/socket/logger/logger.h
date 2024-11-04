@@ -16,3 +16,4 @@ constexpr const int ERROR_RECV = -17;
 constexpr const int ERROR_GET_ADDR = -18;
 constexpr const int ERROR_WRONG_TYPE_FOR_ON = -19;
 constexpr const int ERROR_CONNECT = -20;
+constexpr const int ERROR_WSA_STARTUP = -21;

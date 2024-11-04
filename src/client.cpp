@@ -1,4 +1,5 @@
 #include <iostream>
+#include <winsock2.h>
 #include <string>
 #include <thread>
 #include "./socket/socket.h"
@@ -8,7 +9,7 @@ int main() {
 
 	std::thread t;
 
-	client.on("open", [&t, &client](int socket, std::string _) -> void {
+	client.on("open", [&t, &client](SOCKET socket, std::string _) -> void {
 		client.receive_msg(socket);
 		client.send_msg(socket, "message", "Hi form client\n");
 
@@ -31,10 +32,10 @@ int main() {
 		}
 	});
 
-	client.on("*", [&client](int socket, std::string info) -> void {
+	client.on("*", [&client](SOCKET socket, std::string info) -> void {
 	});
 
-	client.on("close", [&t, &client](int socket, std::string info) -> void {
+	client.on("close", [&t, &client](SOCKET socket, std::string info) -> void {
 		client.send_msg(socket, "close", "BYE\n");
 		t.join();
 	});

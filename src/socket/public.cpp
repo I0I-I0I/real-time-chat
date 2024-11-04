@@ -1,6 +1,7 @@
+#include <winsock2.h>
+#include <ws2tcpip.h>
 #include <string>
 #include <cstring>
-#include <sys/socket.h>
 #include "./logger/logger.h"
 #include "./packet/packet.h"
 #include "./socket.h"
@@ -11,7 +12,7 @@ Socket::Socket(const char* host_, const char* port_, int backlog_) {
 	this->backlog = backlog_;
 	this->users = {};
 	for (auto& type_ : this->callback_types)
-		this->callback_on[type_] = [](int, std::string) -> void {};
+		this->callback_on[type_] = [](SOCKET, std::string) -> void {};
 }
 
 void Socket::start() {
@@ -26,7 +27,7 @@ void Socket::start() {
 	}
 }
 
-void Socket::send_msg(int socket, std::string type, std::string msg) {
+void Socket::send_msg(SOCKET socket, std::string type, std::string msg) {
 	PacketStruct packet;
 	packet.type = type;
 	packet.msg = msg;
@@ -38,7 +39,7 @@ void Socket::send_msg(int socket, std::string type, std::string msg) {
 	this->log_date(socket, "SEND", packet.type + ":" + packet.msg);
 }
 
-int Socket::receive_msg(int socket) {
+int Socket::receive_msg(SOCKET socket) {
 	char* buffer_char = new char[BUFFER_SIZE];
 	memset(buffer_char, 0, BUFFER_SIZE);
 	recv(socket, buffer_char, BUFFER_SIZE, 0);
@@ -75,10 +76,10 @@ void Socket::on(std::string type, OnCallbackStruct callback) {
 	this->custom_callback_on[type] = callback;
 }
 
-void Socket::send_all(int socket, std::string type, std::string msg) {
+void Socket::send_all(SOCKET socket, std::string type, std::string msg) {
 	for (User user : this->users) {
 		if (user.get_socket() == socket)
-			continue;
+			this->send_msg(user.get_socket(), "message", "OK\n");
 		this->send_msg(user.get_socket(), type, msg);
 	}
 }

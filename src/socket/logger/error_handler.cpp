@@ -1,4 +1,5 @@
 #include <string>
+#include <WS2tcpip.h>
 #include "./logger.h"
 
 void error_handler(int error_type, std::string extra_msg, bool flag) {
@@ -28,12 +29,17 @@ void error_handler(int error_type, std::string extra_msg, bool flag) {
 		case ERROR_CONNECT:
 			msg = "Connect failed";
 			break;
+		case ERROR_WSA_STARTUP:
+			msg = "WSAStartup failed";
+			break;
 		default:
 			msg = "How did I get here?\n";
 			msg = "Error code: ";
 	}
 	msg += extra_msg;
 	logger(msg, "ERROR");
-	if (flag)
+	if (flag) {
+		WSACleanup();
 		exit(error_type);
+	}
 }

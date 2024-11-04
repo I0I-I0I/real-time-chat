@@ -1,19 +1,20 @@
 #pragma once
 
 #include <functional>
+#include <winsock2.h>
 #include <unistd.h>
 #include <vector>
 #include "../logger/logger.h"
 
 class User {
 private:
-	int socket;
+	SOCKET socket;
 	int id;
 
 public:
-	User(int socket_ = 0);
+	User(SOCKET socket_ = 0);
 
-	int get_socket();
+	SOCKET get_socket();
 	int get_id();
 	void set_id(int id_);
 	void remove();

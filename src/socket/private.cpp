@@ -1,13 +1,17 @@
+#include <functional>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <iostream>
 #include <string>
 #include <thread>
 #include <cstring>
-#include <sys/socket.h>
 #include <unistd.h>
-#include <netdb.h>
-#include <arpa/inet.h>
+#include <algorithm>
 #include "./logger/logger.h"
 #include "./user/user.h"
 #include "./socket.h"
+
+#pragma comment(lib, "Ws2_32.lib")
 
 void* Socket::get_in_addr(struct sockaddr *sa) {
 	if (sa->sa_family == AF_INET)
@@ -20,38 +24,42 @@ struct addrinfo* Socket::get_addr() {
 	int rv;
 
 	memset(&hints, 0, sizeof hints);
-	hints.ai_family = AF_UNSPEC;
+	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_flags = AI_PASSIVE;
 
-	if ((rv = getaddrinfo(NULL, this->port, &hints, &servinfo)) != 0)
+	if ((rv = getaddrinfo(this->host, this->port, &hints, &servinfo)) != 0)
 		error_handler(ERROR_GET_ADDR, gai_strerror(rv), false);
 
 	return servinfo;
 }
 
 void Socket::create(std::string type_) {
+	WSADATA wsaData;
+	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
+		error_handler(ERROR_WSA_STARTUP);
+
 	this->socket_type = type_;
 	this->addr = this->get_addr();
 	this->main_socket = this->setup_socket();
 	logger("Socket was created\n");
 }
 
-int Socket::setup_socket() {
+SOCKET Socket::setup_socket() {
 	struct addrinfo *p;
 	int yes = 1;
-	int sock;
+	SOCKET sock;
 
 	for (p = this->addr; p != NULL; p = p->ai_next) {
-		if ((sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1) {
+		if ((sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == INVALID_SOCKET) {
 			error_handler(ERROR_SOCKET, "", false);
 			continue;
 		}
 		if (this->socket_type == "client") break;
-		if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
-			error_handler(ERROR_SETSOCKOPT);
+		if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char*)&yes, sizeof(yes)) == SOCKET_ERROR)
+			error_handler(WSAGetLastError());
 		if (bind(sock, p->ai_addr, p->ai_addrlen) == -1) {
-			close(sock);
+			closesocket(sock);
 			error_handler(ERROR_BIND, "", false);
 			continue;
 		}
@@ -67,9 +75,10 @@ int Socket::setup_socket() {
 void Socket::try_to_connect() {
 	char s[INET6_ADDRSTRLEN];
 
-	if (connect(this->main_socket, this->addr->ai_addr, this->addr->ai_addrlen) == -1) {
+	if (connect(this->main_socket, this->addr->ai_addr, this->addr->ai_addrlen) == SOCKET_ERROR) {
+		std::cout << "Connection error" << WSAGetLastError() << std::endl;
 		error_handler(ERROR_CONNECT);
-		close(this->main_socket);
+		closesocket(this->main_socket);
 	}
 
 	inet_ntop(this->addr->ai_family, get_in_addr((struct sockaddr *)this->addr->ai_addr), s, sizeof s);
@@ -77,9 +86,9 @@ void Socket::try_to_connect() {
 }
 
 void Socket::start_listening() {
-	if (listen(main_socket, this->backlog) == -1)
+	if (listen(this->main_socket, this->backlog) == SOCKET_ERROR)
 		error_handler(ERROR_LISTEN);
-	logger("Waiting for connection...\n");
+	logger("Server waiting on port " + std::string(this->port) + " \n");
 }
 
 void Socket::connection_handler_client() {
@@ -90,23 +99,24 @@ void Socket::connection_handler_client() {
 }
 
 void Socket::connection_handler_server(User user) {
-	int user_socket = user.get_socket();
+	SOCKET user_socket = user.get_socket();
 	this->callback_on["connection"](user_socket, this->_buffer.msg);
 	this->callback_on["close"](user_socket, this->_buffer.msg);
-	user.remove();
+	this->remove_user(user);
 	logger("Connection closed\n");
 }
 
-int Socket::accept_connection() {
+SOCKET Socket::accept_connection() {
 	char s[INET_ADDRSTRLEN];
-	int socket;
+	SOCKET socket;
 	socklen_t sin_size;
 	struct sockaddr_storage their_addr;
 
 	sin_size = sizeof their_addr;
-	socket = accept(this->main_socket, (struct sockaddr *)&their_addr, &sin_size);
-	if (socket == -1)
+	if ((socket = accept(this->main_socket, (struct sockaddr *)&their_addr, &sin_size)) == INVALID_SOCKET) {
+		std::cout << "Accept error: " << WSAGetLastError() << std::endl;
 		error_handler(ERROR_ACCEPT);
+	}
 
 	inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *)&their_addr), s, sizeof s);
 	logger("server: got connection from " + (std::string)s + ":" + this->port + '\n');
@@ -122,15 +132,15 @@ User Socket::wait_for_connection() {
 
 void Socket::get_connection() {
 	User user = this->wait_for_connection();
-	std::thread (([this, user]() -> void {
-		this->connection_handler_server(user);
-		this->remove_user(user);
+    std::thread ([this, user]() {
+		User user_copy = user;
+		this->connection_handler_server(user_copy);
 		logger("Count of users: " + std::to_string(this->users.size()) + '\n');
-	})).detach();
+	}).detach();
 	logger("Count of users: " + std::to_string(this->users.size()) + '\n');
 }
 
-User Socket::get_current_user(int socket) {
+User Socket::get_current_user(SOCKET socket) {
 	for (auto& user : this->users)
 		if (user.get_socket() == socket)
 			return user;
@@ -138,7 +148,8 @@ User Socket::get_current_user(int socket) {
 	return User();
 }
 
-void Socket::remove_user(User user) {
+void Socket::remove_user(User& user) {
+	user.remove();
 	this->users.erase(
 		std::remove(this->users.begin(), this->users.end(), user),
 		this->users.end()
@@ -151,10 +162,11 @@ void Socket::close_users() {
 }
 
 void Socket::close_socket() {
-	close(this->main_socket);
+	closesocket(this->main_socket);
+	WSACleanup();
 }
 
-void Socket::log_date(int socket, std::string log_type, std::string msg) {
+void Socket::log_date(SOCKET socket, std::string log_type, std::string msg) {
 	std::string log_msg = log_type;
 	if (this->socket_type == "server") {
 		User current_user = this->get_current_user(socket);

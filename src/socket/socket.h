@@ -2,6 +2,8 @@
 
 #include <functional>
 #include <map>
+#include <winsock2.h>
+#include <windows.h>
 #include <string>
 #include <vector>
 #include "./user/user.h"
@@ -11,14 +13,14 @@
 
 constexpr const int CLOSE_CONNECTION = -1;
 
-using OnCallbackStruct = std::function<void(int, std::string)>;
+using OnCallbackStruct = std::function<void(SOCKET, std::string)>;
 
 class Socket {
 private:
 	const char* host;
 	const char* port;
 	int backlog;
-	int main_socket;
+	SOCKET main_socket;
 	struct addrinfo* addr;
 	std::string socket_type;
 	PacketStruct _buffer;
@@ -31,17 +33,17 @@ private:
 	void *get_in_addr(struct sockaddr*);
 	struct addrinfo* get_addr();
 
-	int setup_socket();
+	SOCKET setup_socket();
 	void create(std::string type);
 
 	void start_listening();
-	int accept_connection();
+	SOCKET accept_connection();
 	void get_connection();
 	void try_to_connect();
 
 	User wait_for_connection();
-	User get_current_user(int socket);
-	void remove_user(User);
+	User get_current_user(SOCKET socket);
+	void remove_user(User& user);
 
 	void connection_handler_client();
 	void connection_handler_server(User user);
@@ -49,7 +51,8 @@ private:
 	void close_users();
 	void close_socket();
 
-	void log_date(int socket, std::string log_type, std::string msg);
+	void log_date(SOCKET socket, std::string log_type, std::string msg);
+	static void some_func(User& user, Socket* socket);
 
 public:
 	Socket(const char* host, const char* port, int backlog = 5);
@@ -72,7 +75,7 @@ public:
 	 * @param type
 	 * @param msg
 	 */
-	void send_msg(int socket, std::string type, std::string msg);
+	void send_msg(SOCKET socket, std::string type, std::string msg);
 
 	/**
 	 * @brief Send message to all users
@@ -80,14 +83,14 @@ public:
 	 * @param type
 	 * @param msg
 	 */
-	void send_all(int socket, std::string type, std::string msg);
+	void send_all(SOCKET socket, std::string type, std::string msg);
 
 	/**
 	 * @brief Receive message
 	 * @param socket
 	 * @return CLOSE_CONNECTION on packet.type "close" or 0
 	 */
-	int receive_msg(int socket);
+	int receive_msg(SOCKET socket);
 
 	/**
 	 * @brief Close all connections and stop server
