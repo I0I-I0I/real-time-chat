@@ -1,12 +1,10 @@
-#include <functional>
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <iostream>
 #include <string>
 #include <thread>
 #include <cstring>
+#include <sys/socket.h>
 #include <unistd.h>
-#include <algorithm>
+#include <netdb.h>
+#include <arpa/inet.h>
 #include "./logger/logger.h"
 #include "./user/user.h"
 #include "./socket.h"
@@ -35,34 +33,37 @@ struct addrinfo* Socket::get_addr() {
 }
 
 void Socket::create(std::string type_) {
-	WSADATA wsaData;
-	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
-		error_handler(ERROR_WSA_STARTUP);
-
 	this->socket_type = type_;
 	this->addr = this->get_addr();
 	this->main_socket = this->setup_socket();
 	socket_logger("Socket was created\n");
 }
 
-SOCKET Socket::setup_socket() {
+int Socket::setup_socket() {
 	struct addrinfo *p;
 	int yes = 1;
-	SOCKET sock;
-	DWORD timeout = this->timeout;
+	int sock;
+	struct timeval recv_timeout = {
+		 .tv_usec = this->recv_timeout
+	};
+	struct timeval sedn_timeout = {
+		 .tv_usec = this->send_timeout
+	};
 
 	for (p = this->addr; p != NULL; p = p->ai_next) {
-		if ((sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == INVALID_SOCKET) {
+		if ((sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1) {
 			error_handler(ERROR_SOCKET, "", false);
 			continue;
 		}
-		if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout)) == SOCKET_ERROR)
-			error_handler(ERROR_SETSOCKOPT, std::to_string(WSAGetLastError()) + '\n', false);
+		if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &recv_timeout, sizeof(recv_timeout)) == -1)
+			error_handler(ERROR_SETSOCKOPT, "", false);
+		if (setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &send_timeout, sizeof(send_timeout)) == -1)
+			error_handler(ERROR_SETSOCKOPT, "", false);
 		if (this->socket_type == "client") break;
-		if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char*)&yes, sizeof(yes)) == SOCKET_ERROR)
-			error_handler(ERROR_SETSOCKOPT, std::to_string(WSAGetLastError()) + '\n', false);
+		if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char*)&yes, sizeof(yes)) == -1)
+			error_handler(ERROR_SETSOCKOPT, "", false);
 		if (bind(sock, p->ai_addr, p->ai_addrlen) == -1) {
-			closesocket(sock);
+			close(sock);
 			error_handler(ERROR_BIND, "", false);
 			continue;
 		}
@@ -78,10 +79,9 @@ SOCKET Socket::setup_socket() {
 void Socket::try_to_connect() {
 	char s[INET6_ADDRSTRLEN];
 
-	if (connect(this->main_socket, this->addr->ai_addr, this->addr->ai_addrlen) == SOCKET_ERROR) {
-		std::cout << "Connection error" << WSAGetLastError() << std::endl;
+	if (connect(this->main_socket, this->addr->ai_addr, this->addr->ai_addrlen) == -1) {
 		error_handler(ERROR_CONNECT);
-		closesocket(this->main_socket);
+		close(this->main_socket);
 	}
 
 	inet_ntop(this->addr->ai_family, get_in_addr((struct sockaddr *)this->addr->ai_addr), s, sizeof s);
@@ -89,7 +89,7 @@ void Socket::try_to_connect() {
 }
 
 void Socket::start_listening() {
-	if (listen(this->main_socket, this->backlog) == SOCKET_ERROR)
+	if (listen(this->main_socket, this->backlog) == -1)
 		error_handler(ERROR_LISTEN);
 	socket_logger("Server waiting on port " + std::string(this->port) + " \n");
 }
@@ -102,22 +102,21 @@ void Socket::connection_handler() {
 }
 
 void Socket::connection_handler(User user) {
-	SOCKET user_socket = user.get_socket();
+	int user_socket = user.get_socket();
 	this->callback_on["connection"](user_socket, this->buffer.msg);
 	this->callback_on["close"](user_socket, this->buffer.msg);
 	this->remove_user(user);
 	socket_logger("Connection closed\n", "CONN");
 }
 
-SOCKET Socket::accept_connection() {
+int Socket::accept_connection() {
 	char s[INET_ADDRSTRLEN];
-	SOCKET socket;
+	int socket;
 	socklen_t sin_size;
 	struct sockaddr_storage their_addr;
 
 	sin_size = sizeof their_addr;
-	if ((socket = accept(this->main_socket, (struct sockaddr *)&their_addr, &sin_size)) == INVALID_SOCKET) {
-		std::cout << "Accept error: " << WSAGetLastError() << std::endl;
+	if ((socket = accept(this->main_socket, (struct sockaddr *)&their_addr, &sin_size)) == -1) {
 		error_handler(ERROR_ACCEPT);
 	}
 
@@ -143,12 +142,12 @@ void Socket::get_connection() {
 	socket_logger("Count of users: " + std::to_string(this->users.size()) + '\n');
 }
 
-User Socket::get_current_user(SOCKET socket) {
+User Socket::get_current_user(int socket) {
 	for (auto& user : this->users)
 		if (user.get_socket() == socket)
 			return user;
 	socket_logger("User not found\n", "ERROR");
-	return User(INVALID_SOCKET);
+	return User(-1);
 }
 
 void Socket::remove_user(User& user) {
@@ -165,11 +164,10 @@ void Socket::close_users() {
 }
 
 void Socket::close_socket() {
-	closesocket(this->main_socket);
-	WSACleanup();
+	close(this->main_socket);
 }
 
-void Socket::log_date(SOCKET socket, std::string log_type, std::string msg) {
+void Socket::log_date(int socket, std::string log_type, std::string msg) {
 	std::string log_msg = log_type;
 	if (this->socket_type == "server") {
 		User current_user = this->get_current_user(socket);

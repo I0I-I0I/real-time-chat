@@ -1,5 +1,4 @@
 #include <string>
-#include <WS2tcpip.h>
 #include "./logger.h"
 
 void error_handler(int error_type, std::string extra_msg, bool flag) {
@@ -39,7 +38,6 @@ void error_handler(int error_type, std::string extra_msg, bool flag) {
 	msg += extra_msg;
 	logger(msg, "ERROR");
 	if (flag) {
-		WSACleanup();
 		exit(error_type);
 	}
 }

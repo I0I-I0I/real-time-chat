@@ -2,8 +2,6 @@
 
 #include <functional>
 #include <map>
-#include <winsock2.h>
-#include <windows.h>
 #include <string>
 #include <vector>
 #include "./user/user.h"
@@ -13,7 +11,7 @@
 
 constexpr const int CLOSE_CONNECTION = -101;
 
-using OnCallbackStruct = std::function<void(SOCKET, std::string)>;
+using OnCallbackStruct = std::function<void(int, std::string)>;
 
 /**
  * @param int backlog
@@ -21,7 +19,8 @@ using OnCallbackStruct = std::function<void(SOCKET, std::string)>;
  */
 struct SocketOpts {
 	int backlog;
-	int timeout;
+	int recv_timeout;
+	int send_timeout;
 	std::string log_level;
 };
 
@@ -30,11 +29,12 @@ private:
 	const char* host;
 	const char* port;
 	int backlog;
-	SOCKET main_socket;
+	int main_socket;
 	struct addrinfo* addr;
 	std::string socket_type;
 	PacketStruct buffer;
-	int timeout;
+	int recv_timeout;
+	int send_timeout;
 	std::string log_level;
 
 	std::vector<User> users;
@@ -45,16 +45,16 @@ private:
 	void *get_in_addr(struct sockaddr*);
 	struct addrinfo* get_addr();
 
-	SOCKET setup_socket();
+	int setup_socket();
 	void create(std::string type);
 
 	void start_listening();
-	SOCKET accept_connection();
+	int accept_connection();
 	void get_connection();
 	void try_to_connect();
 
 	User wait_for_connection();
-	User get_current_user(SOCKET socket);
+	User get_current_user(int socket);
 	void remove_user(User& user);
 
 	void connection_handler();
@@ -63,7 +63,7 @@ private:
 	void close_users();
 	void close_socket();
 
-	void log_date(SOCKET socket, std::string log_type, std::string msg);
+	void log_date(int socket, std::string log_type, std::string msg);
 	void socket_logger(std::string msg, std::string type = "INFO");
 
 public:
@@ -93,7 +93,7 @@ public:
 	 * @param type
 	 * @param msg
 	 */
-	void send_msg(SOCKET socket, std::string type, std::string msg);
+	void send_msg(int socket, std::string type, std::string msg);
 
 	/**
 	 * @brief Send message to all users
@@ -101,14 +101,14 @@ public:
 	 * @param type
 	 * @param msg
 	 */
-	void send_all(SOCKET socket, std::string type, std::string msg);
+	void send_all(int socket, std::string type, std::string msg);
 
 	/**
 	 * @brief Receive message
 	 * @param socket
 	 * @return CLOSE_CONNECTION on (packet.type == "close" || packet.msg == "") or otherwise return 0
 	 */
-	int receive_msg(SOCKET socket);
+	int receive_msg(int socket);
 
 	/**
 	 * @brief Close all connections and stop server
