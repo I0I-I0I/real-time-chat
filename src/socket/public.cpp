@@ -7,8 +7,11 @@
 Socket::Socket(const char* host_, const char* port_, SocketOpts opts) {
 	this->host = host_;
 	this->port = port_;
+
+	// TODO: It's not working now
 	this->recv_timeout = opts.recv_timeout ? opts.recv_timeout : 0;
 	this->send_timeout = opts.send_timeout ? opts.send_timeout : 0;
+
 	this->backlog = opts.backlog ? opts.backlog : 5;
 	this->log_level = opts.log_level != "" ? opts.log_level : "ERROR";
 	this->users = {};

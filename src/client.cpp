@@ -7,7 +7,7 @@ int main() {
 	SocketOpts opts = {
 		.log_level = "INFO"
 	};
-	Socket client("localhost", "64229", opts);
+	Socket client("localhost", "64230", opts);
 
 	std::thread t;
 	bool flag = true;
@@ -26,8 +26,8 @@ int main() {
 		std::string type;
 		while (flag) {
 			std::getline(std::cin, msg);
+			if (!flag || msg == "q") break;
 			std::cout << "(type)> ";
-			if (!flag) break;
 			std::getline(std::cin, type);
 			client.send_msg(socket, type, msg + '\n');
 		}

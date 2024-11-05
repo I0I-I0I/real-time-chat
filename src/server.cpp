@@ -8,7 +8,7 @@ int main() {
 		.send_timeout = 10000,
 		.log_level = "INFO"
 	};
-	Socket server("localhost",  "64229", opts);
+	Socket server("localhost",  "64230", opts);
 
 	server.on("connection", [&server](int socket, std::string info) -> void {
 		server.send_msg(socket, "message", "HI from server\n");

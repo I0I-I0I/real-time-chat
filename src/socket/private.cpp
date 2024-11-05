@@ -43,22 +43,12 @@ int Socket::setup_socket() {
 	struct addrinfo *p;
 	int yes = 1;
 	int sock;
-	struct timeval recv_timeout = {
-		 .tv_usec = this->recv_timeout
-	};
-	struct timeval sedn_timeout = {
-		 .tv_usec = this->send_timeout
-	};
 
 	for (p = this->addr; p != NULL; p = p->ai_next) {
 		if ((sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1) {
 			error_handler(ERROR_SOCKET, "", false);
 			continue;
 		}
-		if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &recv_timeout, sizeof(recv_timeout)) == -1)
-			error_handler(ERROR_SETSOCKOPT, "", false);
-		if (setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &send_timeout, sizeof(send_timeout)) == -1)
-			error_handler(ERROR_SETSOCKOPT, "", false);
 		if (this->socket_type == "client") break;
 		if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char*)&yes, sizeof(yes)) == -1)
 			error_handler(ERROR_SETSOCKOPT, "", false);
@@ -116,9 +106,8 @@ int Socket::accept_connection() {
 	struct sockaddr_storage their_addr;
 
 	sin_size = sizeof their_addr;
-	if ((socket = accept(this->main_socket, (struct sockaddr *)&their_addr, &sin_size)) == -1) {
+	if ((socket = accept(this->main_socket, (struct sockaddr *)&their_addr, &sin_size)) == -1)
 		error_handler(ERROR_ACCEPT);
-	}
 
 	inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *)&their_addr), s, sizeof s);
 	socket_logger("server: got connection from " + (std::string)s + ":" + this->port + '\n', "CONN");
@@ -134,7 +123,7 @@ User Socket::wait_for_connection() {
 
 void Socket::get_connection() {
 	User user = this->wait_for_connection();
-    std::thread ([this, user]() {
+	std::thread ([this, user]() {
 		User user_copy = user;
 		this->connection_handler(user_copy);
 		socket_logger("Count of users: " + std::to_string(this->users.size()) + '\n');
@@ -180,5 +169,5 @@ void Socket::log_date(int socket, std::string log_type, std::string msg) {
 }
 
 void Socket::socket_logger(std::string msg, std::string type) {
-	set_log_level(this->log_level)(msg, type);
+	logger(this->log_level, msg, type);
 }

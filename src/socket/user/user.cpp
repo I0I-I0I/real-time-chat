@@ -27,5 +27,5 @@ int User::get_socket() {
 }
 
 void User::socket_logger(std::string msg, std::string type) {
-	set_log_level(this->log_level)(msg, type);
+	logger(this->log_level, msg, type);
 }
