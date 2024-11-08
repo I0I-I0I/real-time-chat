@@ -10,7 +10,7 @@ struct PacketStruct {
 
 struct PacketStrStruct {
 	unsigned short length;
-	char* msg;
+	const char* msg;
 };
 
 class Packet {

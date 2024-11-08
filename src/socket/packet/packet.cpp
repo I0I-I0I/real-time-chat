@@ -1,35 +1,48 @@
+#include <cstring>
 #include <string>
 #include "./packet.h"
 
 PacketStrStruct Packet::create(PacketStruct packet) {
-	char* len_char = new char[2];
-	len_char = short_to_char(get_length(packet.msg) + get_length(packet.type) + 1);
+	unsigned short len = get_length(packet.msg) + get_length(packet.type) + 2;
+	len += get_length(std::to_string(len));
 
-	std::string msg = packet.type + ":" + packet.msg;
-	unsigned short total_length = 2 + msg.length();
-	char* res = new char[total_length + 1];
+	std::string msg = std::to_string(len) + ":" + packet.type + ":" + packet.msg;
 
-	for (int i = 0; i < 2; i++) res[i] = len_char[i];
-	for (int i = 0; i < msg.length(); i++) res[i + 2] = msg[i];
-	res[total_length + 1] = '\0';
-
-	delete[] len_char;
-	return { total_length, res };
+	char* res = new char[msg.length() + 1];
+	strcpy(res, msg.c_str());
+	res[msg.length() + 1] = '\0';
+	return { len, res};
 }
 
 PacketStruct Packet::parce(char* char_packet) {
 	PacketStruct packet;
 	int index = 0;
 
-	packet.length = char_to_short(char_packet[0], char_packet[1]);
-	for (int i = 2; i < packet.length + 2; i++) {
-		if (char_packet[i] == ':') {
+	int idx = 0;
+	std::string len = "";
+	for (int i = 0; i < 5; i++) {
+		idx++;
+		if (char_packet[i] == ':') break;
+		len += char_packet[i];
+	}
+
+	try {
+		packet.length = std::stoi(len);
+	} catch (std::exception& e) {
+		packet.length = 0;
+		return packet;
+	}
+
+	for (int i = idx; i < packet.length + idx; i++) {
+		if (char_packet[i] == ':' && index < 1) {
 			index++;
 			continue;
 		}
 		else if (index == 0) packet.type += char_packet[i];
 		else if (index == 1) packet.msg += char_packet[i];
 	}
+
+	packet.msg += '\n';
 
 	return packet;
 }
