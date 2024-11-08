@@ -2,16 +2,11 @@
 #include <string>
 #include "./packet.h"
 
-PacketStrStruct Packet::create(PacketStruct packet) {
+std::string Packet::create(PacketStruct packet) {
 	unsigned short len = get_length(packet.msg) + get_length(packet.type) + 2;
 	len += get_length(std::to_string(len));
-
 	std::string msg = std::to_string(len) + ":" + packet.type + ":" + packet.msg;
-
-	char* res = new char[msg.length() + 1];
-	strcpy(res, msg.c_str());
-	res[msg.length() + 1] = '\0';
-	return { len, res};
+	return msg;
 }
 
 PacketStruct Packet::parce(char* char_packet) {

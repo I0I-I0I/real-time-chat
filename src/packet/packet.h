@@ -8,11 +8,6 @@ struct PacketStruct {
 	std::string msg;
 };
 
-struct PacketStrStruct {
-	unsigned short length;
-	const char* msg;
-};
-
 class Packet {
 private:
 	std::string type;
@@ -25,5 +20,5 @@ private:
 public:
 
 	static PacketStruct parce(char* str_packet);
-	static PacketStrStruct create(PacketStruct packet);
+	static std::string create(PacketStruct packet);
 };

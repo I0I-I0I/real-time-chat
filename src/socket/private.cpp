@@ -85,16 +85,16 @@ void Socket::start_listening() {
 }
 
 void Socket::connection_handler() {
-	this->callback_on["open"](this->main_socket, this->buffer.msg);
-	this->callback_on["close"](this->main_socket, this->buffer.msg);
+	this->callback_on["open"](this->main_socket, this->buffer);
+	this->callback_on["close"](this->main_socket, this->buffer);
 	this->close_socket();
 	socket_logger("Connection closed\n", "CONN");
 }
 
 void Socket::connection_handler(User user) {
 	int user_socket = user.get_socket();
-	this->callback_on["connection"](user_socket, this->buffer.msg);
-	this->callback_on["close"](user_socket, this->buffer.msg);
+	this->callback_on["connection"](user_socket, this->buffer);
+	this->callback_on["close"](user_socket, this->buffer);
 	this->remove_user(user);
 	socket_logger("Connection closed\n", "CONN");
 }

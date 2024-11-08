@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include "./user/user.h"
-#include "./packet/packet.h"
 
 #define BUFFER_SIZE 1024
 
@@ -24,6 +23,11 @@ struct SocketOpts {
 	std::string log_level;
 };
 
+struct DataStruct {
+	std::string type;
+	std::string msg;
+};
+
 class Socket {
 private:
 	const char* host;
@@ -32,7 +36,7 @@ private:
 	int main_socket;
 	struct addrinfo* addr;
 	std::string socket_type;
-	PacketStruct buffer;
+	std::string buffer;
 	int recv_timeout;
 	int send_timeout;
 	std::string log_level;
@@ -75,6 +79,8 @@ public:
 	 */
 	Socket(const char* host, const char* port, SocketOpts opts = {});
 
+	int handle_received_data(int socket, std::string type, std::string msg);
+
 	/**
 	 * @brief Start socket
 	 */
@@ -90,25 +96,23 @@ public:
 	/**
 	 * @brief Send message
 	 * @param socket
-	 * @param type
 	 * @param msg
 	 */
-	void send_msg(int socket, std::string type, std::string msg);
+	void send_msg(int socket, std::string msg);
 
 	/**
 	 * @brief Send message to all users
 	 * @param socket
-	 * @param type
 	 * @param msg
 	 */
-	void send_all(int socket, std::string type, std::string msg);
+	void send_all(int socket, std::string msg);
 
 	/**
 	 * @brief Receive message
 	 * @param socket
 	 * @return CLOSE_CONNECTION on (packet.type == "close" || packet.msg == "") or otherwise return 0
 	 */
-	int receive_msg(int socket);
+	std::string receive_msg(int socket);
 
 	/**
 	 * @brief Close all connections and stop server

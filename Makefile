@@ -3,10 +3,10 @@ CXXFLAGS = -pthread -std=c++2a
 
 SRCS = src/socket/logger/logger.cpp \
 	   src/socket/logger/error_handler.cpp \
-	   src/socket/packet/packet.cpp \
 	   src/socket/public.cpp \
 	   src/socket/private.cpp \
-	   src/socket/user/user.cpp
+	   src/socket/user/user.cpp \
+	   src/packet/packet.cpp
 
 SERVER_SRCS = src/server.cpp \
 			  $(SRCS)
@@ -18,9 +18,10 @@ BUILD_DIR = build
 SERVER_EXEC = $(BUILD_DIR)/server
 CLIENT_EXEC = $(BUILD_DIR)/client
 
-$(shell mkdir $(BUILD_DIR))
+all: create server client
 
-all: server client
+create:
+	[ -d $(BUILD_DIR) ] || (mkdir $(BUILD_DIR) && echo "Directory $(BUILD_DIR) created")
 
 server: $(SERVER_SRCS)
 	@echo "Compiling server..."
