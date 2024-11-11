@@ -43,8 +43,7 @@ PacketStruct Packet::parce(char* char_packet) {
 }
 
 unsigned short Packet::get_length(std::string msg) {
-	unsigned short len = msg.length();
-	return len;
+	return (unsigned short)msg.length();
 }
 
 unsigned short Packet::char_to_short(char char1, char char2) {

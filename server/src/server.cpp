@@ -1,5 +1,6 @@
 #include <string>
 #include "./socket/socket.h"
+#include "./handlers/handlers.h"
 #include "./packet/packet.h"
 
 int main() {
@@ -21,43 +22,33 @@ int main() {
 	});
 
 	server.on("message", [&server](int socket, std::string info) -> void {
-			std::string str_packet = Packet::create({
-			.type = "message",
-			.msg = "OK\n"
-		});
-		server.send_msg(socket, str_packet);
+		std::string response = HandlerOn::message(info);
+		server.send_msg(socket, response);
 	});
 
 	server.on("error", [&server](int socket, std::string info) -> void {
-		std::string str_packet = Packet::create({
-			.type = "message",
-			.msg = "OK\n"
-		});
-		server.send_msg(socket, str_packet);
+		std::string response = HandlerOn::error(info);
+		server.send_msg(socket, response);
+	});
+
+	server.on("data", [&server](int socket, std::string info) -> void {
+		std::string response = HandlerOn::data(info);
+		server.send_msg(socket, response);
 	});
 
 	server.on("all", [&server](int socket, std::string info) -> void {
-		std::string str_packet = Packet::create({
-			.type = "message",
-			.msg = "OK\n"
-		});
-		server.send_all(socket, str_packet);
+		std::string response = HandlerOn::all(info);
+		server.send_msg(socket, response);
 	});
 
 	server.on("*", [&server](int socket, std::string info) -> void {
-		std::string str_packet = Packet::create({
-			.type = "error",
-			.msg = "Wrong message type\n"
-		});
-		server.send_msg(socket, str_packet);
+		std::string response = HandlerOn::other(info);
+		server.send_msg(socket, response);
 	});
 
 	server.on("close", [&server](int socket, std::string info) -> void {
-		std::string str_packet = Packet::create({
-			.type = "close",
-			.msg = "BYE\n"
-		});
-		server.send_msg(socket, str_packet);
+		std::string response = HandlerOn::close(info);
+		server.send_msg(socket, response);
 	});
 
 	server.start();
