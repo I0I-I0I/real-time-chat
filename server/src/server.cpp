@@ -1,4 +1,3 @@
-#include <iostream>
 #include <string>
 #include "./socket/socket.h"
 #include "./handlers/handlers.h"
@@ -30,6 +29,10 @@ int main() {
 	server.on("error", [&server](int socket, std::string info) -> void {
 		std::string response = HandlerOn::error(info);
 		server.send_msg(socket, response);
+	});
+
+	server.on("response", [&server](int socket, std::string info) -> void {
+		HandlerOn::error(info);
 	});
 
 	server.on("data", [&server](int socket, std::string info) -> void {

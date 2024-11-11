@@ -1,41 +1,34 @@
 import net from "net"
-import { logger, parseString as parse_data, sleep } from "./utils/utils.js"
+
+import { logger, parse_data } from "./utils/utils.js"
+import { send_set_socket } from "./transfer_data/index.js"
+import { response_handler } from "./handlres/handlres.js"
+
+import { opts } from "./globals/consts.js"
+
+import { IPacket, IResponse } from "./globals/types.js"
 
 const client = new net.Socket()
-const PORT = 8080
-const HOST = "localhost"
+const send_data = send_set_socket(client)
 
-async function send_data(type: string, msg: string) : Promise<void> {
-	let send_msg = type + ":" + msg
-	send_msg = send_msg.length + ":" + send_msg
-	client.write(send_msg)
-	logger("SEND: " + send_msg, "MSG")
-	await sleep(100)
-}
-
-client.connect(PORT, HOST, async function() : Promise<void> {
-	logger("Connected to -> " + HOST + ":" + PORT, "CONN")
-
+client.connect(opts.port, opts.host, async () : Promise<void> => {
+	logger("Connected to -> " + opts.host + ":" + opts.port, "CONN")
 	await send_data("message", "Hello: Se:rver!")
-
 	await send_data("message", "get")
-
 	await send_data("close", "BYE!")
 })
 
-client.on("data", function(data: string) : void {
-	const [_, type, body] = parse_data(data)
+client.on("data", (data: string) : void => {
+	const packet: IPacket = parse_data(data)
+	logger("RECV: " + packet.length + ":" + packet.type + ":" + packet.body, "MSG")
+	if (packet.type == "close") return
 
-	let log_type = "MSG"
-	if (type == "json") {
-		send_data("message", "ACK")
-		const json_body = JSON.parse(body)
-		log_type = "DATA"
-	}
-	logger("RECV: " + data, log_type)
+	const response: IResponse = response_handler(packet)
+	logger(response.type + ": " + response.msg, "RESP")
+	send_data(response.type, response.msg)
 })
 
-client.on("close", function() : void {
+client.on("close", () : void => {
 	logger("Connection closed", "CLOSE")
 	client.destroy()
 })
