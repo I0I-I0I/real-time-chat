@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string>
 #include "./socket/socket.h"
 #include "./handlers/handlers.h"

@@ -37,8 +37,6 @@ PacketStruct Packet::parce(char* char_packet) {
 		else if (index == 1) packet.msg += char_packet[i];
 	}
 
-	packet.msg += '\n';
-
 	return packet;
 }
 

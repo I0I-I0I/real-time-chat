@@ -5,7 +5,7 @@
 std::string HandlerOn::error(std::string data) {
 	std::string response = Packet::create({
 		.type = "message",
-		.msg = "ERROR RECEIVED\n"
+		.msg = "ERROR RECEIVED"
 	});
 	return response;
 }

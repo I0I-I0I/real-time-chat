@@ -11,10 +11,11 @@ std::map<std::string, int> loggers = {
 };
 
 void logger(std::string log_level, std::string msg, std::string type) {
+	std::string log = "[" + type + "] " + msg + '\n';
 	if (type == "ERROR") {
-		std::cerr << "[" + type + "] " << msg;
+		std::cerr << log;
 		return;
 	}
 	if (loggers[type] <= loggers[log_level])
-		std::cout << "[" + type + "] " << msg;
+		std::cout << log;
 }

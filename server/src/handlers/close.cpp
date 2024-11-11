@@ -5,7 +5,7 @@
 std::string HandlerOn::close(std::string data) {
 	std::string response = Packet::create({
 		.type = "close",
-		.msg = "BYE!\n"
+		.msg = "BYE!"
 	});
 	return response;
 }

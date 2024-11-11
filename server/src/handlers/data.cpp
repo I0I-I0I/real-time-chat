@@ -14,7 +14,7 @@ std::string HandlerOn::data(std::string data) {
 
 	std::string response = Packet::create({
 		.type = "message",
-		.msg = "JSON received\n"
+		.msg = "JSON received"
 	});
 	return response;
 }

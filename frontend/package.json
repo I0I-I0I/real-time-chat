@@ -5,7 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"build": "tsc --project tsconfig.json",
-		"start": "node build/client.js"
+		"start": "npm run build && node build/client.js",
+		"client": "node build/client.js"
 	},
 	"author": "",
 	"license": "ISC",

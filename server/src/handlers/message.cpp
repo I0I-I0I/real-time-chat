@@ -3,9 +3,13 @@
 #include "./handlers.h"
 
 std::string HandlerOn::message(std::string data) {
-	std::string response = Packet::create({
+	if (data == "get")
+		return Packet::create({
+			.type = "json",
+			.msg = R"({ "name": "HEMM", "age": 43 })"
+		});
+	return Packet::create({
 		.type = "message",
-		.msg = "OK\n"
+		.msg = "OK"
 	});
-	return response;
 }

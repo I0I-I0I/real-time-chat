@@ -5,7 +5,7 @@
 std::string HandlerOn::all(std::string data) {
 	std::string response = Packet::create({
 		.type = "message",
-		.msg = "OK\n"
+		.msg = "OK"
 	});
 	return response;
 }

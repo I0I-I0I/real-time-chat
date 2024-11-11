@@ -34,6 +34,8 @@ create:
 server: $(SERVER_SRCS)
 	@echo "Compiling server..."
 	@$(CXX) $(CXXFLAGS) $^ -o $(SERVER_EXEC)
+	@clear
+	@$(SERVER_EXEC)
 
 client: $(CLIENT_SRCS)
 	@echo "Compiling client..."

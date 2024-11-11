@@ -11,7 +11,7 @@ User::User(int socket_, std::string log_level_) {
 
 void User::remove() {
 	close(this->socket);
-	this->socket_logger("User " + std::to_string(this->id) + " disconnected\n", "CONN");
+	this->socket_logger("User " + std::to_string(this->id) + " disconnected", "CONN");
 }
 
 bool User::operator==(const User& other) const {
