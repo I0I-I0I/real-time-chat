@@ -1,17 +1,18 @@
 {
 	"name": "frontend",
 	"version": "1.0.0",
-	"main": "client.js",
+	"main": "build/client/client.js",
 	"type": "module",
 	"scripts": {
 		"build": "tsc --project tsconfig.json",
-		"start": "npm run build && node build/client.js",
-		"client": "node build/client.js"
+		"start": "npm run build && node build/client/client.js",
+		"client": "node build/client/client.js"
 	},
 	"author": "",
 	"license": "ISC",
 	"description": "",
 	"dependencies": {
+		"net": "^1.0.2",
 		"ws": "^8.18.0"
 	},
 	"devDependencies": {
