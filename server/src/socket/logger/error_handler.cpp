@@ -36,7 +36,7 @@ void error_handler(int error_type, std::string extra_msg, bool flag) {
 			msg = "Error code: ";
 	}
 	msg += extra_msg;
-	logger("ERROR", msg, "ERROR");
+	logger(msg, "ERROR");
 	if (flag) {
 		exit(error_type);
 	}

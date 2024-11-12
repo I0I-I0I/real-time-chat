@@ -2,8 +2,8 @@ CXX = g++
 CXXFLAGS = -pthread -std=c++2a
 
 SRCS_HANDLERS = src/handlers/*.cpp
-
-SRCS_PACKET = src/packet/packet.cpp
+SRCS_HTTP = src/http/*.cpp
+SRCS_PACKET = src/packet/*.cpp
 
 SRCS_SOCKET = src/socket/logger/logger.cpp \
 			  src/socket/logger/error_handler.cpp \
@@ -13,8 +13,8 @@ SRCS_SOCKET = src/socket/logger/logger.cpp \
 
 SRCS = $(SRCS_SOCKET) \
 	   $(SRCS_HANDLERS) \
-	   $(SRCS_PACKET)
-
+	   $(SRCS_PACKET) \
+	   $(SRCS_HTTP)
 
 SERVER_SRCS = src/server.cpp \
 			  $(SRCS)

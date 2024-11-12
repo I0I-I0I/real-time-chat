@@ -39,7 +39,6 @@ private:
 	std::string buffer;
 	int recv_timeout;
 	int send_timeout;
-	std::string log_level;
 
 	std::vector<User> users;
 	const std::vector<std::string> callback_types = { "connection", "open", "close", "*" };

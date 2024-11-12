@@ -10,9 +10,8 @@ Socket::Socket(const char* host_, const char* port_, SocketOpts opts) {
 	// TODO: It's not working now
 	this->recv_timeout = opts.recv_timeout ? opts.recv_timeout : 0;
 	this->send_timeout = opts.send_timeout ? opts.send_timeout : 0;
-
 	this->backlog = opts.backlog ? opts.backlog : 5;
-	this->log_level = opts.log_level != "" ? opts.log_level : "ERROR";
+
 	this->users = {};
 	for (auto& type_ : this->callback_types)
 		this->callback_on[type_] = [](int, std::string) -> void {};
@@ -48,7 +47,7 @@ std::string Socket::receive_msg(int socket) {
 }
 
 int Socket::handle_received_data(int socket, std::string type, std::string msg) {
-	if (type == "close" || msg == "") return CLOSE_CONNECTION;
+	// if (type == "close" || msg == "") return CLOSE_CONNECTION;
 	try {
 		this->custom_callback_on[type](socket, msg);
 	} catch (std::exception& e) {

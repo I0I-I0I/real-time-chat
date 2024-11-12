@@ -169,5 +169,5 @@ void Socket::log_date(int socket, std::string log_type, std::string msg) {
 }
 
 void Socket::socket_logger(std::string msg, std::string type) {
-	logger(this->log_level, msg, type);
+	logger(msg, type);
 }

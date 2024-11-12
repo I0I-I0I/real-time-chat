@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include "../../config.h"
 #include "./logger.h"
 
 std::map<std::string, int> loggers = {
@@ -10,12 +11,12 @@ std::map<std::string, int> loggers = {
 	{ "ERROR", 1 }
 };
 
-void logger(std::string log_level, std::string msg, std::string type) {
+void logger(std::string msg, std::string type) {
 	std::string log = "[" + type + "] " + msg + '\n';
 	if (type == "ERROR") {
 		std::cerr << log;
 		return;
 	}
-	if (loggers[type] <= loggers[log_level])
+	if (loggers[type] <= loggers[LOG_LEVEL])
 		std::cout << log;
 }

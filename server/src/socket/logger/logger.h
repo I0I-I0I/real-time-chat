@@ -5,7 +5,7 @@ constexpr const char* DEBUG_LEVEL = "INFO";
 #include <string>
 #include <functional>
 
-void logger(std::string log_level, std::string msg, std::string type = "INFO");
+void logger(std::string msg, std::string type = "INFO");
 void error_handler(int error_type, std::string extra_msg = "", bool flag = true);
 
 constexpr const int ERROR_ACCEPT = -10;
