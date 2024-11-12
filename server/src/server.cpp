@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include "./socket/socket.h"
+#include "./handlers/handlers.h"
 #include "./http/http.h"
 
 int main() {
@@ -19,15 +20,8 @@ int main() {
 	});
 
 	server.on("GET", [&server](int socket, std::string info) -> void {
-		HttpResponseStruct response = {
-			.status = "200 OK",
-			.headers = {
-				{ "Content-Type", "text/html" },
-				{ "Connection", "close" }
-			},
-			.body = "<html><body><h1>Hello, World!</h1></body></html>",
-		};
-		server.send_msg(socket, Http::create(response));
+		std::string response = HandlerOn::get("OK\n");
+		server.send_msg(socket, response);
 	});
 
 	server.on("close", [&server](int socket, std::string info) -> void {

@@ -58,11 +58,11 @@ HttpRequestStruct Http::parce(std::string request) {
 }
 
 void Http::log(HttpRequestStruct http) {
-	logger("Method: " + http.method, "MSG");
-	logger("Path: " + http.path, "MSG");
-	logger("Version: " + http.version, "MSG");
-	logger("Headers: ", "MSG");
+	logger("Method: " + http.method, "HTTP");
+	logger("Path: " + http.path, "HTTP");
+	logger("Version: " + http.version, "HTTP");
+	logger("Headers: ", "HTTP");
 	for (auto& header : http.headers)
-		logger("\t" + header.first + ": " + header.second, "MSG");
-	logger("Body: " + http.body, "MSG");
+		logger("\t" + header.first + ": " + header.second, "HTTP");
+	logger("Body: " + http.body, "HTTP");
 }

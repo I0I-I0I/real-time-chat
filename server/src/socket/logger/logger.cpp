@@ -5,6 +5,7 @@
 #include "./logger.h"
 
 std::map<std::string, int> loggers = {
+	{ "HTTP", 5 },
 	{ "INFO", 4 },
 	{ "MSG", 3 },
 	{ "CONN", 2 },
