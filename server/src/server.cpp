@@ -1,7 +1,9 @@
+#include <iostream>
 #include <string>
 #include "./socket/socket.h"
 #include "./handlers/handlers.h"
-#include "./packet/packet.h"
+// #include "./packet/packet.h"
+#include "./http/http.h"
 
 int main() {
 	SocketOpts opts = {
@@ -15,9 +17,10 @@ int main() {
 	server.on("connection", [&server](int socket, std::string _) -> void {
 		while (true) {
 			std::string info = server.receive_msg(socket);
-			PacketStruct packet = Packet::parce((char*)info.c_str());
-			if (server.handle_received_data(socket, packet.type, packet.msg) == CLOSE_CONNECTION)
-				break;
+			std::cout << "Data: " << info << std::endl;
+			// PacketStruct packet = Packet::parce((char*)info.c_str());
+			// if (server.handle_received_data(socket, packet.type, packet.msg) == CLOSE_CONNECTION)
+			// 	break;
 		}
 	});
 
