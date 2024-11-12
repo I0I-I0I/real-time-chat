@@ -5,7 +5,7 @@
 
 using HttpHeadersStruct = std::map<std::string, std::string>;
 
-struct HttpStruct {
+struct HttpRequestStruct {
 	std::string method;
 	std::string path;
 	std::string version;
@@ -13,11 +13,17 @@ struct HttpStruct {
 	std::string body;
 };
 
+struct HttpResponseStruct {
+	std::string status;
+	HttpHeadersStruct headers;
+	std::string body;
+};
+
 class Http {
 public:
-	static HttpStruct parce(std::string data);
-	static std::string create(HttpStruct http_string);
+	static HttpRequestStruct parce(std::string data);
+	static std::string create(HttpResponseStruct http);
 
 private:
-	static void log(HttpStruct http);
+	static void log(HttpRequestStruct http);
 };

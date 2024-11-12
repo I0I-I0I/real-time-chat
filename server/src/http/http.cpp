@@ -1,16 +1,26 @@
-#include <iostream>
 #include <string>
 #include <regex>
 #include "../socket/logger/logger.h"
 #include "./http.h"
 
-std::string Http::create(HttpStruct http_string) {
-	std::string result = "";
-	return result;
+std::string Http::create(HttpResponseStruct http) {
+	std::string response = "";
+
+	response += "HTTP/1.1 " + http.status + " \r\n";
+
+	http.headers["Access-Control-Allow-Origin"] = "*";
+	http.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS";
+	http.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization";
+	for (const auto& header : http.headers)
+		response += header.first + ": " + header.second + "\r\n";
+	response += "\r\n";
+	response += http.body;
+
+	return response;
 }
 
-HttpStruct Http::parce(std::string request) {
-	HttpStruct http;
+HttpRequestStruct Http::parce(std::string request) {
+	HttpRequestStruct http;
 
 	std::regex request_line_pattern(R"((\w+) ([^ ]+) HTTP/(\d.\d))");
     std::regex header_pattern(R"(([^:]+): (.+))");
@@ -47,7 +57,7 @@ HttpStruct Http::parce(std::string request) {
 	return http;
 }
 
-void Http::log(HttpStruct http) {
+void Http::log(HttpRequestStruct http) {
 	logger("Method: " + http.method, "MSG");
 	logger("Path: " + http.path, "MSG");
 	logger("Version: " + http.version, "MSG");
