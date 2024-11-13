@@ -131,7 +131,7 @@ void Socket::get_connection() {
 	socket_logger("Count of users: " + std::to_string(this->users.size()));
 }
 
-User Socket::get_current_user(int socket) {
+User Socket::get_current_user(int& socket) {
 	for (auto& user : this->users)
 		if (user.get_socket() == socket)
 			return user;
@@ -156,7 +156,7 @@ void Socket::close_socket() {
 	close(this->main_socket);
 }
 
-void Socket::log_date(int socket, std::string log_type, std::string msg) {
+void Socket::log_date(int& socket, std::string log_type, std::string msg) {
 	std::string log_msg = log_type;
 	if (this->socket_type == "server") {
 		User current_user = this->get_current_user(socket);

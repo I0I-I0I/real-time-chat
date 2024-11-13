@@ -16,4 +16,3 @@ const sendButton = document.getElementById("sendButton") as HTMLButtonElement
 connectButton.addEventListener("click", async () => {
 	pollServer()
 })
-

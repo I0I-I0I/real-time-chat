@@ -12,19 +12,24 @@ int main() {
 	};
 	Socket server("localhost",  "8080", opts);
 
-	server.on("connection", [&server](int socket, std::string _) -> void {
+	server.on("connection", [&server](int socket, auto _) -> void {
 		std::string info = server.receive_msg(socket);
 		if (info == "") return;
 		HttpRequestStruct http = Http::parce(info);
-		server.handle_received_data(socket, http.method, http.body);
+		server.handle_received_data(socket, http.method, http);
 	});
 
-	server.on("GET", [&server](int socket, std::string info) -> void {
-		std::string response = HandlerOn::get("OK\n");
+	server.on("GET", [&server](int socket, const auto& info) -> void {
+		std::string response = HandlerOn::get(info);
 		server.send_msg(socket, response);
 	});
 
-	server.on("close", [&server](int socket, std::string info) -> void {
+	server.on("POST", [&server](int socket, const auto& info) -> void {
+		std::string response = HandlerOn::post(info);
+		server.send_msg(socket, response);
+	});
+
+	server.on("close", [&server](int socket, const auto& info) -> void {
 		std::cout << "Connection closed" << std::endl;
 	});
 

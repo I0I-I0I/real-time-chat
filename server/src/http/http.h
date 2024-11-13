@@ -22,7 +22,7 @@ struct HttpResponseStruct {
 class Http {
 public:
 	static HttpRequestStruct parce(std::string data);
-	static std::string create(HttpResponseStruct http);
+	static std::string to_send(HttpResponseStruct http);
 
 private:
 	static void log(HttpRequestStruct http);

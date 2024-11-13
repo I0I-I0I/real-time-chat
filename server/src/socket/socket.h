@@ -1,5 +1,6 @@
 #pragma once
 
+#include <any>
 #include <functional>
 #include <map>
 #include <string>
@@ -10,7 +11,7 @@
 
 constexpr const int CLOSE_CONNECTION = -101;
 
-using OnCallbackStruct = std::function<void(int, std::string)>;
+using OnCallbackStruct = std::function<void(int, const std::any&)>;
 
 /**
  * @param int backlog
@@ -57,7 +58,7 @@ private:
 	void try_to_connect();
 
 	User wait_for_connection();
-	User get_current_user(int socket);
+	User get_current_user(int &socket);
 	void remove_user(User& user);
 
 	void connection_handler();
@@ -66,7 +67,7 @@ private:
 	void close_users();
 	void close_socket();
 
-	void log_date(int socket, std::string log_type, std::string msg);
+	void log_date(int &socket, std::string log_type, std::string msg);
 	void socket_logger(std::string msg, std::string type = "INFO");
 
 public:
@@ -78,8 +79,6 @@ public:
 	 */
 	Socket(const char* host, const char* port, SocketOpts opts = {});
 
-	int handle_received_data(int socket, std::string type, std::string msg);
-
 	/**
 	 * @brief Start socket
 	 */
@@ -87,10 +86,18 @@ public:
 
 	/**
 	 * @brief response on message by type
-	 * @param type: "connection", "open", "close", "*" or custom
+	 * @param type: "connection"(server only) or "open"(client only), "close", "*" or custom data type
 	 * @param callback: function(int socket, std::string info)
 	 */
 	void on(std::string, OnCallbackStruct);
+
+	/**
+	 * @brief Handle received data. After than, the data is passed to on_callback function with a specific type
+	 * @param socket
+	 * @param type
+	 * @param data (any)
+	 */
+	void handle_received_data(int socket, std::string type, const std::any& data);
 
 	/**
 	 * @brief Send message

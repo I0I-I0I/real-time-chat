@@ -3,7 +3,7 @@
 #include "../socket/logger/logger.h"
 #include "./http.h"
 
-std::string Http::create(HttpResponseStruct http) {
+std::string Http::to_send(HttpResponseStruct http) {
 	std::string response = "";
 
 	response += "HTTP/1.1 " + http.status + " \r\n";

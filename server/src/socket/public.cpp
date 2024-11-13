@@ -1,3 +1,4 @@
+#include <any>
 #include <string>
 #include <cstring>
 #include <sys/socket.h>
@@ -10,11 +11,11 @@ Socket::Socket(const char* host_, const char* port_, SocketOpts opts) {
 	// TODO: It's not working now
 	this->recv_timeout = opts.recv_timeout ? opts.recv_timeout : 0;
 	this->send_timeout = opts.send_timeout ? opts.send_timeout : 0;
-	this->backlog = opts.backlog ? opts.backlog : 5;
 
+	this->backlog = opts.backlog ? opts.backlog : 5;
 	this->users = {};
 	for (auto& type_ : this->callback_types)
-		this->callback_on[type_] = [](int, std::string) -> void {};
+		this->callback_on[type_] = [](int, std::any) -> void {};
 }
 
 void Socket::start() {
@@ -46,14 +47,12 @@ std::string Socket::receive_msg(int socket) {
 	return this->buffer;
 }
 
-int Socket::handle_received_data(int socket, std::string type, std::string msg) {
-	// if (type == "close" || msg == "") return CLOSE_CONNECTION;
+void Socket::handle_received_data(int socket, std::string type, const std::any& data) {
 	try {
-		this->custom_callback_on[type](socket, msg);
+		this->custom_callback_on[type](socket, data);
 	} catch (std::exception& e) {
-		this->callback_on["*"](socket, msg);
+		this->callback_on["*"](socket, data);
 	}
-	return 0;
 }
 
 void Socket::on(std::string type, OnCallbackStruct callback) {
