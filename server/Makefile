@@ -1,10 +1,11 @@
 CXX = g++
 CXXFLAGS = -pthread -std=c++2a
+CXXFLAGSEND = -lsqlite3
 
 SRCS_HANDLERS = src/handlers/*.cpp
 SRCS_HTTP = src/http/*.cpp
 SRCS_PACKET = src/packet/*.cpp
-
+SRCS_DB = src/db/*.cpp
 SRCS_SOCKET = src/socket/logger/logger.cpp \
 			  src/socket/logger/error_handler.cpp \
 			  src/socket/public.cpp \
@@ -14,7 +15,8 @@ SRCS_SOCKET = src/socket/logger/logger.cpp \
 SRCS = $(SRCS_SOCKET) \
 	   $(SRCS_HANDLERS) \
 	   $(SRCS_PACKET) \
-	   $(SRCS_HTTP)
+	   $(SRCS_HTTP) \
+	   $(SRCS_DB)
 
 SERVER_SRCS = src/server.cpp \
 			  $(SRCS)
@@ -24,22 +26,19 @@ CLIENT_SRCS = src/client.cpp \
 
 BUILD_DIR = build
 SERVER_EXEC = $(BUILD_DIR)/server
-CLIENT_EXEC = $(BUILD_DIR)/client
 
-all: create server
+all: create server start
 
 create:
 	@[ -d $(BUILD_DIR) ] || (mkdir $(BUILD_DIR) && echo "Directory $(BUILD_DIR) created")
 
-server: $(SERVER_SRCS)
-	@echo "Compiling server..."
-	@$(CXX) $(CXXFLAGS) $^ -o $(SERVER_EXEC)
+start:
 	@clear
 	@$(SERVER_EXEC)
 
-client: $(CLIENT_SRCS)
-	@echo "Compiling client..."
-	@$(CXX) $(CXXFLAGS) $^ -o $(CLIENT_EXEC)
+server: $(SERVER_SRCS)
+	@echo "Compiling server..."
+	@$(CXX) $(CXXFLAGS) $^ -o $(SERVER_EXEC) $(CXXFLAGSEND)
 
 clean:
 	@echo "Cleaning..."

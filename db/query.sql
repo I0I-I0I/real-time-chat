@@ -28,6 +28,7 @@ create table if not exists friendships (
 create table if not exists chats (
 	id integer primary key autoincrement,
 	name text not null,
+	last_message text,
 	created_at timestamp default current_timestamp
 );
 
