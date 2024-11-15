@@ -15,23 +15,25 @@ std::string HandlerOn::get(const std::any& data) {
 			{ "Content-Type", "text/plain" },
 			{ "Connection", "close" }
 		},
-		.body = "",
+		.body = "Something strange",
 	});
 
 	HttpRequestStruct http = std::any_cast<HttpRequestStruct>(data);
 	DB db(PATH_TO_DB);
 
-	json response_body = db.get_data(
+	DBResponseStruct response = db.get_data(
 		http.path.type,
 		http.path.params["id"] != "" ? http.path.params["id"] : ""
 	);
 
+	std::string body = json(response.data).dump();
+	std::string status = response.status;
+
 	return Http::to_send({
-		.status = "200 OK",
+		.status = status,
 		.headers = {
 			{ "Content-Type", "application/json" },
-			{ "Connection", "close" }
 		},
-		.body = response_body.dump(),
+		.body = body,
 	});
 }

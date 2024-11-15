@@ -49,7 +49,7 @@ public:
 	 * @param data (string)
 	 * @return HttpRequestStruct
 	 */
-	static HttpRequestStruct parce(std::string data);
+	static HttpRequestStruct parce(const std::string& request);
 
 	/**
 	 * @brief Preparing HTTP response for sending
@@ -59,6 +59,6 @@ public:
 	static std::string to_send(HttpResponseStruct http);
 
 private:
-	static void http_log(HttpRequestStruct http);
+	static void http_log(HttpRequestStruct& http);
 	static HttpPathStruct get_path(std::string path);
 };

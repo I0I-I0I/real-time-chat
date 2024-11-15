@@ -1,6 +1,6 @@
 #include <cstdlib>
 #include <unistd.h>
-#include "../logger/logger.h"
+#include "../../logger/logger.h"
 #include "./user.h"
 
 User::User(int socket_, std::string log_level_) {

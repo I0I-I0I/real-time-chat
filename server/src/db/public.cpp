@@ -7,22 +7,20 @@ DB::DB(std::string path) {
 		logger("Can't open database: " + std::string(sqlite3_errmsg(db)), "ERROR");
 }
 
-DBDataListStruct DB::get_data(std::string table) {
+DBResponseStruct DB::get_data(std::string table) {
 	std::string sql = "SELECT * FROM " + table;
 	this->execute_sql(sql, true);
 	return this->data;
 }
 
-DBDataListStruct DB::get_data(std::string table, std::string id) {
+DBResponseStruct DB::get_data(std::string table, std::string id) {
 	if (id == "") return this->get_data(table);
 	std::string sql = "SELECT * FROM " + table + " WHERE id = " + id;
 	this->execute_sql(sql, true);
 	return this->data;
 }
 
-int DB::insert_data(std::string table, DBDataListStruct data_list) {
-    if (data_list.empty()) return 0;
-
+DBResponseStruct DB::insert_data(std::string table, DBDataListStruct data_list) {
 	std::string sql;
     for (const auto& row : data_list) {
 		sql = "INSERT INTO " + table + " (";
@@ -34,13 +32,13 @@ int DB::insert_data(std::string table, DBDataListStruct data_list) {
             sql += "'" + it->second + "', ";
         sql = sql.substr(0, sql.size() - 2) + ")";
 
-		if (this->execute_sql(sql) != 0) return -1;
+		if (this->execute_sql(sql) != 0) return this->data;
     }
 
-    return 0;
+    return this->data;
 }
 
-int DB::update_data(std::string table, DBDataListStruct data_list) {
+DBResponseStruct DB::update_data(std::string table, DBDataListStruct data_list) {
 	for (const auto& row : data_list) {
 		std::string sql = "UPDATE " + table + " SET ";
 		for (auto it = row.begin(); it != row.end(); ++it) {
@@ -51,11 +49,11 @@ int DB::update_data(std::string table, DBDataListStruct data_list) {
 		sql += " WHERE id = " + row.at("id");
 		this->execute_sql(sql);
 	}
-	return 0;
+	return this->data;
 }
 
-int DB::delete_data(std::string table, std::string id) {
+DBResponseStruct DB::delete_data(std::string table, std::string id) {
 	std::string sql = "DELETE FROM " + table + " WHERE id = " + id;
 	this->execute_sql(sql);
-	return 0;
+	return this->data;
 }

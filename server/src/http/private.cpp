@@ -1,16 +1,5 @@
 #include <regex>
-#include "../logger/logger.h"
 #include "./http.h"
-
-void Http::http_log(HttpRequestStruct http) {
-	logger("Method: " + http.method, "HTTP");
-	logger("Path: " + http.path.path + " " + http.path.type, "HTTP");
-	logger("Version: " + http.version, "HTTP");
-	logger("Headers: ", "HTTP");
-	for (auto& header : http.headers)
-		logger("\t" + header.first + ": " + header.second, "HTTP");
-	logger("Body: " + http.body, "HTTP");
-}
 
 HttpPathStruct Http::get_path(std::string path) {
 	HttpPathStruct http_path;

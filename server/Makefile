@@ -6,9 +6,8 @@ SRCS_HANDLERS = src/handlers/*.cpp
 SRCS_HTTP = src/http/*.cpp
 SRCS_PACKET = src/packet/*.cpp
 SRCS_DB = src/db/*.cpp
-SRCS_SOCKET = src/socket/logger/logger.cpp \
-			  src/socket/logger/error_handler.cpp \
-			  src/socket/public.cpp \
+SRCS_LOGGER = src/logger/*.cpp
+SRCS_SOCKET = src/socket/public.cpp \
 			  src/socket/private.cpp \
 			  src/socket/user/user.cpp
 
@@ -16,6 +15,7 @@ SRCS = $(SRCS_SOCKET) \
 	   $(SRCS_HANDLERS) \
 	   $(SRCS_PACKET) \
 	   $(SRCS_HTTP) \
+	   $(SRCS_LOGGER) \
 	   $(SRCS_DB)
 
 SERVER_SRCS = src/server.cpp \

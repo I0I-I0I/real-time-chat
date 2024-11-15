@@ -1,5 +1,7 @@
+#include <iostream>
 #include <string>
 #include <regex>
+#include "../logger/logger.h"
 #include "./http.h"
 
 std::string Http::to_send(HttpResponseStruct http) {
@@ -17,7 +19,7 @@ std::string Http::to_send(HttpResponseStruct http) {
 	return response;
 }
 
-HttpRequestStruct Http::parce(std::string request) {
+HttpRequestStruct Http::parce(const std::string& request) {
 	HttpRequestStruct http;
 
 	std::regex request_line_pattern(R"((\w+) ([^ ]+) HTTP/(\d.\d))");
@@ -28,7 +30,6 @@ HttpRequestStruct Http::parce(std::string request) {
     std::string line;
 
     std::getline(stream, line);
-	std::string path;
     if (std::regex_search(line, matches, request_line_pattern))
         if (matches.size() == 4) {
             http.method = matches[1].str();
@@ -36,9 +37,8 @@ HttpRequestStruct Http::parce(std::string request) {
             http.version = matches[3].str();
         }
 
-
-    std::map<std::string, std::string> headers;
-    while (std::getline(stream, line) && !line.empty())
+    HttpHeadersStruct headers;
+    while (std::getline(stream, line) && line != "\r")
         if (std::regex_search(line, matches, header_pattern))
             if (matches.size() == 3) {
                 std::string key = matches[1].str();
@@ -52,7 +52,14 @@ HttpRequestStruct Http::parce(std::string request) {
         body += line + "\r\n";
 	http.body = body;
 
-	http_log(http);
+	std::cout << "[HTTP] Method: " + http.method << std::endl;
+	std::cout << "[HTTP] Path: " + http.path.path << std::endl;
+	std::cout << "[HTTP] Type: " + http.path.type << std::endl;
+	std::cout << "[HTTP] Version: " + http.version << std::endl;
+	std::cout << "[HTTP] Headers:" << std::endl;
+	for (auto& header : http.headers)
+		std::cout << "[HTTP] \t" + header.first + ": " + header.second << std::endl;
+	std::cout << "[HTTP] Body: " + http.body << std::endl;
 
 	return http;
 }
