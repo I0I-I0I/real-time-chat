@@ -1,11 +1,10 @@
-#include <iostream>
 #include <sqlite3.h>
+#include "../logger/logger.h"
 #include "./db.h"
 
 DB::DB(std::string path) {
-	int rc = sqlite3_open(path.c_str(), &this->db);
-	if (rc)
-		std::cerr << "Can't open database: " << sqlite3_errmsg(db) << std::endl;
+	if (sqlite3_open(path.c_str(), &this->db))
+		logger("Can't open database: " + std::string(sqlite3_errmsg(db)), "ERROR");
 }
 
 DBDataListStruct DB::get_data(std::string table) {
@@ -14,10 +13,11 @@ DBDataListStruct DB::get_data(std::string table) {
 	return this->data;
 }
 
-DBDataStruct DB::get_data_by_id(std::string table, std::string id) {
+DBDataListStruct DB::get_data(std::string table, std::string id) {
+	if (id == "") return this->get_data(table);
 	std::string sql = "SELECT * FROM " + table + " WHERE id = " + id;
 	this->execute_sql(sql, true);
-	return this->data[0];
+	return this->data;
 }
 
 int DB::insert_data(std::string table, DBDataListStruct data_list) {

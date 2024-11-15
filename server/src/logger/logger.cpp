@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <map>
-#include "../../config.h"
+#include "../config.h"
 #include "./logger.h"
 
 std::map<std::string, int> loggers = {

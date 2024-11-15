@@ -1,8 +1,8 @@
 #include <iostream>
 #include <string>
+#include "./config.h"
 #include "./socket/socket.h"
 #include "./handlers/handlers.h"
-#include "./config.h"
 #include "./http/http.h"
 
 int main() {
@@ -13,7 +13,7 @@ int main() {
 	};
 	Socket server("localhost",  "8080", opts);
 
-	server.on("connection", [&server](int socket, auto _) -> void {
+	server.on("connection", [&server](int socket, const auto& _) -> void {
 		std::string info = server.receive_msg(socket);
 		if (info == "") return;
 		HttpRequestStruct http = Http::parce(info);

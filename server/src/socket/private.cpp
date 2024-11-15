@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <netdb.h>
 #include <arpa/inet.h>
-#include "./logger/logger.h"
+#include "../logger/logger.h"
 #include "./user/user.h"
 #include "./socket.h"
 
@@ -170,4 +170,45 @@ void Socket::log_date(int& socket, std::string log_type, std::string msg) {
 
 void Socket::socket_logger(std::string msg, std::string type) {
 	logger(msg, type);
+}
+
+void Socket::error_handler(int error_type, std::string extra_msg, bool flag) {
+	std::string msg;
+	switch (error_type) {
+		case -1:
+			msg = "HI";
+			break;
+		case ERROR_SOCKET:
+			msg = "server: socket";
+			break;
+		case ERROR_SETSOCKOPT:
+			msg = "server: setsockopt";
+			break;
+		case ERROR_GET_ADDR:
+			msg = "server: getaddrinfo: ";
+			break;
+		case ERROR_BIND:
+			msg = "server: on binding";
+			break;
+		case ERROR_LISTEN:
+			msg = "server: failed on listen";
+			break;
+		case ERROR_ACCEPT:
+			msg = "server: accept";
+			break;
+		case ERROR_CONNECT:
+			msg = "Connect failed";
+			break;
+		case ERROR_WSA_STARTUP:
+			msg = "WSAStartup failed";
+			break;
+		default:
+			msg = "How did I get here?\n";
+			msg = "Error code: ";
+	}
+	msg += extra_msg;
+	logger(msg, "ERROR");
+	if (flag) {
+		exit(error_type);
+	}
 }

@@ -1,6 +1,6 @@
-#include <iostream>
 #include <string>
 #include <sqlite3.h>
+#include "../logger/logger.h"
 #include "./db.h"
 
 
@@ -27,7 +27,7 @@ int DB::execute_sql(std::string sql, bool is_get) {
 			&zErrMsg);
 
 	if (rc != SQLITE_OK) {
-		std::cerr << "SQL error: " << zErrMsg << std::endl;
+		logger("SQL: " + std::string(zErrMsg), "ERROR");
 		sqlite3_free(zErrMsg);
 		this->data.clear();
 		return -1;

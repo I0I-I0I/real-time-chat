@@ -19,17 +19,12 @@ std::string HandlerOn::get(const std::any& data) {
 	});
 
 	HttpRequestStruct http = std::any_cast<HttpRequestStruct>(data);
-
 	DB db(PATH_TO_DB);
-	json response_body;
-	std::string result;
-	if (http.path.params["id"] != "") {
-		response_body = db.get_data_by_id(http.path.type, http.path.params["id"]);
-		result = "[" + response_body.dump() + "]";
-	} else {
-		response_body = db.get_data(http.path.type);
-		result = response_body.dump();
-	}
+
+	json response_body = db.get_data(
+		http.path.type,
+		http.path.params["id"] != "" ? http.path.params["id"] : ""
+	);
 
 	return Http::to_send({
 		.status = "200 OK",
@@ -37,6 +32,6 @@ std::string HandlerOn::get(const std::any& data) {
 			{ "Content-Type", "application/json" },
 			{ "Connection", "close" }
 		},
-		.body = result,
+		.body = response_body.dump(),
 	});
 }

@@ -29,12 +29,12 @@ public:
 	 * @param id (string)
 	 * @return (DBDataStruct)
 	 */
-	DBDataStruct get_data_by_id(std::string table, std::string id);
+	DBDataListStruct get_data(std::string table, std::string id);
 
 	/**
 	 * @brief Push data to a table
 	 * @param table (string)
-	 * @param data (vector<map<string, string>>)
+	 * @param data (DBDataListStruct)
 	 * @return (int)
 	 */
 	int insert_data(std::string table, DBDataListStruct data);
@@ -42,7 +42,7 @@ public:
 	/**
 	 * @brief Update particular data in a table
 	 * @param table (string)
-	 * @param data (vector<map<string, string>>)
+	 * @param data (DBDataListStruct)
 	 * @return (int)
 	 */
 	int update_data(std::string table, DBDataListStruct value);
@@ -54,8 +54,6 @@ public:
 	 * @return (int)
 	 */
 	int delete_data(std::string table, std::string id);
-
-	nlohmann::json to_json() const;
 
 private:
 	sqlite3 *db;

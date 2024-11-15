@@ -1,12 +1,9 @@
 #pragma once
 
-constexpr const char* DEBUG_LEVEL = "INFO";
-
 #include <string>
 #include <functional>
 
 void logger(std::string msg, std::string type = "INFO");
-void error_handler(int error_type, std::string extra_msg = "", bool flag = true);
 
 constexpr const int ERROR_ACCEPT = -10;
 constexpr const int ERROR_LISTEN = -11;
