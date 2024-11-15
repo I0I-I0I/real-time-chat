@@ -10,13 +10,35 @@ std::string Http::to_send(HttpResponseStruct http) {
 
 	http.headers["Access-Control-Allow-Origin"] = "*";
 	http.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS";
-	http.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization";
 	for (const auto& header : http.headers)
 		response += header.first + ": " + header.second + "\r\n";
 	response += "\r\n";
 	response += http.body;
 
 	return response;
+}
+
+HttpPathStruct Http::get_path(std::string path) {
+	HttpPathStruct http_path;
+
+	std::regex path_regex(R"(^/(\w+)/(\w+)(?:\?(.*))?$)");
+	std::smatch matches;
+
+	if (std::regex_search(path, matches, path_regex)) {
+		http_path.path = matches[1].str();
+		http_path.type = matches[2].str();
+
+		std::string params_string = matches[3].str();
+        std::regex param_regex(R"((\w+)=([^;]+))");
+		std::sregex_iterator it(params_string.begin(), params_string.end(), param_regex), end;
+
+		for (; it != end; ++it) {
+			std::smatch param_match = *it;
+			http_path.params[param_match[1].str()] = param_match[2].str();
+		}
+	}
+
+	return http_path;
 }
 
 HttpRequestStruct Http::parce(std::string request) {
@@ -30,12 +52,14 @@ HttpRequestStruct Http::parce(std::string request) {
     std::string line;
 
     std::getline(stream, line);
+	std::string path;
     if (std::regex_search(line, matches, request_line_pattern))
         if (matches.size() == 4) {
             http.method = matches[1].str();
-            http.path = matches[2].str();
+			http.path = get_path(matches[2].str());
             http.version = matches[3].str();
         }
+
 
     std::map<std::string, std::string> headers;
     while (std::getline(stream, line) && !line.empty())
@@ -59,7 +83,7 @@ HttpRequestStruct Http::parce(std::string request) {
 
 void Http::log(HttpRequestStruct http) {
 	logger("Method: " + http.method, "HTTP");
-	logger("Path: " + http.path, "HTTP");
+	logger("Path: " + http.path.path + " " + http.path.type, "HTTP");
 	logger("Version: " + http.version, "HTTP");
 	logger("Headers: ", "HTTP");
 	for (auto& header : http.headers)

@@ -4,8 +4,10 @@
 #include <string>
 #include <sqlite3.h>
 #include <vector>
+#include "../../lib/json.hpp"
 
 using DBDataStruct = std::map<std::string, std::string>;
+using DBDataListStruct = std::vector<DBDataStruct>;
 
 class DB {
 public:
@@ -17,40 +19,47 @@ public:
 	/**
 	 * @brief Get all data from a table
 	 * @param table (string)
+	 * @return (DBDataStruct)
 	 */
-	std::vector<DBDataStruct> get_data(std::string table);
+	DBDataListStruct get_data(std::string table);
 
 	/**
 	 * @brief Get specific data from a table
 	 * @param table (string)
 	 * @param id (string)
+	 * @return (DBDataStruct)
 	 */
-	DBDataStruct get_data(std::string table, std::string id);
+	DBDataStruct get_data_by_id(std::string table, std::string id);
 
 	/**
 	 * @brief Push data to a table
 	 * @param table (string)
 	 * @param data (vector<map<string, string>>)
+	 * @return (int)
 	 */
-	int insert_data(std::string table, std::vector<DBDataStruct> data);
+	int insert_data(std::string table, DBDataListStruct data);
 
 	/**
 	 * @brief Update particular data in a table
 	 * @param table (string)
-	 * @param data (map<string, string>)
+	 * @param data (vector<map<string, string>>)
+	 * @return (int)
 	 */
-	int update_data(std::string table, std::vector<DBDataStruct> value);
+	int update_data(std::string table, DBDataListStruct value);
 
 	/**
 	 * @brief Delete data from a table
 	 * @param table (string)
 	 * @param id (string)
+	 * @return (int)
 	 */
 	int delete_data(std::string table, std::string id);
 
+	nlohmann::json to_json() const;
+
 private:
 	sqlite3 *db;
-	std::vector<DBDataStruct> data;
+	DBDataListStruct data;
 
 	int execute_sql(std::string sql, bool is_get = false);
 };

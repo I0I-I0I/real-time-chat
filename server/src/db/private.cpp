@@ -3,15 +3,15 @@
 #include <sqlite3.h>
 #include "./db.h"
 
-int idx = 0;
-std::vector<DBDataStruct> result;
 
 int callback(void *data, int length, char **args, char **col_name) {
-	if (idx >= result.size())
-        result.resize(idx + 1);
-	for (int i = 0; i < length; i++)
-		result[idx][col_name[i]] = args[i] ? args[i] : "NULL";
-	idx++;
+	DBDataStruct row;
+	for (int i = 0; i < length; i++) {
+		std::string col = col_name[i];
+		std::string arg = args[i] ? args[i] : "NULL";
+		row[col] = arg;
+	}
+	((std::vector<DBDataStruct>*)data)->push_back(row);
 	return 0;
 }
 
@@ -23,10 +23,8 @@ int DB::execute_sql(std::string sql, bool is_get) {
 			this->db,
 			sql.c_str(),
 			is_get ? callback : 0,
-			0,
+			is_get ? &this->data : 0,
 			&zErrMsg);
-
-	idx = 0;
 
 	if (rc != SQLITE_OK) {
 		std::cerr << "SQL error: " << zErrMsg << std::endl;
@@ -34,9 +32,6 @@ int DB::execute_sql(std::string sql, bool is_get) {
 		this->data.clear();
 		return -1;
 	}
-
-	if (is_get)
-		this->data = result;
 
 	return 0;
 }

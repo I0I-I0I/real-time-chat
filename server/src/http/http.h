@@ -5,9 +5,15 @@
 
 using HttpHeadersStruct = std::map<std::string, std::string>;
 
+struct HttpPathStruct {
+	std::string path;
+	std::string type;
+	std::map<std::string, std::string> params;
+};
+
 struct HttpRequestStruct {
 	std::string method;
-	std::string path;
+	HttpPathStruct path;
 	std::string version;
 	HttpHeadersStruct headers;
 	std::string body;
@@ -26,4 +32,5 @@ public:
 
 private:
 	static void log(HttpRequestStruct http);
+	static HttpPathStruct get_path(std::string path);
 };

@@ -2,7 +2,6 @@
 #include <string>
 #include "./socket/socket.h"
 #include "./handlers/handlers.h"
-#include "./db/db.h"
 #include "./config.h"
 #include "./http/http.h"
 
@@ -13,7 +12,6 @@ int main() {
 		.send_timeout = 10000,
 	};
 	Socket server("localhost",  "8080", opts);
-	DB db(PATH_TO_DB);
 
 	server.on("connection", [&server](int socket, auto _) -> void {
 		std::string info = server.receive_msg(socket);

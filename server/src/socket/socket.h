@@ -14,8 +14,10 @@ constexpr const int CLOSE_CONNECTION = -101;
 using OnCallbackStruct = std::function<void(int, const std::any&)>;
 
 /**
- * @param int backlog
- * @param int timeout
+ * @param backlog (int)
+ * @param recv_timeout (int)
+ * @param send_timeout (int)
+ * @param log_level (string)
  */
 struct SocketOpts {
 	int backlog;
@@ -24,6 +26,10 @@ struct SocketOpts {
 	std::string log_level;
 };
 
+/**
+ * @param type (string)
+ * @param msg (string)
+ */
 struct DataStruct {
 	std::string type;
 	std::string msg;
@@ -73,50 +79,50 @@ private:
 public:
 	/**
 	 * @brief Create socket
-	 * @param host
-	 * @param port
-	 * @param opts = { backlog = 5, timeout = 3000 } // defaults
+	 * @param host (const char*)
+	 * @param port (const char*)
+	 * @param opts (SocketOpts) = { backlog = 5, timeout = 3000 } // defaults
 	 */
 	Socket(const char* host, const char* port, SocketOpts opts = {});
 
 	/**
-	 * @brief Start socket
+	 * @brief Run socket
 	 */
 	void start();
 
 	/**
 	 * @brief response on message by type
-	 * @param type: "connection"(server only) or "open"(client only), "close", "*" or custom data type
-	 * @param callback: function(int socket, std::string info)
+	 * @param type (string): "connection"(server only) or "open"(client only), "close", "*" or custom data type
+	 * @param callback (OnCallbackStruct): function(int socket, std::string info)
 	 */
 	void on(std::string, OnCallbackStruct);
 
 	/**
 	 * @brief Handle received data. After than, the data is passed to on_callback function with a specific type
-	 * @param socket
-	 * @param type
-	 * @param data (any)
+	 * @param socket (int)
+	 * @param type (string)
+	 * @param data (const any&)
 	 */
 	void handle_received_data(int socket, std::string type, const std::any& data);
 
 	/**
 	 * @brief Send message
-	 * @param socket
-	 * @param msg
+	 * @param socket (int)
+	 * @param msg (string)
 	 */
 	void send_msg(int socket, std::string msg);
 
 	/**
 	 * @brief Send message to all users
-	 * @param socket
-	 * @param msg
+	 * @param socket (int)
+	 * @param msg (string)
 	 */
 	void send_all(int socket, std::string msg);
 
 	/**
 	 * @brief Receive message
-	 * @param socket
-	 * @return CLOSE_CONNECTION on (packet.type == "close" || packet.msg == "") or otherwise return 0
+	 * @param socket (int)
+	 * @return (string) // current buffer
 	 */
 	std::string receive_msg(int socket);
 

@@ -8,23 +8,23 @@ DB::DB(std::string path) {
 		std::cerr << "Can't open database: " << sqlite3_errmsg(db) << std::endl;
 }
 
-std::vector<DBDataStruct> DB::get_data(std::string table) {
+DBDataListStruct DB::get_data(std::string table) {
 	std::string sql = "SELECT * FROM " + table;
 	this->execute_sql(sql, true);
 	return this->data;
 }
 
-DBDataStruct DB::get_data(std::string table, std::string id) {
+DBDataStruct DB::get_data_by_id(std::string table, std::string id) {
 	std::string sql = "SELECT * FROM " + table + " WHERE id = " + id;
 	this->execute_sql(sql, true);
 	return this->data[0];
 }
 
-int DB::insert_data(std::string table, std::vector<DBDataStruct> value) {
-    if (value.empty()) return 0;
+int DB::insert_data(std::string table, DBDataListStruct data_list) {
+    if (data_list.empty()) return 0;
 
 	std::string sql;
-    for (const auto& row : value) {
+    for (const auto& row : data_list) {
 		sql = "INSERT INTO " + table + " (";
 
 		for (auto it = row.begin(); it != row.end(); ++it)
@@ -40,8 +40,8 @@ int DB::insert_data(std::string table, std::vector<DBDataStruct> value) {
     return 0;
 }
 
-int DB::update_data(std::string table, std::vector<DBDataStruct> value) {
-	for (const auto& row : value) {
+int DB::update_data(std::string table, DBDataListStruct data_list) {
+	for (const auto& row : data_list) {
 		std::string sql = "UPDATE " + table + " SET ";
 		for (auto it = row.begin(); it != row.end(); ++it) {
 			if (it->first == "id") continue;
