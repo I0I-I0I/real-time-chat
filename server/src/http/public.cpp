@@ -37,14 +37,7 @@ HttpRequestStruct Http::parce(const std::string& request) {
         body += line + "\r\n";
 	http.body = body;
 
-	std::cout << "[HTTP] Method: " + http.method << std::endl;
-	std::cout << "[HTTP] Path: " + http.path.path << std::endl;
-	std::cout << "[HTTP] Type: " + http.path.type << std::endl;
-	std::cout << "[HTTP] Version: " + http.version << std::endl;
-	std::cout << "[HTTP] Headers:" << std::endl;
-	for (auto& header : http.headers)
-		std::cout << "[HTTP] \t" + header.first + ": " + header.second << std::endl;
-	std::cout << "[HTTP] Body: " + http.body << std::endl;
+	Http::log(http);
 
 	return http;
 }
@@ -54,6 +47,7 @@ std::string Http::response(int code, std::string status, std::string body, HttpH
 	http.status = std::to_string(code) + " " + status;
 	http.headers = headers;
 	http.body = body;
+
 	return Http::to_send(http);
 }
 

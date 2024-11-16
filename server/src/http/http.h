@@ -80,4 +80,7 @@ private:
 	static void http_log(HttpRequestStruct& http);
 	static HttpPathStruct get_path(std::string path);
 	static std::string to_send(HttpResponseStruct http);
+
+	static void log(HttpRequestStruct http);
+	static void log(HttpResponseStruct http);
 };

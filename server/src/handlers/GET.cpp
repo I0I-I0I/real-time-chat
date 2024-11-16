@@ -10,15 +10,17 @@ using json = nlohmann::json;
 std::string HandlerOn::get(const HttpRequestStruct& http) {
 	DB db(PATH_TO_DB);
 
-	std::string id = http.path.params.at("id") != "" ? http.path.params.at("id") : "";
+	std::string id = "";
+	if (http.path.params.find("id") != http.path.params.end())
+		id = http.path.params.at("id");
+
 	std::string table = http.path.type;
 	DBResponseStruct response = db.get_data(table, id);
 
 	std::string body = json(response.data).dump();
 	StatusStruct status = response.status;
 
-	return Http::response(status.code, status.status, body, {
-		{ "Location", "http://localhost:8080/" + http.path.type + "/" + id },
+	return Http::response(status.code, status.msg, body, {
 		{ "Content-Type", "application/json" }
 	});
 }

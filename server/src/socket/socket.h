@@ -7,7 +7,7 @@
 #include <vector>
 #include "./user/user.h"
 
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 2048
 
 constexpr const int CLOSE_CONNECTION = -101;
 
@@ -17,13 +17,11 @@ using OnCallbackStruct = std::function<void(int, const std::any&)>;
  * @param backlog (int)
  * @param recv_timeout (int)
  * @param send_timeout (int)
- * @param log_level (string)
  */
 struct SocketOpts {
 	int backlog;
 	int recv_timeout;
 	int send_timeout;
-	std::string log_level;
 };
 
 /**

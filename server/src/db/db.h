@@ -6,12 +6,12 @@
 #include <vector>
 #include "../../lib/json.hpp"
 
-using DBDataStruct = std::map<std::string, std::string>;
+using DBDataStruct = nlohmann::json;
 using DBDataListStruct = std::vector<DBDataStruct>;
 
 struct StatusStruct {
 	int code;
-	std::string status;
+	std::string msg;
 };
 
 struct DBResponseStruct {
@@ -31,7 +31,7 @@ public:
 	 * @param table (string)
 	 * @return (DBResponseStruct)
 	 */
-	DBResponseStruct get_data(std::string table);
+	DBResponseStruct get_data(std::string& table);
 
 	/**
 	 * @brief Get specific data from a table
@@ -39,7 +39,7 @@ public:
 	 * @param id (string)
 	 * @return (DBResponseStruct)
 	 */
-	DBResponseStruct get_data(std::string table, std::string id);
+	DBResponseStruct get_data(std::string& table, std::string& id);
 
 	/**
 	 * @brief Push data to a table
@@ -47,7 +47,7 @@ public:
 	 * @param data (DBDataListStruct)
 	 * @return (DBResponseStruct)
 	 */
-	DBResponseStruct insert_data(std::string table, DBDataListStruct data);
+	DBResponseStruct insert_data(std::string& table, DBDataListStruct& data);
 
 	/**
 	 * @brief Update particular data in a table
@@ -55,7 +55,7 @@ public:
 	 * @param data (DBDataListStruct)
 	 * @return (DBResponseStruct)
 	 */
-	DBResponseStruct update_data(std::string table, DBDataListStruct value);
+	DBResponseStruct update_data(std::string& table, std::string& id, DBDataStruct& data_list);
 
 	/**
 	 * @brief Delete data from a table
@@ -63,11 +63,11 @@ public:
 	 * @param id (string)
 	 * @return (DBResponseStruct)
 	 */
-	DBResponseStruct delete_data(std::string table, std::string id);
+	DBResponseStruct delete_data(std::string& table, std::string& id);
 
 private:
 	sqlite3 *db;
 	DBResponseStruct data;
 
-	int execute_sql(std::string sql, bool is_get = false);
+	int execute_sql(std::string& sql, bool is_get = false);
 };

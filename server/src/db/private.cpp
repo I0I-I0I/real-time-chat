@@ -15,7 +15,7 @@ int callback(void *data, int length, char **args, char **col_name) {
 	return 0;
 }
 
-int DB::execute_sql(std::string sql, bool is_get) {
+int DB::execute_sql(std::string& sql, bool is_get) {
 	this->data.data.clear();
 	char* zErrMsg = 0;
 

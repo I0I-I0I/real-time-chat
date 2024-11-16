@@ -17,8 +17,7 @@ std::string HandlerOn::del(const HttpRequestStruct& http) {
 	std::string body = json(response.data).dump();
 	StatusStruct status = response.status;
 
-	return Http::response(status.code, status.status, body, {
-		{ "Location", "http://localhost:8080/" + http.path.type + "/id=" + response.data[0]["id"] },
+	return Http::response(status.code, status.msg, body, {
 		{ "Content-Type", "application/json" }
 	});
 }

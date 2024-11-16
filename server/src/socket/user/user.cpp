@@ -3,10 +3,9 @@
 #include "../../logger/logger.h"
 #include "./user.h"
 
-User::User(int socket_, std::string log_level_) {
+User::User(int socket_) {
 	this->socket = socket_;
 	this->id = std::rand() % 1000;
-	this->log_level = log_level_ != "" ? log_level_ : "INFO";
 }
 
 void User::remove() {

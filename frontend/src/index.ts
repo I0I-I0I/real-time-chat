@@ -10,11 +10,17 @@ async function get_from_server(msg: string) {
 	}
 }
 
-async function request_to_server(method: string, data: object[]) {
+interface TestData {
+	login: string
+	username: string | undefined
+	password: string
+}
+
+async function request_to_server(method: string, id: string, data: TestData[]) {
 	try {
 		const json = JSON.stringify(data)
 		console.log("Sended: ", json)
-		const response = await fetch("http://localhost:8080/db/users", {
+		const response = await fetch("http://localhost:8080/db/users?id=" + id, {
 			method: method,
 			body: json
 		})
@@ -40,8 +46,10 @@ get_data_button.addEventListener("click", async () => {
 })
 
 send_data_button.addEventListener("click", async () => {
-	const value = await request_to_server(method_input.value, [{
-		id: body_input.value
+	const value = await request_to_server(method_input.value, body_input.value, [{
+		username: (username_input.value != "" ? username_input.value : undefined),
+		login: login_input.value,
+		password: password_input.value
 	}])
 	console.log(value)
 })

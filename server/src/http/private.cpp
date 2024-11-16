@@ -1,4 +1,5 @@
 #include <regex>
+#include "../logger/logger.h"
 #include "./http.h"
 
 HttpPathStruct Http::get_path(std::string path) {
@@ -30,12 +31,37 @@ std::string Http::to_send(HttpResponseStruct http) {
 	response += "HTTP/1.1 " + http.status + " \r\n";
 
 	http.headers["Access-Control-Allow-Origin"] = "*";
-	http.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS";
+	http.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, PATCH, OPTIONS";
+	http.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization";
 	for (const auto& header : http.headers)
 		response += header.first + ": " + header.second + "\r\n";
 	response += "\r\n";
 	response += http.body;
 
+	Http::log(http);
+
 	return response;
 }
 
+void Http::log(HttpRequestStruct http) {
+	logger("Request:", "HTTP");
+	logger("Method: " + http.method, "\t");
+	logger("Path: " + http.path.path, "\t");
+	for (auto& param : http.path.params)
+		logger("Path: " + param.first + ": " + param.second, "\t");
+	logger("Type: " + http.path.type, "\t");
+	logger("Version: " + http.version, "\t");
+	logger("Headers:", "\t");
+	for (auto& header : http.headers)
+		logger("\t" + header.first + ": " + header.second, "\t");
+	logger("Body: " + http.body, "\t");
+}
+
+void Http::log(HttpResponseStruct http) {
+	logger("Response:", "HTTP");
+	logger("Status: " + http.status, "\t");
+	logger("Body: " + http.body, "\t");
+	logger("Headers:", "\t");
+	for (auto& header : http.headers)
+		logger("\t" + header.first + ": " + header.second, "\t");
+}

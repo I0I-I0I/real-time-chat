@@ -8,12 +8,12 @@
 
 std::string create_response(
 		std::function<std::string(const HttpRequestStruct&)> handler,
-		const HttpRequestStruct& info
+		const std::any& info
 ) {
 	TestOnHttpStruct test_result = Http::test_on_http(info);
 	if (test_result.is_error)
 		return test_result.response;
-	return handler(info);
+	return handler(test_result.http);
 }
 
 int main() {
@@ -31,34 +31,23 @@ int main() {
 		server.handle_received_data(socket, http.method, http);
 	});
 
-	server.on("GET", [&server](int socket, const auto& info) -> void {
-		std::string response = create_response(HandlerOn::get, info);
-		server.send_msg(socket, response);
-	});
-
-	server.on("POST", [&server](int socket, const auto& info) -> void {
-		std::string response = create_response(HandlerOn::post, info);
-		server.send_msg(socket, response);
-	});
-
-	server.on("OPTIONS", [&server](int socket, const auto& info) -> void {
-		std::string response = create_response(HandlerOn::options, info);
-		server.send_msg(socket, response);
-	});
-
-	server.on("DELETE", [&server](int socket, const auto& info) -> void {
-		std::string response = create_response(HandlerOn::del, info);
-		server.send_msg(socket, response);
-	});
-
-	server.on("PUT", [&server](int socket, const auto& info) -> void {
-		std::string response = create_response(HandlerOn::put, info);
-		server.send_msg(socket, response);
-	});
-
 	server.on("close", [&server](int socket, const auto& info) -> void {
 		std::cout << "Connection closed" << std::endl;
 	});
+
+	std::map<std::string, HandlerFunc> method_handlers = {
+		{ "GET", HandlerOn::get },
+		{ "POST", HandlerOn::post },
+		{ "OPTIONS", HandlerOn::options },
+		{ "DELETE", HandlerOn::del },
+		{ "PUT", HandlerOn::put }
+	};
+
+	for (const auto& [method, handler] : method_handlers)
+		server.on(method, [&server, &handler](int socket, const auto& info) -> void {
+			std::string response = create_response(handler, info);
+			server.send_msg(socket, response);
+		});
 
 	server.start();
 
