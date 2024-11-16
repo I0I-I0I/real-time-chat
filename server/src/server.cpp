@@ -35,7 +35,13 @@ int main() {
 		std::cout << "Connection closed" << std::endl;
 	});
 
-	std::map<std::string, HandlerFunc> method_handlers = {
+	server.on("*", [&server](int socket, const auto& info) -> void {
+		server.send_msg(socket, Http::response(405, "Unknown method", {
+			{ "Content-Type", "text/plain" }
+		}));
+	});
+
+	std::map<std::string, HandlerOnFunc> method_handlers = {
 		{ "GET", HandlerOn::get },
 		{ "POST", HandlerOn::post },
 		{ "OPTIONS", HandlerOn::options },

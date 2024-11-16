@@ -31,7 +31,7 @@ int DB::execute_sql(std::string& sql, bool is_get) {
 		std::string error = "SQL: " + std::string(zErrMsg);
 		logger(error, "ERROR");
 		sqlite3_free(zErrMsg);
-		this->data.status = { 400, "Bad Request" };
+		this->data.status = 400;
 		this->data.data.clear();
 		this->data.data.push_back({
 			{ "status", "Bad request" },

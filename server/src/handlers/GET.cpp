@@ -18,9 +18,8 @@ std::string HandlerOn::get(const HttpRequestStruct& http) {
 	DBResponseStruct response = db.get_data(table, id);
 
 	std::string body = json(response.data).dump();
-	StatusStruct status = response.status;
 
-	return Http::response(status.code, status.msg, body, {
+	return Http::response(response.status, body, {
 		{ "Content-Type", "application/json" }
 	});
 }

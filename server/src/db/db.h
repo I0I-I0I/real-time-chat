@@ -9,13 +9,8 @@
 using DBDataStruct = nlohmann::json;
 using DBDataListStruct = std::vector<DBDataStruct>;
 
-struct StatusStruct {
-	int code;
-	std::string msg;
-};
-
 struct DBResponseStruct {
-	StatusStruct status;
+	int status;
 	DBDataListStruct data;
 };
 

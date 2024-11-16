@@ -43,6 +43,20 @@ std::string Http::to_send(HttpResponseStruct http) {
 	return response;
 }
 
+std::string Http::get_status(int code) {
+	std::map<int, std::string> status_codes = {
+		{ 200, "OK" },
+		{ 400, "Bad request" },
+		{ 404, "Not found" },
+		{ 405, "Method not allowed" },
+		{ 500, "Internal server error" }
+	};
+
+	if (status_codes.find(code) != status_codes.end())
+		return status_codes.at(code);
+	return "Unknown";
+}
+
 void Http::log(HttpRequestStruct http) {
 	logger("Request:", "HTTP");
 	logger("Method: " + http.method, "\t");

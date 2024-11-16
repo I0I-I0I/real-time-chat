@@ -5,7 +5,7 @@
 #include <string>
 #include "../http/http.h"
 
-using HandlerFunc = std::function<std::string(const HttpRequestStruct&)>;
+using HandlerOnFunc = std::function<std::string(const HttpRequestStruct&)>;
 
 class HandlerOn {
 public:

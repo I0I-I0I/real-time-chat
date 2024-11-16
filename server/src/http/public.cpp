@@ -1,5 +1,4 @@
 #include <any>
-#include <iostream>
 #include <string>
 #include <regex>
 #include "./http.h"
@@ -42,9 +41,9 @@ HttpRequestStruct Http::parce(const std::string& request) {
 	return http;
 }
 
-std::string Http::response(int code, std::string status, std::string body, HttpHeadersStruct headers) {
+std::string Http::response(int code, std::string body, HttpHeadersStruct headers) {
 	HttpResponseStruct http;
-	http.status = std::to_string(code) + " " + status;
+	http.status = std::to_string(code) + " " + Http::get_status(code);
 	http.headers = headers;
 	http.body = body;
 
@@ -57,9 +56,7 @@ TestOnHttpStruct Http::test_on_http(const std::any& data) {
 			.is_error = true,
 			.response = Http::response(
 			400,
-			"Bad request",
-			"Something strange",
-			{})
+			"Something strange")
 		};
 
 	return {

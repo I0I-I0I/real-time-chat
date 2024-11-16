@@ -15,9 +15,8 @@ std::string HandlerOn::post(const HttpRequestStruct& http) {
 	DBResponseStruct response = db.insert_data(table, data_list);
 
 	std::string body = json(response.data).dump();
-	StatusStruct status = response.status;
 
-	return Http::response(status.code, status.msg, body, {
+	return Http::response(response.status, body, {
 		{ "Content-Type", "application/json" }
 	});
 }

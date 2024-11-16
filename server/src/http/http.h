@@ -62,12 +62,11 @@ public:
 	/**
 	 * @brief Create HTTP response
 	 * @param code (int)
-	 * @param status (string)
 	 * param body (string)
 	 * @param headers = {} (map<string, string>)
 	 * @return string
 	 */
-	static std::string response(int code, std::string status, std::string body, HttpHeadersStruct headers = {});
+	static std::string response(int code, std::string body, HttpHeadersStruct headers = {});
 
 	/**
 	 * @brief Test on HTTP request
@@ -80,6 +79,7 @@ private:
 	static void http_log(HttpRequestStruct& http);
 	static HttpPathStruct get_path(std::string path);
 	static std::string to_send(HttpResponseStruct http);
+	static std::string get_status(int code);
 
 	static void log(HttpRequestStruct http);
 	static void log(HttpResponseStruct http);
