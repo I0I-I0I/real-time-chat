@@ -9,8 +9,13 @@
 using DBDataStruct = std::map<std::string, std::string>;
 using DBDataListStruct = std::vector<DBDataStruct>;
 
-struct DBResponseStruct {
+struct StatusStruct {
+	int code;
 	std::string status;
+};
+
+struct DBResponseStruct {
+	StatusStruct status;
 	DBDataListStruct data;
 };
 

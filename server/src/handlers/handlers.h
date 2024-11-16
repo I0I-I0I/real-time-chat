@@ -6,6 +6,8 @@
 
 class HandlerOn {
 public:
-	static std::string get(const std::any& data);
-	static std::string post(const std::any& data);
+	static std::string get(const HttpRequestStruct& data);
+	static std::string post(const HttpRequestStruct& data);
+	static std::string put(const HttpRequestStruct& data);
+	static std::string del(const HttpRequestStruct& data);
 };

@@ -1,23 +1,8 @@
+#include <any>
 #include <iostream>
 #include <string>
 #include <regex>
-#include "../logger/logger.h"
 #include "./http.h"
-
-std::string Http::to_send(HttpResponseStruct http) {
-	std::string response = "";
-
-	response += "HTTP/1.1 " + http.status + " \r\n";
-
-	http.headers["Access-Control-Allow-Origin"] = "*";
-	http.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS";
-	for (const auto& header : http.headers)
-		response += header.first + ": " + header.second + "\r\n";
-	response += "\r\n";
-	response += http.body;
-
-	return response;
-}
 
 HttpRequestStruct Http::parce(const std::string& request) {
 	HttpRequestStruct http;
@@ -62,4 +47,28 @@ HttpRequestStruct Http::parce(const std::string& request) {
 	std::cout << "[HTTP] Body: " + http.body << std::endl;
 
 	return http;
+}
+
+std::string Http::response(int code, std::string status, std::string body, HttpHeadersStruct headers) {
+	HttpResponseStruct http;
+	http.status = std::to_string(code) + " " + status;
+	http.headers = headers;
+	http.body = body;
+	return Http::to_send(http);
+}
+
+TestOnHttpStruct Http::test_on_http(const std::any& data) {
+	if (data.type() != typeid(HttpRequestStruct))
+		return {
+			.is_error = true,
+			.response = Http::response(
+			400,
+			"Bad request",
+			"Something strange",
+			{})
+		};
+
+	return {
+		false, std::any_cast<HttpRequestStruct>(data)
+	};
 }

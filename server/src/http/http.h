@@ -1,5 +1,6 @@
 #pragma once
 
+#include <any>
 #include <map>
 #include <string>
 
@@ -42,6 +43,13 @@ struct HttpResponseStruct {
 	std::string body;
 };
 
+struct TestOnHttpStruct  {
+	bool is_error;
+	HttpRequestStruct http;
+	std::string response;
+};
+
+
 class Http {
 public:
 	/**
@@ -52,13 +60,24 @@ public:
 	static HttpRequestStruct parce(const std::string& request);
 
 	/**
-	 * @brief Preparing HTTP response for sending
-	 * @param http (HttpResponseStruct)
+	 * @brief Create HTTP response
+	 * @param code (int)
+	 * @param status (string)
+	 * param body (string)
+	 * @param headers = {} (map<string, string>)
 	 * @return string
 	 */
-	static std::string to_send(HttpResponseStruct http);
+	static std::string response(int code, std::string status, std::string body, HttpHeadersStruct headers = {});
+
+	/**
+	 * @brief Test on HTTP request
+	 * @param data (const any&)
+	 * @return TestOnHttpStruct
+	 */
+	static TestOnHttpStruct test_on_http(const std::any& data);
 
 private:
 	static void http_log(HttpRequestStruct& http);
 	static HttpPathStruct get_path(std::string path);
+	static std::string to_send(HttpResponseStruct http);
 };

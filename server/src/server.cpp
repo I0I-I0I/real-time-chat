@@ -1,9 +1,20 @@
+#include <functional>
 #include <iostream>
 #include <string>
 #include "./config.h"
 #include "./socket/socket.h"
 #include "./handlers/handlers.h"
 #include "./http/http.h"
+
+std::string create_response(
+		std::function<std::string(const HttpRequestStruct&)> handler,
+		const HttpRequestStruct& info
+) {
+	TestOnHttpStruct test_result = Http::test_on_http(info);
+	if (test_result.is_error)
+		return test_result.response;
+	return handler(info);
+}
 
 int main() {
 	SocketOpts opts = {
@@ -21,12 +32,27 @@ int main() {
 	});
 
 	server.on("GET", [&server](int socket, const auto& info) -> void {
-		std::string response = HandlerOn::get(info);
+		std::string response = create_response(HandlerOn::get, info);
 		server.send_msg(socket, response);
 	});
 
 	server.on("POST", [&server](int socket, const auto& info) -> void {
-		std::string response = HandlerOn::post(info);
+		std::string response = create_response(HandlerOn::post, info);
+		server.send_msg(socket, response);
+	});
+
+	server.on("OPTIONS", [&server](int socket, const auto& info) -> void {
+		std::string response = create_response(HandlerOn::options, info);
+		server.send_msg(socket, response);
+	});
+
+	server.on("DELETE", [&server](int socket, const auto& info) -> void {
+		std::string response = create_response(HandlerOn::del, info);
+		server.send_msg(socket, response);
+	});
+
+	server.on("PUT", [&server](int socket, const auto& info) -> void {
+		std::string response = create_response(HandlerOn::put, info);
 		server.send_msg(socket, response);
 	});
 

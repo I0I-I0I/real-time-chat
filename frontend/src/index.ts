@@ -10,12 +10,12 @@ async function get_from_server(msg: string) {
 	}
 }
 
-async function post_to_server(data: object[]) {
+async function request_to_server(method: string, data: object[]) {
 	try {
 		const json = JSON.stringify(data)
 		console.log("Sended: ", json)
 		const response = await fetch("http://localhost:8080/db/users", {
-			method: "POST",
+			method: method,
 			body: json
 		})
 		const message = await response.json()
@@ -25,20 +25,23 @@ async function post_to_server(data: object[]) {
 	}
 }
 
-const messageInput = document.getElementById("messageInput") as HTMLInputElement
-const connectButton = document.getElementById("connectButton") as HTMLButtonElement
-const sendButton = document.getElementById("sendButton") as HTMLButtonElement
+const username_input = document.getElementById("usernameInput") as HTMLInputElement
+const login_input = document.getElementById("LoginInput") as HTMLInputElement
+const password_input = document.getElementById("passwordInput") as HTMLInputElement
 
-connectButton.addEventListener("click", async () => {
-	const value = await get_from_server(messageInput.value)
+const method_input = document.getElementById("methodInput") as HTMLInputElement
+const body_input = document.getElementById("bodyInput") as HTMLInputElement
+const get_data_button = document.getElementById("connectButton") as HTMLButtonElement
+const send_data_button = document.getElementById("sendButton") as HTMLButtonElement
+
+get_data_button.addEventListener("click", async () => {
+	const value = await get_from_server(body_input.value)
 	console.log(value)
 })
 
-sendButton.addEventListener("click", async () => {
-	const value = await post_to_server([{
-		username: messageInput.value,
-		login: messageInput.value,
-		password: "123"
+send_data_button.addEventListener("click", async () => {
+	const value = await request_to_server(method_input.value, [{
+		id: body_input.value
 	}])
 	console.log(value)
 })

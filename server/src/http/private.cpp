@@ -24,3 +24,18 @@ HttpPathStruct Http::get_path(std::string path) {
 	return http_path;
 }
 
+std::string Http::to_send(HttpResponseStruct http) {
+	std::string response = "";
+
+	response += "HTTP/1.1 " + http.status + " \r\n";
+
+	http.headers["Access-Control-Allow-Origin"] = "*";
+	http.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS";
+	for (const auto& header : http.headers)
+		response += header.first + ": " + header.second + "\r\n";
+	response += "\r\n";
+	response += http.body;
+
+	return response;
+}
+

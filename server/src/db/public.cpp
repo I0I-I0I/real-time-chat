@@ -9,14 +9,20 @@ DB::DB(std::string path) {
 
 DBResponseStruct DB::get_data(std::string table) {
 	std::string sql = "SELECT * FROM " + table;
-	this->execute_sql(sql, true);
+	if (this->execute_sql(sql, true) != 0) return this->data;
+
+	this->data.status = { 200, "OK" };
+
 	return this->data;
 }
 
 DBResponseStruct DB::get_data(std::string table, std::string id) {
 	if (id == "") return this->get_data(table);
 	std::string sql = "SELECT * FROM " + table + " WHERE id = " + id;
-	this->execute_sql(sql, true);
+	if (this->execute_sql(sql, true) != 0) return this->data;
+
+	this->data.status = { 200, "OK" };
+
 	return this->data;
 }
 
@@ -35,6 +41,13 @@ DBResponseStruct DB::insert_data(std::string table, DBDataListStruct data_list) 
 		if (this->execute_sql(sql) != 0) return this->data;
     }
 
+	this->data.data.clear();
+	this->data.status = { 200, "OK" };
+	this->data.data.push_back({
+		{ "status", "OK" },
+		{ "message", "Inserted successfully" }
+	});
+
     return this->data;
 }
 
@@ -47,13 +60,29 @@ DBResponseStruct DB::update_data(std::string table, DBDataListStruct data_list) 
 		}
 		sql = sql.substr(0, sql.size() - 2);
 		sql += " WHERE id = " + row.at("id");
-		this->execute_sql(sql);
+		if (this->execute_sql(sql) != 0) return this->data;
 	}
+
+	this->data.data.clear();
+	this->data.status = { 200, "OK" };
+	this->data.data.push_back({
+		{ "status", "OK" },
+		{ "message", "Updated successfully" }
+	});
+
 	return this->data;
 }
 
 DBResponseStruct DB::delete_data(std::string table, std::string id) {
 	std::string sql = "DELETE FROM " + table + " WHERE id = " + id;
-	this->execute_sql(sql);
+	if (this->execute_sql(sql) != 0) return this->data;
+
+	this->data.data.clear();
+	this->data.status = { 200, "OK" };
+	this->data.data.push_back({
+		{ "status", "OK" },
+		{ "message", "Deleted successfully" }
+	});
+
 	return this->data;
 }

@@ -19,8 +19,6 @@ int DB::execute_sql(std::string sql, bool is_get) {
 	this->data.data.clear();
 	char* zErrMsg = 0;
 
-	this->data.status = "200 OK";
-
 	int rc = sqlite3_exec(
 		this->db,
 		sql.c_str(),
@@ -33,20 +31,14 @@ int DB::execute_sql(std::string sql, bool is_get) {
 		std::string error = "SQL: " + std::string(zErrMsg);
 		logger(error, "ERROR");
 		sqlite3_free(zErrMsg);
-		this->data.status = "400 Bad Request";
+		this->data.status = { 400, "Bad Request" };
 		this->data.data.clear();
 		this->data.data.push_back({
 			{ "status", "Bad request" },
-			{ "message", error}
+			{ "message", error }
 		});
 		return -1;
 	}
-
-	if (!is_get)
-		this->data.data.push_back({
-			{ "status", "OK" },
-			{ "message", "SQL executed successfully" }
-		});
 
 	return 0;
 }
