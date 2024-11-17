@@ -1,0 +1,4 @@
+.body {
+	background-color: rgb(var(--black));
+	color: rgb(var(--white));
+}

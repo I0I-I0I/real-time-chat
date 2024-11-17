@@ -1,0 +1,21 @@
+.input {
+	&:focus {
+		outline: none;
+	}
+
+	&::-webkit-outer-spin-button,
+	&::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	padding: 5px;
+	border-radius: 10px;
+	border: 2px solid rgb(var(--black));
+
+	transition: border .2s ease-in-out;
+
+	&:focus-visible {
+		border: 2px solid rgb(var(--purple));
+	}
+}

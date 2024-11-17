@@ -1,0 +1,9 @@
+:root {
+	--font-main: "Maple Mono NF", sans-serif;
+
+	--font-size: 16px;
+
+	--white: 255 255 255;
+	--black: 0 0 0;
+	--purple: 138 43 226;
+}

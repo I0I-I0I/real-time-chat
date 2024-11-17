@@ -1,0 +1,28 @@
+.button {
+	&:focus {
+		outline: none;
+	}
+
+	&::-moz-focus-inner {
+		border: 0;
+	}
+
+	&:hover {
+		cursor: pointer;
+	}
+
+	font-family: inherit;
+}
+
+.button__default {
+	padding: 5px 10px;
+	border-radius: 10px;
+	background-color: rgb(var(--black));
+	color: rgb(var(--white));
+
+	transition: background-color .1s ease-in-out;
+
+	&:hover, &:focus-visible {
+		background-color: rgb(var(--purple));
+	}
+}
