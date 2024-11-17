@@ -76,7 +76,7 @@ public:
 	 * @param data (const any&)
 	 * @return TestOnHttpStruct
 	 */
-	static HttpCastResultStruct cast(const std::any& data);
+	static HttpCastResultStruct validate(const std::any& data);
 
 private:
 	static std::string to_send(HttpResponseStruct http);

@@ -55,7 +55,7 @@ std::string Http::response(int code, std::string body, HttpHeadersStruct headers
 	return Http::to_send(http);
 }
 
-HttpCastResultStruct Http::cast(const std::any& data) {
+HttpCastResultStruct Http::validate(const std::any& data) {
 	if (data.type() != typeid(HttpRequestStruct))
 		return {
 			.is_error = true,
@@ -64,7 +64,23 @@ HttpCastResultStruct Http::cast(const std::any& data) {
 			"Something strange")
 		};
 
-	return {
-		false, std::any_cast<HttpRequestStruct>(data)
-	};
+	HttpRequestStruct http = std::any_cast<HttpRequestStruct>(data);
+
+	if (http.url.path[0] != "v1")
+		return {
+			.is_error = true,
+			.response = Http::response(400, "Invalid API version", {
+				{ "Connection", "close" }
+			})
+		};
+
+	if (http.url.path[1] != "db")
+		return {
+			.is_error = true,
+			.response = Http::response(400, "Unknown parameter '" + http.url.path[1] + "' in url", {
+				{ "Connection", "close" }
+			})
+		};
+
+	return { false, http };
 }

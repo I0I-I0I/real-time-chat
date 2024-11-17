@@ -13,9 +13,10 @@ std::string create_response(
 		std::function<std::string(const HttpRequestStruct&)> handler,
 		const std::any& info
 ) {
-	HttpCastResultStruct cast_result = Http::cast(info);
+	HttpCastResultStruct cast_result = Http::validate(info);
 	if (cast_result.is_error)
 		return cast_result.response;
+
 	return handler(cast_result.http);
 }
 
@@ -40,13 +41,8 @@ int main() {
 	});
 
 	server.on("*", [&server](int socket, const auto& info) -> void {
-		json response = {
-			{ "status", "Method not allowed" },
-			{ "msg", "Unknown method" }
-		};
-		server.send_msg(socket, Http::response(405, response.dump(), {
-			{ "Content-Type", "application/json" }
-		}));
+		std::string response = Http::response(405, "Unknown method");
+		server.send_msg(socket, response);
 	});
 
 	std::map<std::string, HandlerOnFunc> method_handlers = {
@@ -57,11 +53,12 @@ int main() {
 		{ "PUT", HandlerOn::put }
 	};
 
-	for (const auto& [method, handler] : method_handlers)
+	for (const auto& [method, handler] : method_handlers) {
 		server.on(method, [&server, &handler](int socket, const auto& info) -> void {
 			std::string response = create_response(handler, info);
 			server.send_msg(socket, response);
 		});
+	}
 
 	server.start();
 
