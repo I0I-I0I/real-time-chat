@@ -1,19 +1,22 @@
 #include <functional>
 #include <iostream>
 #include <string>
+#include "../lib/json.hpp"
 #include "./config.h"
 #include "./socket/socket.h"
 #include "./handlers/handlers.h"
 #include "./http/http.h"
 
+using json = nlohmann::json;
+
 std::string create_response(
 		std::function<std::string(const HttpRequestStruct&)> handler,
 		const std::any& info
 ) {
-	TestOnHttpStruct test_result = Http::test_on_http(info);
-	if (test_result.is_error)
-		return test_result.response;
-	return handler(test_result.http);
+	HttpCastResultStruct cast_result = Http::cast(info);
+	if (cast_result.is_error)
+		return cast_result.response;
+	return handler(cast_result.http);
 }
 
 int main() {
@@ -36,8 +39,12 @@ int main() {
 	});
 
 	server.on("*", [&server](int socket, const auto& info) -> void {
-		server.send_msg(socket, Http::response(405, "Unknown method", {
-			{ "Content-Type", "text/plain" }
+		json response = {
+			{ "status", "Method not allowed" },
+			{ "msg", "Unknown method" }
+		};
+		server.send_msg(socket, Http::response(405, response.dump(), {
+			{ "Content-Type", "application/json" }
 		}));
 	});
 

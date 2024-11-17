@@ -17,7 +17,7 @@ HttpRequestStruct Http::parce(const std::string& request) {
     if (std::regex_search(line, matches, request_line_pattern))
         if (matches.size() == 4) {
             http.method = matches[1].str();
-			http.path = get_path(matches[2].str());
+			http.url = get_path(matches[2].str());
             http.version = matches[3].str();
         }
 
@@ -50,7 +50,7 @@ std::string Http::response(int code, std::string body, HttpHeadersStruct headers
 	return Http::to_send(http);
 }
 
-TestOnHttpStruct Http::test_on_http(const std::any& data) {
+HttpCastResultStruct Http::cast(const std::any& data) {
 	if (data.type() != typeid(HttpRequestStruct))
 		return {
 			.is_error = true,

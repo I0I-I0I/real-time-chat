@@ -3,6 +3,7 @@
 #include <any>
 #include <map>
 #include <string>
+#include <vector>
 
 using HttpHeadersStruct = std::map<std::string, std::string>;
 
@@ -12,8 +13,7 @@ using HttpHeadersStruct = std::map<std::string, std::string>;
  * @param params (map<string, string>)
  */
 struct HttpPathStruct {
-	std::string path;
-	std::string type;
+	std::vector<std::string> path;
 	std::map<std::string, std::string> params;
 };
 
@@ -26,7 +26,7 @@ struct HttpPathStruct {
  */
 struct HttpRequestStruct {
 	std::string method;
-	HttpPathStruct path;
+	HttpPathStruct url;
 	std::string version;
 	HttpHeadersStruct headers;
 	std::string body;
@@ -43,7 +43,7 @@ struct HttpResponseStruct {
 	std::string body;
 };
 
-struct TestOnHttpStruct  {
+struct HttpCastResultStruct  {
 	bool is_error;
 	HttpRequestStruct http;
 	std::string response;
@@ -62,7 +62,7 @@ public:
 	/**
 	 * @brief Create HTTP response
 	 * @param code (int)
-	 * param body (string)
+	 * param body (json.string)
 	 * @param headers = {} (map<string, string>)
 	 * @return string
 	 */
@@ -73,12 +73,11 @@ public:
 	 * @param data (const any&)
 	 * @return TestOnHttpStruct
 	 */
-	static TestOnHttpStruct test_on_http(const std::any& data);
+	static HttpCastResultStruct cast(const std::any& data);
 
 private:
-	static void http_log(HttpRequestStruct& http);
-	static HttpPathStruct get_path(std::string path);
 	static std::string to_send(HttpResponseStruct http);
+	static HttpPathStruct get_path(std::string path);
 	static std::string get_status(int code);
 
 	static void log(HttpRequestStruct http);

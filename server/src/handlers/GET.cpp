@@ -11,10 +11,12 @@ std::string HandlerOn::get(const HttpRequestStruct& http) {
 	DB db(PATH_TO_DB);
 
 	std::string id = "";
-	if (http.path.params.find("id") != http.path.params.end())
-		id = http.path.params.at("id");
+	if (http.url.params.find("id") != http.url.params.end())
+		id = http.url.params.at("id");
 
-	std::string table = http.path.type;
+	if (http.url.path[0] != "db")
+		return Http::response(400, "Unknown parameter in url");
+	std::string table = http.url.path[1];
 	DBResponseStruct response = db.get_data(table, id);
 
 	std::string body = json(response.data).dump();

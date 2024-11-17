@@ -10,7 +10,9 @@ using json = nlohmann::json;
 std::string HandlerOn::post(const HttpRequestStruct& http) {
 	DB db(PATH_TO_DB);
 
-	std::string table = http.path.type;
+	if (http.url.path[0] != "db")
+		return Http::response(400, "Unknown parameter in url");
+	std::string table = http.url.path[1];
 	DBDataListStruct data_list = json::parse(http.body);
 	DBResponseStruct response = db.insert_data(table, data_list);
 

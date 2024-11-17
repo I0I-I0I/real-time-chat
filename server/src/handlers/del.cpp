@@ -10,11 +10,13 @@ using json = nlohmann::json;
 std::string HandlerOn::del(const HttpRequestStruct& http) {
 	DB db(PATH_TO_DB);
 
-	if (http.path.params.find("id") == http.path.params.end())
+	if (http.url.params.find("id") == http.url.params.end())
 		return Http::response(400, "Missing 'id'");
 
-	std::string id = http.path.params.at("id");
-	std::string table = http.path.type;
+	std::string id = http.url.params.at("id");
+	if (http.url.path[0] != "db")
+		return Http::response(400, "Unknown parameter in url");
+	std::string table = http.url.path[1];
 	DBResponseStruct response = db.delete_data(table, id);
 
 	std::string body = json(response.data).dump();
