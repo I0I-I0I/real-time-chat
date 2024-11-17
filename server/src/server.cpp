@@ -29,7 +29,8 @@ int main() {
 
 	server.on("connection", [&server](int socket, const auto& _) -> void {
 		std::string info = server.receive_msg(socket);
-		if (info == "") return;
+		if (info == "")
+			return;
 		HttpRequestStruct http = Http::parce(info);
 		server.handle_received_data(socket, http.method, http);
 	});

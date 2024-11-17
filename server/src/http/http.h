@@ -4,6 +4,9 @@
 #include <map>
 #include <string>
 #include <vector>
+#include "../../lib/json.hpp"
+
+using json = nlohmann::json;
 
 using HttpHeadersStruct = std::map<std::string, std::string>;
 
@@ -62,7 +65,7 @@ public:
 	/**
 	 * @brief Create HTTP response
 	 * @param code (int)
-	 * param body (json.string)
+	 * param body (string)
 	 * @param headers = {} (map<string, string>)
 	 * @return string
 	 */

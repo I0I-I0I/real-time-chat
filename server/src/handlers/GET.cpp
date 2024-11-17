@@ -15,13 +15,20 @@ std::string HandlerOn::get(const HttpRequestStruct& http) {
 		id = http.url.params.at("id");
 
 	if (http.url.path[0] != "db")
-		return Http::response(400, "Unknown parameter in url");
+		return Http::response(400, "Unknown parameter in url", {
+				{ "Connection", "close" }
+			});
 	std::string table = http.url.path[1];
 	DBResponseStruct response = db.get_data(table, id);
 
-	std::string body = json(response.data).dump();
+	json body = {
+		{ "status", response.body.status },
+		{ "data", response.body.data },
+		{ "message", response.body.msg },
+	};
 
-	return Http::response(response.status, body, {
-		{ "Content-Type", "application/json" }
+	return Http::response(response.status, body.dump(), {
+		{ "Content-Type", "application/json" },
+		{ "Connection", "close" }
 	});
 }

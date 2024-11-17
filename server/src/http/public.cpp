@@ -1,7 +1,10 @@
 #include <any>
 #include <string>
 #include <regex>
+#include "../../lib/json.hpp"
 #include "./http.h"
+
+using json = nlohmann::json;
 
 HttpRequestStruct Http::parce(const std::string& request) {
 	HttpRequestStruct http;
@@ -44,6 +47,8 @@ HttpRequestStruct Http::parce(const std::string& request) {
 std::string Http::response(int code, std::string body, HttpHeadersStruct headers) {
 	HttpResponseStruct http;
 	http.status = std::to_string(code) + " " + Http::get_status(code);
+	if (headers.find("Content-Type") == headers.end())
+		headers["Content-Type"] = "plain/text";
 	http.headers = headers;
 	http.body = body;
 

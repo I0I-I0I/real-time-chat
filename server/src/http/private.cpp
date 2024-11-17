@@ -36,8 +36,6 @@ std::string Http::to_send(HttpResponseStruct http) {
 	response += "HTTP/1.1 " + http.status + " \r\n";
 
 	http.headers["Access-Control-Allow-Origin"] = "*";
-	http.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, PATCH, OPTIONS";
-	http.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization";
 	for (const auto& header : http.headers)
 		response += header.first + ": " + header.second + "\r\n";
 	response += "\r\n";

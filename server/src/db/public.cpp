@@ -9,19 +9,23 @@ DB::DB(std::string path) {
 
 DBResponseStruct DB::get_data(std::string& table) {
 	std::string sql = "SELECT * FROM " + table;
-	if (this->execute_sql(sql, true) != 0) return this->data;
+	if (this->execute_sql(sql, true) != 0) return this->response;
 
-	this->data.status = 200;
-	return this->data;
+	this->response.status = 200;
+	this->response.body.status = "OK";
+	this->response.body.msg = "SQL: OK";
+	return this->response;
 }
 
 DBResponseStruct DB::get_data(std::string& table, std::string& id) {
 	if (id == "") return this->get_data(table);
 	std::string sql = "SELECT * FROM " + table + " WHERE id = " + id;
-	if (this->execute_sql(sql, true) != 0) return this->data;
+	if (this->execute_sql(sql, true) != 0) return this->response;
 
-	this->data.status = 200;
-	return this->data;
+	this->response.body.status = "OK";
+	this->response.body.msg = "SQL: OK";
+	this->response.status = 200;
+	return this->response;
 }
 
 DBResponseStruct DB::insert_data(std::string& table, DBDataListStruct& data_list) {
@@ -36,17 +40,15 @@ DBResponseStruct DB::insert_data(std::string& table, DBDataListStruct& data_list
             sql += "'" + std::string(it.value()) + "', ";
         sql = sql.substr(0, sql.size() - 2) + ")";
 
-		if (this->execute_sql(sql) != 0) return this->data;
+		if (this->execute_sql(sql) != 0) return this->response;
     }
 
-	this->data.data.clear();
-	this->data.status = 200;
-	this->data.data.push_back({
-		{ "status", "OK" },
-		{ "message", "SQL: Inserted successfully" }
-	});
+	this->response.body.data.clear();
+	this->response.status = 200;
+	this->response.body.status = "OK";
+	this->response.body.msg = "SQL: Inserted successfully";
 
-    return this->data;
+    return this->response;
 }
 
 DBResponseStruct DB::update_data(std::string& table, std::string& id, DBDataStruct& data_list) {
@@ -58,28 +60,24 @@ DBResponseStruct DB::update_data(std::string& table, std::string& id, DBDataStru
 	}
 	sql = sql.substr(0, sql.size() - 2);
 	sql += " WHERE id = " + id;
-	if (this->execute_sql(sql) != 0) return this->data;
+	if (this->execute_sql(sql) != 0) return this->response;
 
-	this->data.data.clear();
-	this->data.status = 200;
-	this->data.data.push_back({
-		{ "status", "OK" },
-		{ "message", "SQL: Updated successfully" }
-	});
+	this->response.body.data.clear();
+	this->response.status = 200;
+	this->response.body.status = "OK";
+	this->response.body.msg = "SQL: Updated successfully";
 
-	return this->data;
+    return this->response;
 }
 
 DBResponseStruct DB::delete_data(std::string& table, std::string& id) {
 	std::string sql = "DELETE FROM " + table + " WHERE id = " + id;
-	if (this->execute_sql(sql) != 0) return this->data;
+	if (this->execute_sql(sql) != 0) return this->response;
 
-	this->data.data.clear();
-	this->data.status = 200;
-	this->data.data.push_back({
-		{ "status", "OK" },
-		{ "message", "SQL: Deleted successfully" }
-	});
+	this->response.body.data.clear();
+	this->response.status = 200;
+	this->response.body.status = "OK";
+	this->response.body.msg = "SQL: Deleted successfully";
 
-	return this->data;
+    return this->response;
 }

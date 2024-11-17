@@ -19,9 +19,14 @@ std::string HandlerOn::del(const HttpRequestStruct& http) {
 	std::string table = http.url.path[1];
 	DBResponseStruct response = db.delete_data(table, id);
 
-	std::string body = json(response.data).dump();
+	json body = {
+		{ "status", response.body.status },
+		{ "data", response.body.data },
+		{ "message", response.body.msg },
+	};
 
-	return Http::response(response.status, body, {
-		{ "Content-Type", "application/json" }
+	return Http::response(response.status, body.dump(), {
+		{ "Content-Type", "application/json" },
+		{ "Connection", "close" }
 	});
 }

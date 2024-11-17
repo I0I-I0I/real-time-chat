@@ -9,9 +9,26 @@
 using DBDataStruct = nlohmann::json;
 using DBDataListStruct = std::vector<DBDataStruct>;
 
+/**
+ * @brief Database response body
+ * @param status (string)
+ * @param msg (string)
+ * @param data (DBDataListStruct)
+ */
+struct DBResponseBodyStruct {
+	std::string status;
+	std::string msg;
+	DBDataListStruct data;
+};
+
+/**
+ * @brief Database response
+ * @param status (int)
+ * @param body (DBResponseBodyStruct)
+ */
 struct DBResponseStruct {
 	int status;
-	DBDataListStruct data;
+	DBResponseBodyStruct body;
 };
 
 class DB {
@@ -62,7 +79,7 @@ public:
 
 private:
 	sqlite3 *db;
-	DBResponseStruct data;
+	DBResponseStruct response;
 
 	int execute_sql(std::string& sql, bool is_get = false);
 };

@@ -16,14 +16,14 @@ int callback(void *data, int length, char **args, char **col_name) {
 }
 
 int DB::execute_sql(std::string& sql, bool is_get) {
-	this->data.data.clear();
+	this->response.body.data.clear();
 	char* zErrMsg = 0;
 
 	int rc = sqlite3_exec(
 		this->db,
 		sql.c_str(),
 		is_get ? callback : 0,
-		is_get ? &this->data.data : 0,
+		is_get ? &this->response.body.data : 0,
 		&zErrMsg
 	);
 
@@ -31,12 +31,10 @@ int DB::execute_sql(std::string& sql, bool is_get) {
 		std::string error = "SQL: " + std::string(zErrMsg);
 		logger(error, "ERROR");
 		sqlite3_free(zErrMsg);
-		this->data.status = 400;
-		this->data.data.clear();
-		this->data.data.push_back({
-			{ "status", "Bad request" },
-			{ "message", error }
-		});
+		this->response.status = 400;
+		this->response.body.data.clear();
+		this->response.body.status = "Bad request";
+		this->response.body.msg = error;
 		return -1;
 	}
 
