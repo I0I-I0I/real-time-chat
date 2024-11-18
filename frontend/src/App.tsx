@@ -1,8 +1,8 @@
-import Login from "./components/login/Login"
+import LoginPage from "./pages/login/Login"
 
 const App = (): JSX.Element => {
   return (
-	  <Login />
+	  <LoginPage />
   )
 }
 

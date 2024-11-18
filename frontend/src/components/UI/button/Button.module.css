@@ -12,9 +12,10 @@
 	}
 
 	font-family: inherit;
+	font-size: inherit;
 }
 
-.button__default {
+.default {
 	padding: 5px 10px;
 	border-radius: 10px;
 	background-color: rgb(var(--black));

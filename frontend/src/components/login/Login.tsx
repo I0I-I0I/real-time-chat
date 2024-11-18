@@ -1,36 +1,32 @@
-import { useState } from "react"
+import { Input, Modal, Button, Link, Typography } from "@/components/UI"
 
-const Login = (): JSX.Element => {
-	const [currentState, setCurrentState] = useState("login")
+import styles from "./Login.module.css"
 
-	const onLinkClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void => {
-		e.preventDefault()
-		setCurrentState("login")
-	}
-
-	return (
-		<section className="modal modal_login">
-			<h1 className="title-1">
-			{
-				"Sing Up"
-			}
-			</h1>
-			<form action="POST" className="form login">
-				<input className="input login__input" type="text" placeholder="Login..." />
-				{
-					currentState === "sing-up" &&
-					<input className="input login__input" type="text" placeholder="Username..." />
-				}
-				<input className="input login__input" type="password" placeholder="Password..." />
-				<button className="button login__button button__default" type="submit">
-					{ currentState === "login" ? "Sing In" : "Sing Up" }
-				</button>
-				<a href="./login.html" onClick={onLinkClick} className="link">
-					{ currentState === "login" ? "or sing in" : "or sing up" }
-				</a>
-			</form>
-		</section>
-	)
+interface LoginProps {
+	currentState: string
+	onLinkClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void
 }
 
-export default Login
+export const Login = ({currentState, onLinkClick}: LoginProps): JSX.Element => (
+	<>
+		<Modal className={styles.modal_login}>
+			<Typography tag="h1" variant="title-1">
+				{ currentState === "sing-in" ? "Sing in" : "Sing Up" }
+			</Typography>
+			<form action="POST" className="form sing-in">
+				<Input className="input login__input" type="text" placeholder="Login..." />
+				{
+					currentState === "sing-up" &&
+					<Input className="input login__input" type="text" placeholder="Username..." />
+				}
+				<Input className="input login__input" type="password" placeholder="Password..." />
+				<Button className={styles.button} type="submit">
+					{ currentState === "sing-in" ? "Sing in" : "Sing Up" }
+				</Button>
+				<Link href="./login" onClick={onLinkClick} className={styles.link}>
+					{ currentState === "sing-in" ? "or sing up" : "or sing in" }
+				</Link>
+			</form>
+		</Modal>
+	</>
+)
