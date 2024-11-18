@@ -7,33 +7,3 @@
 	border-radius: 10px;
 	text-align: center;
 }
-
-.modal_login {
-	background-color: rgb(var(--white));
-	color: rgb(var(--black));
-
-	& > .title-1 {
-		margin-bottom: 30px;
-		font-size: 2rem;
-	}
-
-	& > .form {
-		font-size: 1.1rem;
-		display: flex;
-		flex-direction: column;
-		gap: 20px;
-		min-width: 300px;
-		justify-content: center;
-
-		& > .button {
-			align-self: center;
-			font-size: inherit;
-		}
-
-		& > .input {
-			width: 100%;
-			text-align: center;
-			font-size: inherit;
-		}
-	}
-}
