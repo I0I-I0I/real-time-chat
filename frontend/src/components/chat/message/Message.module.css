@@ -1,0 +1,14 @@
+.message {
+	padding: 10px 20px;
+	border-radius: 10px;
+	background-color: rgb(var(--white) / 0.1);
+}
+
+.left {
+	align-self: flex-start;
+	background-color: rgb(var(--white) / 0.3);
+}
+
+.right {
+	align-self: flex-end;
+}

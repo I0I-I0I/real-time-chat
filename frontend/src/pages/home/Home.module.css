@@ -1,0 +1,27 @@
+.wrapper {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100dvh;
+	width: 100dvw;
+}
+
+.container {
+	width: 90%;
+	height: 90%;
+	border-radius: 15px;
+	margin: 0 auto;
+
+	overflow: hidden;
+
+	backdrop-filter: blur(10px);
+	background-color: rgba(0, 0, 0, 0.3);
+
+	display: grid;
+	grid-template-columns: 400px 1fr;
+
+	@media(width < 1200px) {
+		max-width: calc(100% - 40px);
+		max-height: calc(100% - 40px);
+	}
+}

@@ -1,0 +1,9 @@
+.chat {
+	display: grid;
+	grid-template-rows: max-content 1fr max-content;
+
+	& > * {
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+}

@@ -27,12 +27,12 @@
 
 /* Text */
 
-.text_small {
+.text_tiny {
 	font-size: 0.75rem;
 	color: inherit;
 }
 
-.text_mini {
+.text_small {
 	font-size: 0.875rem;
 	color: inherit;
 }

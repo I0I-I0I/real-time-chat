@@ -1,0 +1,11 @@
+.chat_bottom {
+	width: 100%;
+	padding: 0;
+	border-top: 1px solid var(--bd-color);
+	padding: 10px;
+
+	& > form {
+		display: grid;
+		grid-template-columns: max-content 1fr max-content;
+	}
+}

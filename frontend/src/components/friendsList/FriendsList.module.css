@@ -1,0 +1,9 @@
+.list {
+	--gap: 20px;
+
+	display: flex;
+	flex-direction: column;
+	min-height: 100%;
+	border-right: 1px solid var(--bd-color);
+}
+
