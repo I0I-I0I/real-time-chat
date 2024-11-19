@@ -1,34 +1,24 @@
+import cls from "@/utils/cls"
+
+import { Message } from "@/components/UI"
+import { MessageType } from "@/types"
+
 import styles from "./Chat.module.css"
 
-import { ChatMessages } from "./chatMessages/ChatMessages"
-import { ChatTop } from "./chatTop/ChatTop"
-import { ChatBottom } from "./chatBottom/ChatBottom"
+interface ChatProps {
+	className?: string
+	data: MessageType[]
+}
 
-import { MessageType } from "./types"
-
-const Messages: MessageType[] = [
-	{
-		text: "Hi",
-		author: "Ivan"
-	},
-	{
-		text: "How are u?",
-		author: "Ivan"
-	},
-	{
-		text: "Hello!",
-		author: "me"
-	},
-	{
-		text: "Ok",
-		author: "Ivan"
-	}
-]
-
-export const Chat = (): JSX.Element => (
-	<div className={styles.chat}>
-		<ChatTop />
-		<ChatMessages data={Messages} />
-		<ChatBottom />
-	</div>
-)
+export const Chat = ({
+	className = "",
+	data
+}: ChatProps) => {
+	return (
+		<ul className={cls(styles.messages, className)}>
+			{ data.map((item: MessageType, index: number): JSX.Element => (
+				<Message key={index} variant={item.author === "me" ? "right" : "left"}>{item.text}</Message>
+			)) }
+		</ul>
+	)
+}

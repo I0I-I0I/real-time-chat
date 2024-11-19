@@ -1,0 +1,22 @@
+.search {
+	width: 100%;
+	height: 100%;
+
+	& > form {
+		width: 100%;
+		height: 100%;
+
+		display: grid;
+		grid-template-columns: 1fr max-content;
+		align-items: center;
+
+		& > label {
+			width: 100%;
+			height: 100%;
+		}
+	}
+}
+
+.button {
+	height: 100%;
+}

@@ -1,3 +1,7 @@
 export * from "./login/Login"
 export * from "./friendsList/FriendsList"
+export * from "./addFriend/AddFriend"
+export * from "./settings/Settings"
+export * from "./messagePrompt/MessagePrompt"
+export * from "./chatInfo/ChatInfo"
 export * from "./chat/Chat"

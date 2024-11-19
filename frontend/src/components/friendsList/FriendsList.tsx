@@ -1,3 +1,4 @@
+import cls from "@/utils/cls"
 import styles from "./FriendsList.module.css"
 import { FriendsItem } from "./friendsItem/FriendsItem"
 import { FriendData } from "./types"
@@ -25,8 +26,14 @@ const Friends: FriendData[] = [
 	},
 ]
 
-export const FriendsList = (): JSX.Element => (
-	<ul className={styles.list}>
+interface FriendsListProps {
+	className?: string
+}
+
+export const FriendsList = ({
+	className = ""
+}: FriendsListProps): JSX.Element => (
+	<ul className={cls(styles.list, className)}>
 		{ Friends.map((item: FriendData , index: number): JSX.Element => (
 			<FriendsItem data={item} index={index+1} />
 		))}

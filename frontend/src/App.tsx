@@ -3,7 +3,9 @@ import HomePage from "./pages/home/Home"
 
 const App = (): JSX.Element => {
   return (
-	  <HomePage />
+	  <>
+		  <HomePage />
+	  </>
   )
 }
 

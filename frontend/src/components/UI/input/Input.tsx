@@ -1,8 +1,14 @@
 import React, { InputHTMLAttributes, useId } from "react"
+
 import styles from "./Input.module.css"
+
 import cls from "@/utils/cls"
 
-type VariantsType = "default"
+type VariantsType =
+	| "default"
+	| "file"
+	| "message_input"
+	| "search"
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 	className?: string

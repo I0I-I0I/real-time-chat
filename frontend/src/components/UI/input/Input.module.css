@@ -12,7 +12,14 @@
 	color: inherit;
 	background-color: inherit;
 	font-size: inherit;
+	font-family: inherit;
+	border: none;
+}
 
+.default {
+	padding: 5px;
+	border-radius: 10px;
+	border: 2px solid rgb(var(--black));
 	transition: border .2s ease-in-out;
 
 	&:focus-visible {
@@ -20,8 +27,33 @@
 	}
 }
 
-.default {
+.file {
+	opacity: 0;
+	width: 0;
+	height: 0;
+
+	label:has(&) {
+		transition: background-color .1s ease-in-out;
+	}
+
+	&:hover, &:focus-visible {
+		label:has(&) {
+			background-color: rgb(var(--white) / 0.3);
+		}
+	}
+}
+
+.message_input {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.search {
 	padding: 5px;
-	border-radius: 10px;
-	border: 2px solid rgb(var(--black));
+	min-width: 100%;
+	min-height: 100%;
+
+	&:hover, &:focus-visible {
+		background-color: rgb(var(--white) / 0.3);
+	}
 }

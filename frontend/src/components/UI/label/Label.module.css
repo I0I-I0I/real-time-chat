@@ -1,0 +1,13 @@
+.label {
+	cursor: pointer;
+}
+
+.search {
+	padding: 0;
+}
+
+/* .file { */
+/* 	&:hover, &::focus-visible { */
+/* 		background-color: rgb(var(--white) / 0.1); */
+/* 	} */
+/* } */

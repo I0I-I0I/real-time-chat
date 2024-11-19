@@ -27,3 +27,26 @@
 		background-color: rgb(var(--purple));
 	}
 }
+
+.send {
+	border: none;
+	background: transparent;
+	color: rgb(var(--white));
+
+	transition: background-color .1s ease-in-out;
+
+	&:hover, &:focus-visible {
+		background-color: rgb(var(--white) / 0.1);
+	}
+}
+
+.search {
+	border: none;
+	background-color: transparent;
+	color: rgb(var(--white));
+	padding: 10px 30px;
+
+	&:hover, &:focus-visible {
+		background-color: rgb(var(--white) / 0.1);
+	}
+}

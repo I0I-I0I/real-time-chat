@@ -19,9 +19,42 @@
 
 	display: grid;
 	grid-template-columns: 400px 1fr;
+	grid-template-rows: max-content 1fr max-content;
+	grid-template-areas:
+		"search info"
+		"list chat"
+		"settings prompt";
 
 	@media(width < 1200px) {
 		max-width: calc(100% - 40px);
 		max-height: calc(100% - 40px);
 	}
+
+	& .add_friends {
+		grid-area: search;
+		border-right: 1px solid var(--bd-color);
+		border-bottom: 1px solid var(--bd-color);
+	}
+	& .info {
+		grid-area: info;
+		border-bottom: 1px solid var(--bd-color);
+	}
+	& .list {
+		grid-area: list;
+		border-right: 1px solid var(--bd-color);
+	}
+	& .messages { grid-area: chat; }
+	& .settings {
+		grid-area: settings;
+		border-right: 1px solid var(--bd-color);
+		border-top: 1px solid var(--bd-color);
+	}
+	& .prompt {
+		grid-area: prompt;
+		border-top: 1px solid var(--bd-color);
+	}
+}
+
+.sidebar {
+	border-right: 1px solid var(--bd-color);
 }
