@@ -35,7 +35,7 @@ export const FriendsList = ({
 }: FriendsListProps): JSX.Element => (
 	<ul className={cls(styles.list, className)}>
 		{ Friends.map((item: FriendData , index: number): JSX.Element => (
-			<FriendsItem data={item} index={index+1} />
+			<FriendsItem data={item} index={index+1} key={index} />
 		))}
 	</ul>
 )

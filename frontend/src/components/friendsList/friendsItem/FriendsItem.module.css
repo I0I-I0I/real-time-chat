@@ -16,6 +16,9 @@
 	font-size: inherit;
 	font-family: inherit;
 	text-align: left;
+	display: flex;
+	align-items: center;
+	gap: 20px;
 
 	transition: background-color .1s ease-in-out;
 
@@ -34,4 +37,16 @@
 	top: 5px;
 	font-weight: bold;
 	color: rgb(var(--white) / 0.5);
+}
+
+.icon {
+	--padding: 10px;
+
+	padding: var(--padding);
+	width: calc((var(--padding) * 2) + 24px);
+	height: calc((var(--padding) * 2) + 24px);
+	stroke: rgb(var(--white));
+	fill: none;
+	border-radius: 50%;
+	border: 1px solid rgb(var(--white));
 }

@@ -7,10 +7,11 @@ body {
 	background-color: rgb(var(--black));
 	color: rgb(var(--white));
 	min-height: 100dvh;
-	min-width: 100dwh;
+	min-width: 100dvw;
 }
 
 /* Container */
+
 .container {
 	--page-width: 1200px;
 	--page-padding: 20px;
@@ -27,7 +28,7 @@ body {
 /* Hidden */
 
 .hidden {
-	display: none;
+	display: none !important;
 }
 
 .visually-hidden {
@@ -41,8 +42,4 @@ body {
 	clip-path: inset(100%);
 	clip: rect(0 0 0 0);
 	overflow: hidden;
-}
-
-.body_gradient {
-	background-image: linear-gradient(135deg, #153677, #4e085f) !important;
 }

@@ -1,7 +1,5 @@
 import {  Gradient } from "@/components/UI"
-
 import styles from "./Home.module.css"
-
 import { MessageType } from "@/types"
 
 import {
@@ -13,7 +11,7 @@ import {
 	Chat
 } from "@/components"
 
-const Messages: MessageType[] = [
+const messages: MessageType[] = [
 	{
 		text: "Hi",
 		author: "Ivan"
@@ -32,7 +30,7 @@ const Messages: MessageType[] = [
 	}
 ]
 
-const HomePage = () => {
+const HomePage = (): JSX.Element => {
 	return (
 		<div className={styles.wrapper}>
 			<Gradient />
@@ -40,7 +38,7 @@ const HomePage = () => {
 				<AddFriends className={styles.add_friends} />
 				<ChatInfo className={styles.info} />
 				<FriendsList className={styles.list} />
-				<Chat className={styles.messages} data={Messages} />
+				<Chat className={styles.messages} data={messages} />
 				<Settings className={styles.settings} />
 				<MessagePrompt className={styles.prompt} />
 			</div>

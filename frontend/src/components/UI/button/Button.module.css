@@ -50,3 +50,22 @@
 		background-color: rgb(var(--white) / 0.1);
 	}
 }
+
+.icon {
+	background-color: transparent;
+	border: none;
+	padding: 5px;
+
+	aspect-ratio: 1 / 1;
+
+	transition: background-color .1s ease-in-out;
+
+	&:hover, &:focus-visible {
+		background-color: rgb(var(--white) / 0.1);
+	}
+
+	& svg {
+		width: 18px;
+		height: 18px;
+	}
+}

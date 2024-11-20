@@ -5,7 +5,7 @@ import styles from "./Button.module.css"
 type ButtonVariants =
 	| "default"
 	| "send"
-	| "search"
+	| "icon"
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>  {
 	children: string | React.ReactElement
