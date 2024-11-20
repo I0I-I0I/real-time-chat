@@ -2,3 +2,5 @@ build/
 node_modules/
 package-lock.json
 db.sqlite3
+dist/
+tsconfig.tsbuildinfo

@@ -2,7 +2,6 @@ import { useState } from "react"
 
 import { Login } from "@/components"
 import { Gradient } from "@/components/UI"
-import styles from "./Login.module.css"
 
 type CurrentStateType = "sing-in" | "sing-up"
 

@@ -60,7 +60,7 @@ export const Settings = ({
 			<Dropdown dropdownState={dropdownAccountState} className={cls(styles.dropdown, styles.dropdown_account)}>
 				{ data_accoutn.map((item, index: number): JSX.Element => (
 					<DropdownItem className={styles.dropdown_item} key={index}>
-						<Link href="./login">
+						<Link href="/login">
 							<>
 								<ReactSVG
 									className={cls(styles.icon)}

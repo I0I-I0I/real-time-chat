@@ -1,6 +1,7 @@
 import cls from "@/utils/cls"
 import React from "react"
 import styles from "./Link.module.css"
+import { NavLink } from "react-router-dom"
 
 type LinkVariants = "default"
 
@@ -15,9 +16,10 @@ export const Link = ({
 	children,
 	className = "",
 	variant = "default",
+	href,
 	...props
 }: LinkProps) => (
-	<a className={cls(styles.link, styles[variant], className)} {...props}>
+	<NavLink className={cls(styles.link, styles[variant], className)} to={href} {...props}>
 		{children}
-	</a>
+	</NavLink>
 )

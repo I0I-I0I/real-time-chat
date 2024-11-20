@@ -23,7 +23,7 @@ export const Login = ({currentState, onLinkClick}: LoginProps): JSX.Element => (
 				<Button className={styles.button} type="submit">
 					{ currentState === "sing-in" ? "Sing in" : "Sing Up" }
 				</Button>
-				<Link href="./login" onClick={onLinkClick} className={styles.link}>
+				<Link href="#" onClick={onLinkClick} className={styles.link}>
 					{ currentState === "sing-in" ? "or sing up" : "or sing in" }
 				</Link>
 			</form>
