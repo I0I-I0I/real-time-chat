@@ -13,6 +13,8 @@ std::map<std::string, int> loggers = {
 };
 
 void logger(std::string msg, std::string type) {
+	if (type == "HTTP") return;
+	if (msg.size() > 124) return;
 	std::string log = "[" + type + "] " + msg + '\n';
 	if (type == "ERROR") {
 		std::cerr << log;

@@ -1,3 +1,4 @@
+#include <iostream>
 #include <regex>
 #include "../logger/logger.h"
 #include "./http.h"
@@ -5,12 +6,14 @@
 HttpPathStruct Http::get_path(std::string path) {
 	HttpPathStruct http_path;
 
-	std::regex path_regex(R"(/(\w+))");
+	std::regex path_regex(R"((/[A-Za-z0-9.!$%&'*+=^_`{|}~-]*))");
 	std::smatch path_matches;
 
 	for (int i = 0;; i++) {
-		if (std::regex_search(path, path_matches, path_regex))
+		if (std::regex_search(path, path_matches, path_regex)) {
+			std::cout << path_matches[1].str() << std::endl;
 			http_path.path.push_back(path_matches[1].str());
+		}
 		if (path[0] == '?') break;
 		path = path_matches.suffix().str();
 		if (path.empty()) return http_path;

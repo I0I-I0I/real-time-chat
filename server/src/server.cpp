@@ -13,11 +13,12 @@ std::string create_response(
 		std::function<std::string(const HttpRequestStruct&)> handler,
 		const std::any& info
 ) {
-	HttpCastResultStruct cast_result = Http::validate(info);
-	if (cast_result.is_error)
-		return cast_result.response;
-
-	return handler(cast_result.http);
+	if (info.type() != typeid(HttpRequestStruct))
+		return Http::response(
+			400,
+			"Something strange");
+	HttpRequestStruct http = std::any_cast<HttpRequestStruct>(info);
+	return handler(http);
 }
 
 int main() {

@@ -16,7 +16,7 @@ const data_settings = [
 	}
 ]
 
-const data_accoutn = [
+const data_account = [
 	{
 		text: "Logout",
 		icon: "/logout.svg"
@@ -58,9 +58,9 @@ export const Settings = ({
 	return (
 		<div className={cls(styles.settings, className)}>
 			<Dropdown dropdownState={dropdownAccountState} className={cls(styles.dropdown, styles.dropdown_account)}>
-				{ data_accoutn.map((item, index: number): JSX.Element => (
+				{ data_account.map((item, index: number): JSX.Element => (
 					<DropdownItem className={styles.dropdown_item} key={index}>
-						<Link href="/login">
+						<Link href="/">
 							<>
 								<ReactSVG
 									className={cls(styles.icon)}

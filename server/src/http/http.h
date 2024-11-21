@@ -71,13 +71,6 @@ public:
 	 */
 	static std::string response(int code, std::string body, HttpHeadersStruct headers = {});
 
-	/**
-	 * @brief Test on HTTP request
-	 * @param data (const any&)
-	 * @return TestOnHttpStruct
-	 */
-	static HttpCastResultStruct validate(const std::any& data);
-
 private:
 	static std::string to_send(HttpResponseStruct http);
 	static HttpPathStruct get_path(std::string path);

@@ -5,9 +5,14 @@ import styles from "./Login.module.css"
 interface LoginProps {
 	currentState: string
 	onLinkClick: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void
+	onSubmit: React.FormEventHandler<HTMLButtonElement>
 }
 
-export const Login = ({currentState, onLinkClick}: LoginProps): JSX.Element => (
+export const Login = ({
+	currentState,
+	onLinkClick,
+	onSubmit
+}: LoginProps): JSX.Element => (
 	<>
 		<Modal className={styles.modal_login}>
 			<Typography tag="h1" variant="title-1">
@@ -20,11 +25,14 @@ export const Login = ({currentState, onLinkClick}: LoginProps): JSX.Element => (
 					<Input className="input login__input" type="text" placeholder="Username..." />
 				}
 				<Input className="input login__input" type="password" placeholder="Password..." />
-				<Button className={styles.button} type="submit">
+				<Button onClick={onSubmit} className={styles.button} type="submit">
 					{ currentState === "sing-in" ? "Sing in" : "Sing Up" }
 				</Button>
 				<Link href="#" onClick={onLinkClick} className={styles.link}>
 					{ currentState === "sing-in" ? "or sing up" : "or sing in" }
+				</Link>
+				<Link href="/chat" className={styles.link}>
+					Go to chat
 				</Link>
 			</form>
 		</Modal>
