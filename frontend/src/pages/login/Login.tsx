@@ -4,6 +4,9 @@ import { Login } from "@/components"
 import { Gradient } from "@/components/UI"
 import { redirect } from "react-router-dom"
 
+import UserService from "@/api/UserService"
+import { IPostUser } from "@/types"
+
 type CurrentStateType = "sing-in" | "sing-up"
 
 const LoginPage = () => {
@@ -14,9 +17,30 @@ const LoginPage = () => {
 		setCurrentState(currentState === "sing-in" ? "sing-up" : "sing-in")
 	}
 
-	const onSubmit: React.FormEventHandler<HTMLButtonElement> = (e) => {
+	const onSubmit = (
+		e: React.FormEvent<HTMLFormElement>,
+		data: IPostUser
+	) => {
 		e.preventDefault()
-		redirect("/chat")
+
+		if (currentState === "sing-up") {
+			UserService.createOne(data)
+			.then((user) => {
+				if (user) {
+					redirect("/chat")
+				}
+			})
+		} else if (currentState === "sing-in") {
+			UserService.checkOne({
+				login: data.login,
+				password: data.password
+			})
+			.then((user) => {
+				if (user) {
+					redirect("/chat")
+				}
+			})
+		}
 	}
 
 	return (

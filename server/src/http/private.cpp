@@ -10,11 +10,11 @@ HttpPathStruct Http::get_path(std::string path) {
 	std::smatch path_matches;
 
 	for (int i = 0;; i++) {
+		if (path[0] == '?') break;
 		if (std::regex_search(path, path_matches, path_regex)) {
 			std::cout << path_matches[1].str() << std::endl;
 			http_path.path.push_back(path_matches[1].str());
 		}
-		if (path[0] == '?') break;
 		path = path_matches.suffix().str();
 		if (path.empty()) return http_path;
 	}
@@ -69,7 +69,7 @@ void Http::log(HttpRequestStruct http) {
 	for (auto& path : http.url.path)
 		logger("Path: " + path, "\t");
 	for (auto& param : http.url.params)
-		logger("Path: " + param.first + ": " + param.second, "\t");
+		logger("Params: " + param.first + " = " + param.second, "\t");
 	logger("Version: " + http.version, "\t");
 	logger("Headers:", "\t");
 	for (auto& header : http.headers)

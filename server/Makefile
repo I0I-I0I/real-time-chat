@@ -2,7 +2,7 @@ CXX = g++
 CXXFLAGS = -pthread -std=c++2a
 CXXFLAGSEND = -lsqlite3
 
-SRCS_HANDLERS = src/handlers/*.cpp
+SRCS_HANDLERS = src/handlers/*.cpp src/handlers/utils/*.cpp
 SRCS_HTTP = src/http/*.cpp
 SRCS_PACKET = src/packet/*.cpp
 SRCS_DB = src/db/*.cpp

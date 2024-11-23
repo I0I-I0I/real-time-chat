@@ -1,6 +1,9 @@
 import {  Gradient } from "@/components/UI"
 import styles from "./Home.module.css"
-import { MessageType } from "@/types"
+import { IUser, MessageType } from "@/types"
+
+import { useFetching } from "@/hooks/useFetch"
+import UserService from "@/api/UserService"
 
 import {
 	ChatInfo,
@@ -10,6 +13,7 @@ import {
 	MessagePrompt,
 	Chat
 } from "@/components"
+import { useEffect, useState } from "react"
 
 const messages: MessageType[] = [
 	{
@@ -31,13 +35,35 @@ const messages: MessageType[] = [
 ]
 
 const HomePage = (): JSX.Element => {
+	const [friends, setFriends] = useState<IUser[] | null>(null)
+
+	const [fetchUsers, isLoading, error] = useFetching(async () => {
+		const data = await UserService.getAll()
+		setFriends(data)
+	})
+
+	useEffect(() => {
+		fetchUsers();
+	}, []);
+
+	if (error) {
+		return <div>{error}</div>
+	}
+
+	if (isLoading) {
+		return <div>Loading...</div>
+	}
+
 	return (
 		<div className={styles.wrapper}>
 			<Gradient />
 			<div className={styles.container}>
 				<AddFriends className={styles.add_friends} />
 				<ChatInfo className={styles.info} />
-				<FriendsList className={styles.list} />
+				<FriendsList
+					data={friends}
+					className={styles.list}
+				/>
 				<Chat className={styles.messages} data={messages} />
 				<Settings className={styles.settings} />
 				<MessagePrompt className={styles.prompt} />

@@ -77,6 +77,15 @@ public:
 	 */
 	DBResponseStruct delete_data(std::string& table, std::string& id);
 
+	/**
+	 * @brief Check on exists
+	 * @param table (string)
+	 * @param login (string)
+	 * @param password (string)
+	 * @return (DBResponseStruct)
+	 */
+	DBResponseStruct check_data(std::string& table, std::string login, std::string password);
+
 private:
 	sqlite3 *db;
 	DBResponseStruct response;

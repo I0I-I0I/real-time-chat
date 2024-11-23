@@ -38,5 +38,13 @@ int DB::execute_sql(std::string& sql, bool is_get) {
 		return -1;
 	}
 
+	if (is_get && this->response.body.data.empty()) {
+		this->response.status = 400;
+		this->response.body.data.clear();
+		this->response.body.status = "No data";
+		this->response.body.msg = "SQL: No data";
+		return -2;
+	}
+
 	return 0;
 }

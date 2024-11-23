@@ -48,11 +48,10 @@ std::string Socket::receive_msg(int socket) {
 }
 
 void Socket::handle_received_data(int socket, std::string type, const std::any& data) {
-	try {
+	if (this->custom_callback_on.at(type))
 		this->custom_callback_on[type](socket, data);
-	} catch (std::exception& e) {
+	else
 		this->callback_on["*"](socket, data);
-	}
 }
 
 void Socket::on(std::string type, OnCallbackStruct callback) {

@@ -40,15 +40,18 @@ DBResponseStruct DB::insert_data(std::string& table, DBDataListStruct& data_list
             sql += "'" + std::string(it.value()) + "', ";
         sql = sql.substr(0, sql.size() - 2) + ")";
 
-		if (this->execute_sql(sql) != 0) return this->response;
+		if (this->execute_sql(sql) != 0)
+			return this->response;
     }
 
 	this->response.body.data.clear();
-	this->response.status = 200;
-	this->response.body.status = "OK";
-	this->response.body.msg = "SQL: Inserted successfully";
-
-    return this->response;
+	return {
+		.status = 200,
+		.body = {
+			.status = "OK",
+			.msg = "SQL: Inserted successfully"
+		}
+	};
 }
 
 DBResponseStruct DB::update_data(std::string& table, std::string& id, DBDataStruct& data_list) {
@@ -63,11 +66,13 @@ DBResponseStruct DB::update_data(std::string& table, std::string& id, DBDataStru
 	if (this->execute_sql(sql) != 0) return this->response;
 
 	this->response.body.data.clear();
-	this->response.status = 200;
-	this->response.body.status = "OK";
-	this->response.body.msg = "SQL: Updated successfully";
-
-    return this->response;
+	return {
+		.status = 200,
+		.body = {
+			.status = "OK",
+			.msg = "SQL: Updated successfully"
+		}
+	};
 }
 
 DBResponseStruct DB::delete_data(std::string& table, std::string& id) {
@@ -75,9 +80,34 @@ DBResponseStruct DB::delete_data(std::string& table, std::string& id) {
 	if (this->execute_sql(sql) != 0) return this->response;
 
 	this->response.body.data.clear();
-	this->response.status = 200;
-	this->response.body.status = "OK";
-	this->response.body.msg = "SQL: Deleted successfully";
+	return {
+		.status = 200,
+		.body = {
+			.status = "OK",
+			.msg = "SQL: Deleted successfully"
+		}
+	};
+}
 
-    return this->response;
+DBResponseStruct DB::check_data(std::string& table, std::string login, std::string password) {
+	std::string sql = "SELECT * FROM " + table + " WHERE login = '" + login + "'";
+	if (this->execute_sql(sql, true) != 0)
+		return this->response;
+
+	if (this->response.body.data.at(0)["password"] != password)
+		return {
+			.status = 404,
+			.body = {
+				.status = "ERROR",
+				.msg = "Wrong password"
+			}
+		};
+
+	return {
+		.status = 200,
+		.body = {
+			.status = "OK",
+			.msg = "Password correct"
+		}
+	};
 }

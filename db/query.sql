@@ -16,20 +16,12 @@ create table if not exists messages (
 	foreign key(chat_id) references chats(id)
 );
 
-create table if not exists friendships (
-	id integer primary key autoincrement,
-	user_id integer,
-	friend_id integer,
-	created_at timestamp default current_timestamp,
-	foreign key(user_id) references users(id),
-	foreign key(friend_id) references users(id)
-);
-
 create table if not exists chats (
 	id integer primary key autoincrement,
 	name text not null,
-	last_message text,
+	last_message_id integer,
 	created_at timestamp default current_timestamp
+	foreign key(last_message_id) references messages(id)
 );
 
 create table if not exists chat_participants (
