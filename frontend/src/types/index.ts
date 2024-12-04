@@ -30,5 +30,12 @@ export interface ICheckUser {
 
 export interface IChat {
 	id: number
-	messages: MessageType[]
+	name: string
+	lastMessage: string
+	createdAt: string
+}
+
+export interface IChatPost {
+	name: string
+	lastMessage?: string
 }

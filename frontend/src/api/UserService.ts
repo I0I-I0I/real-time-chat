@@ -40,8 +40,8 @@ export default class UserService {
 		})
 		const data = await resp.json() as IFetchData<IUser>
 		console.log(data.message)
-		if (data.status !== "OK") {
-			return data.message
+		if (data.status === "OK") {
+			return data.status
 		}
 		return null
 	}
@@ -59,7 +59,7 @@ export default class UserService {
 		})
 		const data = await resp.json() as IFetchData<IUser>
 		console.log(data.message)
-		if (data.status !== "OK") {
+		if (data.status === "OK") {
 			return true
 		}
 		return false

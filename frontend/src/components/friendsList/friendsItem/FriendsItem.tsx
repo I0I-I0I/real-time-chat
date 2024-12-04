@@ -1,35 +1,54 @@
-import { Typography } from "@/components/UI"
+import { Button, Typography } from "@/components/UI"
 
 import styles from "./FriendsItem.module.css"
 
 import cls from "@/utils/cls"
 import { ReactSVG } from "react-svg"
-import { NavLink } from "react-router-dom"
 
-import { IUser } from "@/types"
+import { IChat, IChatPost } from "@/types"
 
-interface TypographyProps {
+type DataType = IChat | string
+
+interface FriendsItemProps {
 	index: number
 	className?: string
-	data: IUser
+	data: DataType
+	onAddChat?: ((e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: IChatPost) => void) | null
 }
 
 export const FriendsItem = ({
 	index,
 	className = "",
-	data
-}: TypographyProps) => (
+	data,
+	onAddChat = null
+}: FriendsItemProps) => (
 	<li className={cls(styles.item, className)} aria-selected aria-label="Friend">
-		<NavLink to="#" className={styles.button}>
+		<Button
+			className={styles.button}
+			onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
+				if (onAddChat !== null) {
+					console.log("TEST")
+					onAddChat(e, { name: "Test", lastMessage: "Message" })
+				}
+			}
+		}>
+		<>
 			<ReactSVG
 				className={styles.icon}
-				src="/account.svg"
+				src={ typeof data === "string" ? "/add_chat.svg" : "/account.svg"}
 			/>
-			<div className={styles.body}>
-				<Typography tag="span" variant="text_tiny" className={styles.index}>{String(index)}</Typography>
-				<Typography tag="h2" variant="title-4">{data.username}</Typography>
-				<Typography tag="span" variant="text_tiny">{data.login}</Typography>
-			</div>
-		</NavLink>
+			{ typeof data === "string" ? (
+				<div className={styles.body} >
+					<Typography tag="h2" variant="title-4">{data}</Typography>
+				</div>
+			) : (
+				<div className={styles.body}>
+					<Typography tag="span" variant="text_tiny" className={styles.index}>{String(index)}</Typography>
+					<Typography tag="h2" variant="title-4">{data.name}</Typography>
+					<Typography tag="span" variant="text_tiny">{data?.lastMessage}</Typography>
+				</div>
+			)}
+		</>
+		</Button>
 	</li>
 )

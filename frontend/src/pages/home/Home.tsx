@@ -1,6 +1,6 @@
 import {  Gradient } from "@/components/UI"
 import styles from "./Home.module.css"
-import { IUser, MessageType } from "@/types"
+import { IChat, IUser, MessageType } from "@/types"
 
 import { useFetching } from "@/hooks/useFetch"
 import UserService from "@/api/UserService"
@@ -14,6 +14,7 @@ import {
 	Chat
 } from "@/components"
 import { useEffect, useState } from "react"
+import ChatService from "@/api/ChatService"
 
 const messages: MessageType[] = [
 	{
@@ -35,10 +36,10 @@ const messages: MessageType[] = [
 ]
 
 const HomePage = (): JSX.Element => {
-	const [friends, setFriends] = useState<IUser[] | null>(null)
+	const [friends, setFriends] = useState<IChat[] | null>(null)
 
 	const [fetchUsers, isLoading, error] = useFetching(async () => {
-		const data = await UserService.getAll()
+		const data = await ChatService.getAll()
 		setFriends(data)
 	})
 

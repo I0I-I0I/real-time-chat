@@ -15,7 +15,7 @@ std::string HandlerOn::get(const HttpRequestStruct& http) {
 	if (http.url.path.size() < 3)
 		return Http::response(400, "Something missing in URL");
 
-	DB db(PATH_TO_DB);
+	DB db(DB_PATH);
 
 	std::string id = "";
 	if (http.url.params.find("id") != http.url.params.end())

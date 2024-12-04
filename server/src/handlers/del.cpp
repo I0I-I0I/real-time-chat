@@ -8,7 +8,7 @@
 using json = nlohmann::json;
 
 std::string HandlerOn::del(const HttpRequestStruct& http) {
-	DB db(PATH_TO_DB);
+	DB db(DB_PATH);
 
 	if (http.url.params.find("id") == http.url.params.end())
 		return Http::response(400, "Missing 'id'");

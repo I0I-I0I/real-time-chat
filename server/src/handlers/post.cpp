@@ -15,7 +15,7 @@ std::string HandlerOn::post(const HttpRequestStruct& http) {
 	if (http.headers.at("Content-Type") != "application/json")
 		return Http::response(400, "Unknown Content-Type, you can only pass 'application/json'");
 
-	DB db(PATH_TO_DB);
+	DB db(DB_PATH);
 
 	std::string table = http.url.path[2].substr(1);
 	DBDataListStruct data = json::parse(http.body);

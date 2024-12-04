@@ -1,15 +1,16 @@
 import { useState } from "react"
-
-import { Login } from "@/components"
-import { Gradient } from "@/components/UI"
-import { redirect } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 import UserService from "@/api/UserService"
 import { IPostUser } from "@/types"
 
+import { Login } from "@/components"
+import { Gradient } from "@/components/UI"
+
 type CurrentStateType = "sing-in" | "sing-up"
 
 const LoginPage = () => {
+	const navigate = useNavigate()
 	const [currentState, setCurrentState] = useState<CurrentStateType>("sing-in")
 
 	const onLinkClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void => {
@@ -17,29 +18,21 @@ const LoginPage = () => {
 		setCurrentState(currentState === "sing-in" ? "sing-up" : "sing-in")
 	}
 
-	const onSubmit = (
+	const onSubmit = async (
 		e: React.FormEvent<HTMLFormElement>,
 		data: IPostUser
-	) => {
+	): Promise<void> => {
 		e.preventDefault()
 
 		if (currentState === "sing-up") {
-			UserService.createOne(data)
-			.then((user) => {
-				if (user) {
-					redirect("/chat")
-				}
-			})
+			const status = await UserService.createOne(data)
+			if (status) navigate("/chat")
 		} else if (currentState === "sing-in") {
-			UserService.checkOne({
+			const status = await UserService.checkOne({
 				login: data.login,
 				password: data.password
 			})
-			.then((user) => {
-				if (user) {
-					redirect("/chat")
-				}
-			})
+			if (status) navigate("/chat")
 		}
 	}
 
