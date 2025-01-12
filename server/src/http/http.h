@@ -52,11 +52,10 @@ struct HttpCastResultStruct  {
 	std::string response;
 };
 
-
 class Http {
 public:
 	/**
-	 * @brief Parce HTTP request
+	 * @brief Parse HTTP request
 	 * @param data (string)
 	 * @return HttpRequestStruct
 	 */
@@ -65,7 +64,7 @@ public:
 	/**
 	 * @brief Create HTTP response
 	 * @param code (int)
-	 * param body (string)
+	 * @param body (string)
 	 * @param headers = {} (map<string, string>)
 	 * @return string
 	 */

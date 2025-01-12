@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iostream>
 #include <map>
 #include <sstream>
 #include <string>
@@ -28,7 +29,10 @@ std::map<std::string, std::string> get_headers_of_extantion(const std::string& e
 	};
 	std::map<std::string, std::string> headers;
 
-	if (extantion == "js"){
+	if (extantion == "html") {
+		headers["Content-Type"] = "text/html";
+		headers["X-Content-Type-Options"] = "nosniff";
+	} else if (extantion == "js"){
 		headers["Content-Type"] = "text/javascript";
 		headers["X-Content-Type-Options"] = "script";
 	} else if (extantion == "css") {
@@ -62,15 +66,15 @@ GetFileStruct get_file(const std::string& path) {
 
 std::string get_resp_for_file(const HttpRequestStruct& http) {
 	std::string file_path;
-	if (http.url.path.at(0) == "/")
-		file_path = "/index.html";
-	else
+	if (http.url.path.at(http.url.path.size() - 1).find('.') != std::string::npos)
 		for (int i = 0; i < http.url.path.size(); i++)
 			file_path += http.url.path.at(i);
+	else
+		file_path = "/index.html";
 
 	GetFileStruct file = get_file(file_path);
 	std::map<std::string, std::string> headers = {
-		{ "Content-Length", std::to_string(file.body.size()) },
+		{ "Content-Length", std::to_string(file.body.size()) }
 	};
 
 	std::map<std::string, std::string> headers_of_ext = get_headers_of_extantion(file.extantion);

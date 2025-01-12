@@ -1,6 +1,6 @@
 import { Button, Typography } from "@/components/UI"
 
-import styles from "./FriendsItem.module.css"
+import styles from "./ChatsItem.module.css"
 
 import cls from "@/utils/cls"
 import { ReactSVG } from "react-svg"
@@ -9,20 +9,20 @@ import { IChat, IChatPost } from "@/types"
 
 type DataType = IChat | string
 
-interface FriendsItemProps {
+interface ChatsItemProps {
 	index: number
 	className?: string
 	data: DataType
 	onAddChat?: ((e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: IChatPost) => void) | null
 }
 
-export const FriendsItem = ({
+export const ChatsItem = ({
 	index,
 	className = "",
 	data,
 	onAddChat = null
-}: FriendsItemProps) => (
-	<li className={cls(styles.item, className)} aria-selected aria-label="Friend">
+}: ChatsItemProps) => (
+	<li className={cls(styles.item, className)} aria-selected aria-label="Chat">
 		<Button
 			className={styles.button}
 			onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {

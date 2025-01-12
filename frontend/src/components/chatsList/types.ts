@@ -1,4 +1,4 @@
-export type FriendData = {
+export type ChatsData = {
 	id: number
 	name: string
 	lastMessage: string

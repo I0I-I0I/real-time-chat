@@ -20,7 +20,7 @@ create table if not exists chats (
 	id integer primary key autoincrement,
 	name text not null,
 	last_message_id integer,
-	created_at timestamp default current_timestamp
+	created_at timestamp default current_timestamp,
 	foreign key(last_message_id) references messages(id)
 );
 

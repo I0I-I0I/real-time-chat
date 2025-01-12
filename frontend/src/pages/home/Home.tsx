@@ -1,14 +1,13 @@
 import {  Gradient } from "@/components/UI"
 import styles from "./Home.module.css"
-import { IChat, IUser, MessageType } from "@/types"
+import { IChat,  MessageType } from "@/types"
 
 import { useFetching } from "@/hooks/useFetch"
-import UserService from "@/api/UserService"
 
 import {
 	ChatInfo,
-	AddFriends,
-	FriendsList,
+	AddChat,
+	ChatsList,
 	Settings,
 	MessagePrompt,
 	Chat
@@ -59,9 +58,9 @@ const HomePage = (): JSX.Element => {
 		<div className={styles.wrapper}>
 			<Gradient />
 			<div className={styles.container}>
-				<AddFriends className={styles.add_friends} />
+				<AddChat className={styles.add_friends} />
 				<ChatInfo className={styles.info} />
-				<FriendsList
+				<ChatsList
 					data={friends}
 					className={styles.list}
 				/>
