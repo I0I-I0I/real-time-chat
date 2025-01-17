@@ -10,8 +10,6 @@
 #include "./user/user.h"
 #include "./socket.h"
 
-#pragma comment(lib, "Ws2_32.lib")
-
 void* Socket::get_in_addr(struct sockaddr *sa) {
 	if (sa->sa_family == AF_INET)
 		return &(((struct sockaddr_in*)sa)->sin_addr);
@@ -19,7 +17,7 @@ void* Socket::get_in_addr(struct sockaddr *sa) {
 }
 
 struct addrinfo* Socket::get_addr() {
-	struct addrinfo hints, *servinfo, *p;
+	struct addrinfo hints, *servinfo;
 	int rv;
 
 	memset(&hints, 0, sizeof hints);

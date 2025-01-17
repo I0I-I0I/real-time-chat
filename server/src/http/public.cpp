@@ -30,6 +30,10 @@ HttpRequestStruct Http::parce(const std::string& request) {
             if (matches.size() == 3) {
                 std::string key = matches[1].str();
                 std::string value = matches[2].str();
+                std::transform(key.begin(), key.end(), key.begin(),
+                               [](unsigned char c){ return std::tolower(c); });
+                std::transform(value.begin(), value.end(), value.begin(),
+                               [](unsigned char c){ return std::tolower(c); });
                 headers[key] = value;
             }
 	http.headers = headers;

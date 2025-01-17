@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -pthread -std=c++2a
+CXXFLAGS = -pthread -std=c++2a -Wall
 CXXFLAGSEND = -lsqlite3
 
 SRCS_HANDLERS = src/handlers/*.cpp src/handlers/utils/*.cpp
@@ -27,18 +27,22 @@ CLIENT_SRCS = src/client.cpp \
 BUILD_DIR = build
 SERVER_EXEC = $(BUILD_DIR)/server
 
-all: create server start
+all: create server
 
 create:
 	@[ -d $(BUILD_DIR) ] || (mkdir $(BUILD_DIR) && echo "Directory $(BUILD_DIR) created")
 
-start:
+run:
 	@clear
 	@$(SERVER_EXEC)
 
 server: $(SERVER_SRCS)
 	@echo "Compiling server..."
 	@$(CXX) $(CXXFLAGS) $^ -o $(SERVER_EXEC) $(CXXFLAGSEND)
+
+debug: $(SERVER_SRCS)
+	@echo "Compiling server (for debug)..."
+	@$(CXX) $(CXXFLAGS) $^ -o $(SERVER_EXEC) $(CXXFLAGSEND) -g3
 
 clean:
 	@echo "Cleaning..."

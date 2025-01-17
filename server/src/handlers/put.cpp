@@ -16,7 +16,7 @@ std::string HandlerOn::put(const HttpRequestStruct& http) {
 
 	std::string table = http.url.path[2];
 
-	if (http.headers.at("Content-Type") != "application/json")
+	if (http.headers.at("content-type") != "application/json")
 		return Http::response(400, "Unknown Content-Type");
 
 	DBDataListStruct recv_body = json::parse(http.body);

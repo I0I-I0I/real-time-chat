@@ -10,85 +10,85 @@
 #include "./utils.h"
 
 bool includes(const std::vector<std::string>& arr, const std::string& str) {
-	for (int i = 0; i < arr.size(); i++)
-		if (arr.at(i) == str)
-			return true;
-	return false;
+    for (const auto& item : arr)
+        if (item == str) return true;
+    return false;
 }
 
 std::map<std::string, std::string> get_headers_of_extantion(const std::string& extantion) {
-	std::vector<std::string> image_types = {
-		"png",
-		"jpg",
-		"jpeg",
-		"gif",
-		"svg",
-		"webp",
-		"ico",
-		"avif",
-	};
-	std::map<std::string, std::string> headers;
+    std::vector<std::string> image_types = {
+        "png",
+        "jpg",
+        "jpeg",
+        "gif",
+        "svg",
+        "webp",
+        "ico",
+        "avif",
+    };
+    std::map<std::string, std::string> headers;
 
-	if (extantion == "html") {
-		headers["Content-Type"] = "text/html";
-		headers["X-Content-Type-Options"] = "nosniff";
-	} else if (extantion == "js"){
-		headers["Content-Type"] = "text/javascript";
-		headers["X-Content-Type-Options"] = "script";
-	} else if (extantion == "css") {
-		headers["Content-Type"] = "text/css";
-		headers["X-Content-Type-Options"] = "style";
-	} else if (includes(image_types, extantion)) {
-		headers["Content-Type"] = "image/" + extantion;
-	}
+    if (extantion == "html") {
+        headers["Content-Type"] = "text/html";
+        headers["X-Content-Type-Options"] = "nosniff";
+    } else if (extantion == "js"){
+        headers["Content-Type"] = "text/javascript";
+        headers["X-Content-Type-Options"] = "script";
+    } else if (extantion == "css") {
+        headers["Content-Type"] = "text/css";
+        headers["X-Content-Type-Options"] = "style";
+    } else if (includes(image_types, extantion)) {
+        headers["Content-Type"] = "image/" + extantion;
+    }
 
-	return headers;
+    return headers;
 }
 
 GetFileStruct get_file(const std::string& path) {
-	std::ifstream file(FRONTED_PATH + path);
+    std::ifstream file(FRONTED_PATH + path);
 
-	if (!file.is_open())
-		return {
-			"File not found",
-			path,
-			""
-		};
+    if (!file.is_open())
+        return {
+            "File not found",
+            path,
+            "ERROR"
+        };
 
-	std::stringstream buffer;
-	buffer << file.rdbuf();
-	return {
-		buffer.str(),
-		path,
-		path.substr(path.find_last_of(".") + 1)
-	};
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    return {
+        buffer.str(),
+        path,
+        path.substr(path.find_last_of(".") + 1)
+    };
 }
 
 std::string get_resp_for_file(const HttpRequestStruct& http) {
-	std::string file_path;
-	if (http.url.path.at(http.url.path.size() - 1).find('.') != std::string::npos)
-		for (int i = 0; i < http.url.path.size(); i++)
-			file_path += http.url.path.at(i);
-	else
-		file_path = "/index.html";
+    std::string file_path;
+    if (http.url.path.at(http.url.path.size() - 1).find('.') == std::string::npos) {
+        file_path = "/index.html";
+    } else {
+        for (auto const& item : http.url.path)
+            file_path += item;
+    }
 
-	GetFileStruct file = get_file(file_path);
-	std::map<std::string, std::string> headers = {
-		{ "Content-Length", std::to_string(file.body.size()) }
-	};
+    GetFileStruct file = get_file(file_path);
+    std::map<std::string, std::string> headers = {
+        { "Content-Length", std::to_string(file.body.size()) }
+    };
 
-	std::map<std::string, std::string> headers_of_ext = get_headers_of_extantion(file.extantion);
-	for (const auto& [key, value] : headers_of_ext)
-		headers[key] = value;
+    std::map<std::string, std::string> headers_of_ext = get_headers_of_extantion(file.extantion);
+    for (const auto& [key, value] : headers_of_ext)
+    headers[key] = value;
 
-	return Http::response(200, file.body, headers);
+    return Http::response(200, file.body, headers);
 }
 
 std::string get_resp_body(const DBResponseStruct& response) {
-	json body = {
-		{ "status", response.body.status },
-		{ "data", response.body.data },
-		{ "message", response.body.msg },
-	};
-	return body.dump();
+    json body = {
+        { "status", response.body.status },
+        { "data", response.body.data },
+        { "message", response.body.msg },
+    };
+    return body.dump();
 }

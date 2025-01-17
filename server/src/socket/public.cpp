@@ -60,7 +60,7 @@ void Socket::on(std::string type, OnCallbackStruct callback) {
 	else if (type == "open")
 		this->create("client");
 
-	for (int i = 0; i < this->callback_types.size(); i++) {
+	for (unsigned int i = 0; i < this->callback_types.size(); i++) {
 		if (this->callback_types[i] == type) {
 			this->callback_on[type] = callback;
 			return;
