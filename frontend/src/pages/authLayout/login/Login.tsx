@@ -2,13 +2,14 @@ import { Input, Modal, Button, Link, Typography } from "@/components/UI"
 
 import styles from "../Auth.module.css"
 import useInput from "@/hooks/useInput"
-import { useNavigate } from "react-router"
+import { useNavigate, useOutletContext } from "react-router"
 import UserService from "@/api/UserService"
 
 export const Login = (): JSX.Element => {
 	const [login_prop,] = useInput("")
 	const [password_prop,] = useInput("")
     const navigate = useNavigate()
+    const setUserState = useOutletContext() as any;
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
@@ -16,7 +17,12 @@ export const Login = (): JSX.Element => {
             login: login_prop.value,
             password: password_prop.value
         })
-        if (status) navigate("/")
+        const user = await UserService.getByLogin(login_prop.value)
+        if (status) {
+            navigate("/")
+            if (!user) return
+            setUserState(user.login, user.username)
+        }
 	}
 
 	return (

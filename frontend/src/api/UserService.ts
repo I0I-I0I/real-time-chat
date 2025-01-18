@@ -16,6 +16,18 @@ export default class UserService {
 		return data.data[0]
 	}
 
+	static async getByLogin(login: string): Promise<IUser | null> {
+		const resp = await fetch(URL + "?login=" + login, {
+			method: "GET",
+		})
+		const data = await resp.json() as IFetchData<IUser>
+		if (data.status !== "OK") {
+			return null
+		}
+		console.log(data.message)
+		return data.data[0]
+	}
+
 	static async getAll(): Promise<IUser[] | null> {
 		const resp = await fetch(URL)
 		const data = await resp.json() as IFetchData<IUser>
@@ -58,10 +70,10 @@ export default class UserService {
 			}])
 		})
 		const data = await resp.json() as IFetchData<IUser>
-		console.log(data.message)
-		if (data.status === "OK") {
-			return true
+		if (data.status !== "OK") {
+            return false
 		}
-		return false
+        console.log(data.message)
+        return true
 	}
 }

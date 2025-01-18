@@ -5,7 +5,7 @@ import useInput from "@/hooks/useInput"
 import UserService from "@/api/UserService"
 import { useNavigate } from "react-router"
 
-export const Register = (): JSX.Element => {
+export const Register = (context: any): JSX.Element => {
 	const [login_prop,] = useInput("")
 	const [username_prop,] = useInput("")
 	const [password_prop,] = useInput("")
@@ -13,6 +13,7 @@ export const Register = (): JSX.Element => {
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
+        context(login_prop.value, username_prop.value)
         const status = await UserService.createOne({
             login: login_prop.value,
             username: username_prop.value,

@@ -3,6 +3,7 @@ import styles from "./Chats.module.css"
 import { IChat,  MessageType } from "@/types"
 
 import { useFetching } from "@/hooks/useFetch"
+// import { useUserStore } from "@/state/user"
 
 import {
 	ChatInfo,
@@ -35,7 +36,7 @@ const messages: MessageType[] = [
 ]
 
 const ChatsPage = (): JSX.Element => {
-	const [friends, setFriends] = useState<IChat[] | null>(null)
+    const [friends, setFriends] = useState<IChat[] | null>(null)
 
 	const [fetchUsers, isLoading, error] = useFetching(async () => {
 		const data = await ChatService.getAll()
