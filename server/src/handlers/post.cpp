@@ -26,12 +26,12 @@ std::string HandlerOn::post(const HttpRequestStruct& http) {
 		return Http::response(400, "Not valid json");
     DBDataListStruct data = json::parse(http.body);
 
-	DBResponseStruct response;
-	if (http.url.params.find("type") != http.url.params.end()
-			&& http.url.params.at("type") == "check")
-		response = db.check_data(table, data[0]["login"], data[0]["password"]);
-	else
-		response = db.insert_data(table, data);
+    DBResponseStruct response;
+    if (http.url.params.find("type") != http.url.params.end() && http.url.params.at("type") == "check") {
+        response = db.check_data(table, data[0]["login"], data[0]["password"]);
+    } else {
+        response = db.insert_data(table, data);
+    }
 
 
 	return Http::response(

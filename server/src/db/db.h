@@ -43,15 +43,16 @@ public:
 	 * @param table (string)
 	 * @return (DBResponseStruct)
 	 */
-	DBResponseStruct get_data(std::string& table);
+	DBResponseStruct get_data(const std::string& table, std::string fields = "*");
 
 	/**
 	 * @brief Get specific data from a table
+     * @param by (string)
 	 * @param table (string)
 	 * @param id (string)
 	 * @return (DBResponseStruct)
 	 */
-	DBResponseStruct get_data(std::string& table, std::string& id);
+    DBResponseStruct get_data_by(const std::string by, const std::string& table, const std::string& id, std::string fields = "*");
 
 	/**
 	 * @brief Push data to a table
@@ -59,7 +60,7 @@ public:
 	 * @param data (DBDataListStruct)
 	 * @return (DBResponseStruct)
 	 */
-	DBResponseStruct insert_data(std::string& table, DBDataListStruct& data);
+	DBResponseStruct insert_data(const std::string& table, DBDataListStruct& data);
 
 	/**
 	 * @brief Update particular data in a table
@@ -67,7 +68,7 @@ public:
 	 * @param data (DBDataListStruct)
 	 * @return (DBResponseStruct)
 	 */
-	DBResponseStruct update_data(std::string& table, std::string& id, DBDataStruct& data_list);
+	DBResponseStruct update_data(const std::string& table, std::string& id, DBDataStruct& data_list);
 
 	/**
 	 * @brief Delete data from a table
@@ -75,7 +76,7 @@ public:
 	 * @param id (string)
 	 * @return (DBResponseStruct)
 	 */
-	DBResponseStruct delete_data(std::string& table, std::string& id);
+	DBResponseStruct delete_data(const std::string& table, std::string& id);
 
 	/**
 	 * @brief Check on exists
@@ -84,7 +85,7 @@ public:
 	 * @param password (string)
 	 * @return (DBResponseStruct)
 	 */
-	DBResponseStruct check_data(std::string& table, std::string login, std::string password);
+	DBResponseStruct check_data(const std::string& table, std::string login, std::string password);
 
 private:
 	sqlite3 *db;

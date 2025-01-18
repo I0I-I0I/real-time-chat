@@ -8,6 +8,15 @@
 using json = nlohmann::json;
 
 std::string HandlerOn::put(const HttpRequestStruct& http) {
+	if (http.url.path.at(0) != "/api")
+		return Http::response(400, "You missed '/api'");
+
+    if (http.url.path.size() < 3)
+		return Http::response(400, "You missed table name or something");
+
+	if (http.headers.at("content-type") != "application/json")
+		return Http::response(400, "Unknown Content-Type, you can only pass 'application/json'");
+
 	DB db(DB_PATH);
 
 	if (http.url.params.find("id") == http.url.params.end())

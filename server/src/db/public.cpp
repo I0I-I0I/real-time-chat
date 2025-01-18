@@ -2,13 +2,13 @@
 #include "../logger/logger.h"
 #include "./db.h"
 
-DB::DB(std::string path) {
+DB::DB(const std::string path) {
 	if (sqlite3_open(path.c_str(), &this->db))
 		logger("Can't open database: " + std::string(sqlite3_errmsg(db)), "ERROR");
 }
 
-DBResponseStruct DB::get_data(std::string& table) {
-	std::string sql = "SELECT * FROM " + table;
+DBResponseStruct DB::get_data(const std::string& table, std::string fields) {
+	std::string sql = "SELECT " + fields + " FROM " + table;
 	if (this->execute_sql(sql, true) != 0) return this->response;
 
 	this->response.status = 200;
@@ -17,9 +17,8 @@ DBResponseStruct DB::get_data(std::string& table) {
 	return this->response;
 }
 
-DBResponseStruct DB::get_data(std::string& table, std::string& id) {
-	if (id == "") return this->get_data(table);
-	std::string sql = "SELECT * FROM " + table + " WHERE id = " + id;
+DBResponseStruct DB::get_data_by(const std::string by, const std::string& table, const std::string& id, std::string fields) {
+	std::string sql = "SELECT " + fields + " FROM " + table + " WHERE " + by + " = '" + id + "'";
 	if (this->execute_sql(sql, true) != 0) return this->response;
 
 	this->response.body.status = "OK";
@@ -28,7 +27,7 @@ DBResponseStruct DB::get_data(std::string& table, std::string& id) {
 	return this->response;
 }
 
-DBResponseStruct DB::insert_data(std::string& table, DBDataListStruct& data_list) {
+DBResponseStruct DB::insert_data(const std::string& table, DBDataListStruct& data_list) {
 	std::string sql;
     for (const auto& row : data_list) {
 		sql = "INSERT INTO " + table + " (";
@@ -54,7 +53,7 @@ DBResponseStruct DB::insert_data(std::string& table, DBDataListStruct& data_list
 	};
 }
 
-DBResponseStruct DB::update_data(std::string& table, std::string& id, DBDataStruct& data_list) {
+DBResponseStruct DB::update_data(const std::string& table, std::string& id, DBDataStruct& data_list) {
 	std::string sql = "UPDATE " + table + " SET ";
 
 	for (auto it = data_list.begin(); it != data_list.end(); ++it) {
@@ -75,7 +74,7 @@ DBResponseStruct DB::update_data(std::string& table, std::string& id, DBDataStru
 	};
 }
 
-DBResponseStruct DB::delete_data(std::string& table, std::string& id) {
+DBResponseStruct DB::delete_data(const std::string& table, std::string& id) {
 	std::string sql = "DELETE FROM " + table + " WHERE id = " + id;
 	if (this->execute_sql(sql) != 0) return this->response;
 
@@ -89,7 +88,7 @@ DBResponseStruct DB::delete_data(std::string& table, std::string& id) {
 	};
 }
 
-DBResponseStruct DB::check_data(std::string& table, std::string login, std::string password) {
+DBResponseStruct DB::check_data(const std::string& table, std::string login, std::string password) {
 	std::string sql = "SELECT * FROM " + table + " WHERE login = '" + login + "'";
 	if (this->execute_sql(sql, true) != 0)
 		return this->response;

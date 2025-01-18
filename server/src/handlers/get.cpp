@@ -17,12 +17,15 @@ std::string HandlerOn::get(const HttpRequestStruct& http) {
 
 	DB db(DB_PATH);
 
-	std::string id = "";
-	if (http.url.params.find("id") != http.url.params.end())
-		id = http.url.params.at("id");
-
-	std::string table = http.url.path[2].substr(1);
-	DBResponseStruct response = db.get_data(table, id);
+    DBResponseStruct response;
+    std::string table = http.url.path[2].substr(1);
+    if (http.url.params.find("login") != http.url.params.end()) {
+        response = db.get_data_by("login", table, http.url.params.at("login"), "id, login, username, created_at");
+    } else if (http.url.params.find("id") != http.url.params.end()) {
+        response = db.get_data_by("id", table, http.url.params.at("id"));
+    } else {
+        response = db.get_data(table);
+    }
 
 	return Http::response(
 		response.status,
