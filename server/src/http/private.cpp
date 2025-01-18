@@ -32,7 +32,7 @@ HttpPathStruct Http::get_path(std::string path) {
 }
 
 std::string Http::to_send(HttpResponseStruct http) {
-	std::string response = "";
+    std::string response = "";
 
 	response += "HTTP/1.1 " + http.status + " \r\n";
 
@@ -62,24 +62,26 @@ std::string Http::get_status(int code) {
 }
 
 void Http::log(HttpRequestStruct http) {
-	logger("Request:", "HTTP");
-	logger("Method: " + http.method, "\t");
+	logger("Request:", "INFO");
+	logger(" \tMethod: " + http.method, "INFO");
+    std::string paths = "";
 	for (auto& path : http.url.path)
-		logger("Path: " + path, "\t");
+        paths += path;
+    logger(" \tPath: " + paths, "INFO");
 	for (auto& param : http.url.params)
-		logger("Params: " + param.first + " = " + param.second, "\t");
-	logger("Version: " + http.version, "\t");
-	logger("Headers:", "\t");
+		logger(" \tParams: " + param.first + " = " + param.second, "INFO");
+	logger(" \tVersion: " + http.version, "LOG");
+	logger(" \tHeaders:", "LOG");
 	for (auto& header : http.headers)
-		logger("\t" + header.first + ": " + header.second, "\t");
-	logger("Body: " + http.body, "\t");
+		logger(" \t" + header.first + ": " + header.second, "LOG");
+	logger(" \tBody: " + http.body, "LOG");
 }
 
 void Http::log(HttpResponseStruct http) {
-	logger("Response:", "HTTP");
-	logger("Status: " + http.status, "\t");
-	logger("Body: " + http.body, "\t");
-	logger("Headers:", "\t");
+	logger("Response:", "INFO");
+	logger(" \tStatus: " + http.status, "INFO");
+	logger(" \tBody: " + http.body, "LOG");
+	logger(" \tHeaders:", "LOG");
 	for (auto& header : http.headers)
-		logger("\t" + header.first + ": " + header.second, "\t");
+		logger(" \t" + header.first + ": " + header.second, "LOG");
 }

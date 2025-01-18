@@ -21,7 +21,10 @@ std::string HandlerOn::post(const HttpRequestStruct& http) {
 	DB db(DB_PATH);
 
 	std::string table = http.url.path[2].substr(1);
-	DBDataListStruct data = json::parse(http.body);
+
+    if (!json::accept(http.body))
+		return Http::response(400, "Not valid json");
+    DBDataListStruct data = json::parse(http.body);
 
 	DBResponseStruct response;
 	if (http.url.params.find("type") != http.url.params.end()

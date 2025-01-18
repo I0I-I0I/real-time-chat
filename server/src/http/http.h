@@ -68,10 +68,10 @@ public:
 	 * @param headers = {} (map<string, string>)
 	 * @return string
 	 */
-	static std::string response(int code, std::string body, HttpHeadersStruct headers = {});
+    static std::string response(int code, std::string body, HttpHeadersStruct headers = {});
 
 private:
-	static std::string to_send(HttpResponseStruct http);
+    static std::string to_send(HttpResponseStruct http);
 	static HttpPathStruct get_path(std::string path);
 	static std::string get_status(int code);
 

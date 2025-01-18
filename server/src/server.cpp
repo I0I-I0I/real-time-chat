@@ -1,5 +1,3 @@
-#include <functional>
-#include <iostream>
 #include <string>
 #include "../lib/json.hpp"
 #include "./config.h"
@@ -9,36 +7,18 @@
 
 using json = nlohmann::json;
 
-std::string create_response(
-    std::function<std::string(const HttpRequestStruct&)> handler,
-    const std::any& info
-) {
-    if (info.type() != typeid(HttpRequestStruct))
-        return Http::response(
-            400,
-            "Something strange");
-    HttpRequestStruct http = std::any_cast<HttpRequestStruct>(info);
-    return handler(http);
-}
-
 int main() {
     SocketOpts opts = {
         .backlog = 5,
-        .recv_timeout = 10000,
-        .send_timeout = 10000,
+        .timeout = 5000,
     };
     Socket server("localhost",  "8080", opts);
 
     server.on("connection", [&server](int socket, const auto& _) -> void {
         std::string info = server.receive_msg(socket);
-        if (info == "")
-            return;
+        if (info == "") return;
         HttpRequestStruct http = Http::parce(info);
         server.handle_received_data(socket, http.method, http);
-    });
-
-    server.on("close", [&server](int socket, const auto& info) -> void {
-        std::cout << "Connection closed" << std::endl;
     });
 
     server.on("*", [&server](int socket, const auto& info) -> void {
@@ -56,7 +36,13 @@ int main() {
 
     for (const auto& [method, handler] : method_handlers) {
         server.on(method, [&server, &handler](int socket, const auto& info) -> void {
-            std::string response = create_response(handler, info);
+            std::string response;
+            if (info.type() != typeid(HttpRequestStruct)) {
+                response = Http::response( 400, "Something strange");
+            } else {
+                HttpRequestStruct http = std::any_cast<HttpRequestStruct>(info);
+                response = handler(http);
+            }
             server.send_msg(socket, response);
         });
     }

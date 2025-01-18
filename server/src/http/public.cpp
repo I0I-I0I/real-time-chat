@@ -25,8 +25,8 @@ HttpRequestStruct Http::parce(const std::string& request) {
         }
 
     HttpHeadersStruct headers;
-    while (std::getline(stream, line) && line != "\r")
-        if (std::regex_search(line, matches, header_pattern))
+    while (std::getline(stream, line) && line != "\r") {
+        if (std::regex_search(line, matches, header_pattern)) {
             if (matches.size() == 3) {
                 std::string key = matches[1].str();
                 std::string value = matches[2].str();
@@ -36,12 +36,15 @@ HttpRequestStruct Http::parce(const std::string& request) {
                                [](unsigned char c){ return std::tolower(c); });
                 headers[key] = value;
             }
-	http.headers = headers;
+        }
+    }
+    http.headers = headers;
 
     std::string body;
-    while (std::getline(stream, line))
+    while (std::getline(stream, line)) {
         body += line + "\r\n";
-	http.body = body;
+    }
+    http.body = body;
 
 	Http::log(http);
 

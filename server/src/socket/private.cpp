@@ -108,6 +108,17 @@ int Socket::accept_connection() {
 	if ((socket = accept(this->main_socket, (struct sockaddr *)&their_addr, &sin_size)) == -1)
 		error_handler(ERROR_ACCEPT);
 
+    if (this->timeout > 0) {
+        struct timeval timeout = {
+            .tv_sec = this->timeout,
+            .tv_usec = 0
+        };
+        int info = setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout));
+        if (info < 0) {
+            error_handler(ERROR_SETSOCKOPT, "On setup timeout", false);
+        }
+    }
+
 	inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *)&their_addr), s, sizeof s);
 	socket_logger("server: got connection from " + (std::string)s + ":" + this->port, "CONN");
 	return socket;
@@ -123,8 +134,7 @@ User Socket::wait_for_connection() {
 void Socket::get_connection() {
 	User user = this->wait_for_connection();
 	std::thread ([this, user]() {
-		User user_copy = user;
-		this->connection_handler(user_copy);
+		this->connection_handler(user);
 		socket_logger("Count of users: " + std::to_string(this->users.size()));
 	}).detach();
 	socket_logger("Count of users: " + std::to_string(this->users.size()));
@@ -164,7 +174,7 @@ void Socket::log_date(int& socket, std::string log_type, std::string msg) {
 	} else {
 		log_msg += ": " + msg;
 	}
-	socket_logger(log_msg, "MSG");
+	socket_logger(log_msg, "LOG");
 }
 
 void Socket::socket_logger(std::string msg, std::string type) {
@@ -205,7 +215,7 @@ void Socket::error_handler(int error_type, std::string extra_msg, bool flag) {
 			msg = "How did I get here?\n";
 			msg = "Error code: ";
 	}
-	msg += extra_msg;
+	msg += " " + extra_msg;
 	logger(msg, "ERROR");
 	if (flag) {
 		exit(error_type);

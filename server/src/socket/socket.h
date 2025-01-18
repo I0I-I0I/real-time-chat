@@ -14,14 +14,12 @@ constexpr const int CLOSE_CONNECTION = -101;
 using OnCallbackStruct = std::function<void(int, const std::any&)>;
 
 /**
- * @param backlog (int)
- * @param recv_timeout (int)
- * @param send_timeout (int)
+ * @param backlog (unsigned int)
+ * @param timeout (unsigned int)
  */
 struct SocketOpts {
-	int backlog;
-	int recv_timeout;
-	int send_timeout;
+	unsigned int backlog;
+	unsigned int timeout;
 };
 
 /**
@@ -37,13 +35,12 @@ class Socket {
 private:
 	const char* host;
 	const char* port;
-	int backlog;
+	unsigned int backlog;
+    unsigned int timeout;
 	int main_socket;
 	struct addrinfo* addr;
 	std::string socket_type;
 	std::string buffer;
-	int recv_timeout;
-	int send_timeout;
 
 	std::vector<User> users;
 	const std::vector<std::string> callback_types = { "connection", "open", "close", "*" };
@@ -110,6 +107,13 @@ public:
 	 * @param msg (string)
 	 */
 	void send_msg(int socket, std::string msg);
+
+	/**
+	 * @brief Send many messages
+	 * @param socket (int)
+	 * @param msgs (vector<string>)
+	 */
+    void send_msg(int socket, std::vector<std::string> msgs);
 
 	/**
 	 * @brief Send message to all users

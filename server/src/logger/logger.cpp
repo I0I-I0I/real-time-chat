@@ -5,7 +5,7 @@
 #include "./logger.h"
 
 std::map<std::string, int> loggers = {
-	{ "HTTP", 5 },
+	{ "LOG", 5 },
 	{ "INFO", 4 },
 	{ "MSG", 3 },
 	{ "CONN", 2 },
@@ -13,8 +13,6 @@ std::map<std::string, int> loggers = {
 };
 
 void logger(std::string msg, std::string type) {
-	if (type == "HTTP") return;
-	if (msg.size() > 124) return;
 	std::string log = "[" + type + "] " + msg + '\n';
 	if (type == "ERROR") {
 		std::cerr << log;

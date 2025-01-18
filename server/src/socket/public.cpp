@@ -7,12 +7,9 @@
 Socket::Socket(const char* host_, const char* port_, SocketOpts opts) {
 	this->host = host_;
 	this->port = port_;
+	this->timeout = opts.timeout ? opts.timeout : 0;
+    this->backlog = opts.backlog ? opts.backlog : 5;
 
-	// TODO: It's not working now
-	this->recv_timeout = opts.recv_timeout ? opts.recv_timeout : 0;
-	this->send_timeout = opts.send_timeout ? opts.send_timeout : 0;
-
-	this->backlog = opts.backlog ? opts.backlog : 5;
 	this->users = {};
 	for (auto& type_ : this->callback_types)
 		this->callback_on[type_] = [](int, std::any) -> void {};
@@ -31,9 +28,15 @@ void Socket::start() {
 }
 
 void Socket::send_msg(int socket, std::string msg) {
-	send(socket, msg.c_str(), msg.size(), 0);
+    send(socket, msg.c_str(), msg.size(), 0);
+	this->log_date(socket, "SEND", msg);
+}
 
-	this->log_date(socket, "SEND", std::string(msg));
+void Socket::send_msg(int socket, std::vector<std::string> msgs) {
+    for (std::string msg : msgs) {
+        send(socket, msg.c_str(), msg.size(), 0);
+        this->log_date(socket, "SEND", msg);
+    }
 }
 
 std::string Socket::receive_msg(int socket) {
