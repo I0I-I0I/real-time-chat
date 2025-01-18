@@ -77,9 +77,9 @@ public:
 	 * @brief Create socket
 	 * @param host (const char*)
 	 * @param port (const char*)
-	 * @param opts (SocketOpts) = { backlog = 5, timeout = 3000 } // defaults
+	 * @param opts (SocketOpts) = { backlog = 5, timeout = 3000 }
 	 */
-	Socket(const char* host, const char* port, SocketOpts opts = {});
+	Socket(const char* host, const char* port, const SocketOpts& opts = {});
 
 	/**
 	 * @brief Run socket
@@ -91,41 +91,41 @@ public:
 	 * @param type (string): "connection"(server only) or "open"(client only), "close", "*" or custom data type
 	 * @param callback (OnCallbackStruct): function(int socket, std::string info)
 	 */
-	void on(std::string, OnCallbackStruct);
+	void on(const std::string& type, const OnCallbackStruct& callback);
 
 	/**
 	 * @brief Handle received data. After than, the data is passed to on_callback function with a specific type
-	 * @param socket (int)
-	 * @param type (string)
-	 * @param data (const any&)
+	 * @param socket (const int)
+	 * @param type (const string)
+	 * @param data (const any)
 	 */
-	void handle_received_data(int socket, std::string type, const std::any& data);
+	void handle_received_data(int socket, const std::string& type, const std::any& data);
 
 	/**
 	 * @brief Send message
 	 * @param socket (int)
-	 * @param msg (string)
+	 * @param msg (const string)
 	 */
-	void send_msg(int socket, std::string msg);
+	void send_msg(int socket, const std::string& msg);
 
 	/**
 	 * @brief Send many messages
 	 * @param socket (int)
-	 * @param msgs (vector<string>)
+	 * @param msgs (const vector<string>)
 	 */
-    void send_msg(int socket, std::vector<std::string> msgs);
+    void send_msg(int socket, const std::vector<std::string>& msgs);
 
 	/**
 	 * @brief Send message to all users
 	 * @param socket (int)
-	 * @param msg (string)
+	 * @param msg (const string)
 	 */
-	void send_all(int socket, std::string msg);
+	void send_all(int socket, const std::string& msg);
 
 	/**
 	 * @brief Receive message
 	 * @param socket (int)
-	 * @return (string) // current buffer
+	 * @return (string)
 	 */
 	std::string receive_msg(int socket);
 

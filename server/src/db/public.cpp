@@ -88,7 +88,7 @@ DBResponseStruct DB::delete_data(const std::string& table, std::string& id) {
 	};
 }
 
-DBResponseStruct DB::check_data(const std::string& table, std::string login, std::string password) {
+DBResponseStruct DB::check_data(const std::string& table, const std::string& login, const std::string& password) {
 	std::string sql = "SELECT * FROM " + table + " WHERE login = '" + login + "'";
 	if (this->execute_sql(sql, true) != 0)
 		return this->response;

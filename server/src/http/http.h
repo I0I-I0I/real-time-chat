@@ -12,7 +12,6 @@ using HttpHeadersStruct = std::map<std::string, std::string>;
 
 /**
  * @param path (string)
- * @param type (string)
  * @param params (map<string, string>)
  */
 struct HttpPathStruct {
@@ -22,9 +21,9 @@ struct HttpPathStruct {
 
 /**
  * @param method (string)
- * @param path (HttpPathStruct)
+ * @param url (HttpPathStruct)
  * @param version (string)
- * @param headers (map<string, string>)
+ * @param headers (HttpHeadersStruct)
  * @param body (string)
  */
 struct HttpRequestStruct {
@@ -37,7 +36,7 @@ struct HttpRequestStruct {
 
 /**
  * @param status (string)
- * @param headers (map<string, string>)
+ * @param headers (HttpHeadersStruct)
  * @param body (string)
  */
 struct HttpResponseStruct {
@@ -46,6 +45,11 @@ struct HttpResponseStruct {
 	std::string body;
 };
 
+/**
+ * @param is_error (bool)
+ * @param http (HttpRequestStruct)
+ * @param response (string)
+ */
 struct HttpCastResultStruct  {
 	bool is_error;
 	HttpRequestStruct http;
@@ -68,7 +72,7 @@ public:
 	 * @param headers = {} (map<string, string>)
 	 * @return string
 	 */
-    static std::string response(int code, std::string body, HttpHeadersStruct headers = {});
+    static std::string response(const int& code, const std::string& body, HttpHeadersStruct headers = {});
 
 private:
     static std::string to_send(HttpResponseStruct http);

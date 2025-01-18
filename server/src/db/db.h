@@ -41,18 +41,20 @@ public:
 	/**
 	 * @brief Get all data from a table
 	 * @param table (string)
+	 * @param fields (string) = "*"
 	 * @return (DBResponseStruct)
 	 */
-	DBResponseStruct get_data(const std::string& table, std::string fields = "*");
+	DBResponseStruct get_data(const std::string& table, const std::string fields = "*");
 
 	/**
 	 * @brief Get specific data from a table
      * @param by (string)
 	 * @param table (string)
 	 * @param id (string)
+	 * @param fields (string) = "*"
 	 * @return (DBResponseStruct)
 	 */
-    DBResponseStruct get_data_by(const std::string by, const std::string& table, const std::string& id, std::string fields = "*");
+    DBResponseStruct get_data_by(const std::string by, const std::string& table, const std::string& id, const std::string fields = "*");
 
 	/**
 	 * @brief Push data to a table
@@ -65,7 +67,8 @@ public:
 	/**
 	 * @brief Update particular data in a table
 	 * @param table (string)
-	 * @param data (DBDataListStruct)
+     * @param id (string)
+	 * @param data_list (DBDataListStruct)
 	 * @return (DBResponseStruct)
 	 */
 	DBResponseStruct update_data(const std::string& table, std::string& id, DBDataStruct& data_list);
@@ -85,7 +88,7 @@ public:
 	 * @param password (string)
 	 * @return (DBResponseStruct)
 	 */
-	DBResponseStruct check_data(const std::string& table, std::string login, std::string password);
+	DBResponseStruct check_data(const std::string& table, const std::string& login, const std::string& password);
 
 private:
 	sqlite3 *db;

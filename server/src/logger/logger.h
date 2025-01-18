@@ -3,6 +3,10 @@
 #include <string>
 #include <functional>
 
+/**
+ * @param msg (string)
+ * @param type (string) = "INFO"
+ */
 void logger(std::string msg, std::string type = "INFO");
 
 constexpr const int ERROR_ACCEPT = -10;

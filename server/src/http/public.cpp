@@ -51,7 +51,7 @@ HttpRequestStruct Http::parce(const std::string& request) {
 	return http;
 }
 
-std::string Http::response(int code, std::string body, HttpHeadersStruct headers) {
+std::string Http::response(const int& code, const std::string& body, HttpHeadersStruct headers) {
 	HttpResponseStruct http;
 	http.status = std::to_string(code) + " " + Http::get_status(code);
 	if (headers.find("Content-Type") == headers.end())

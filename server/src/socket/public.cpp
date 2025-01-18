@@ -4,7 +4,7 @@
 #include <sys/socket.h>
 #include "./socket.h"
 
-Socket::Socket(const char* host_, const char* port_, SocketOpts opts) {
+Socket::Socket(const char* host_, const char* port_, const SocketOpts& opts) {
 	this->host = host_;
 	this->port = port_;
 	this->timeout = opts.timeout ? opts.timeout : 0;
@@ -27,12 +27,12 @@ void Socket::start() {
 	}
 }
 
-void Socket::send_msg(int socket, std::string msg) {
+void Socket::send_msg(int socket, const std::string& msg) {
     send(socket, msg.c_str(), msg.size(), 0);
 	this->log_date(socket, "SEND", msg);
 }
 
-void Socket::send_msg(int socket, std::vector<std::string> msgs) {
+void Socket::send_msg(int socket, const std::vector<std::string>& msgs) {
     for (std::string msg : msgs) {
         send(socket, msg.c_str(), msg.size(), 0);
         this->log_date(socket, "SEND", msg);
@@ -50,14 +50,14 @@ std::string Socket::receive_msg(int socket) {
 	return this->buffer;
 }
 
-void Socket::handle_received_data(int socket, std::string type, const std::any& data) {
+void Socket::handle_received_data(int socket, const std::string& type, const std::any& data) {
 	if (this->custom_callback_on.at(type))
 		this->custom_callback_on[type](socket, data);
 	else
 		this->callback_on["*"](socket, data);
 }
 
-void Socket::on(std::string type, OnCallbackStruct callback) {
+void Socket::on(const std::string& type, const OnCallbackStruct& callback) {
 	if (type == "connection")
 		this->create("server");
 	else if (type == "open")
@@ -72,7 +72,7 @@ void Socket::on(std::string type, OnCallbackStruct callback) {
 	this->custom_callback_on[type] = callback;
 }
 
-void Socket::send_all(int socket, std::string msg) {
+void Socket::send_all(int socket, const std::string& msg) {
 	for (auto& user : this->users) {
 		if (user.get_socket() == socket)
 			this->send_msg(socket, msg);

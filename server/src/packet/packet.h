@@ -19,6 +19,15 @@ private:
 
 public:
 
+    /**
+     * @param str_packet (char*)
+     * @return (PacketStruct)
+     */
 	static PacketStruct parce(char* str_packet);
+
+    /**
+     * @param packet (PacketStruct)
+     * @return (string)
+     */
 	static std::string create(PacketStruct packet);
 };
