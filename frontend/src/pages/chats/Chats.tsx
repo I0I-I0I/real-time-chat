@@ -1,5 +1,5 @@
 import {  Gradient } from "@/components/UI"
-import styles from "./Home.module.css"
+import styles from "./Chats.module.css"
 import { IChat,  MessageType } from "@/types"
 
 import { useFetching } from "@/hooks/useFetch"
@@ -34,7 +34,7 @@ const messages: MessageType[] = [
 	}
 ]
 
-const HomePage = (): JSX.Element => {
+const ChatsPage = (): JSX.Element => {
 	const [friends, setFriends] = useState<IChat[] | null>(null)
 
 	const [fetchUsers, isLoading, error] = useFetching(async () => {
@@ -72,4 +72,4 @@ const HomePage = (): JSX.Element => {
 	)
 }
 
-export default HomePage
+export default ChatsPage

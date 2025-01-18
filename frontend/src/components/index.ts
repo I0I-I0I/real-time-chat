@@ -1,4 +1,3 @@
-export * from "./login/Login"
 export * from "./chatsList/ChatsList"
 export * from "./addChat/AddChat"
 export * from "./settings/Settings"
