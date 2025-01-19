@@ -11,7 +11,7 @@ using json = nlohmann::json;
 int main() {
     SocketOpts opts = {
         .backlog = 5,
-        .timeout = 0,
+        .timeout = 5,
     };
     Socket server("localhost",  "8080", opts);
 
@@ -32,7 +32,12 @@ int main() {
         else
             response = Http::response(404, "Unknown method");
 
-        server.send_msg(socket, Http::to_send(response));
+        std::cout << "Length: " << response.headers.at("content-length") << std::endl;
+        if (std::stoi(response.headers.at("content-length")) > 1024) {
+            server.send_msg(socket, Http::to_send(response, 1024));
+        } else {
+            server.send_msg(socket, Http::to_send(response));
+        }
 
         if ((response.headers.find("connection") != response.headers.end())
                 && (response.headers["connection"] == "close")) {

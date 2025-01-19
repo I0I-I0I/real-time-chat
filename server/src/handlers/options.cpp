@@ -6,7 +6,6 @@ HttpResponseStruct HandlerOn::options(const HttpRequestStruct& http) {
 	return Http::response(200, "", {
 		{ "access-control-allow-methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS" },
 		{ "access-control-allow-headers", "content-type, authorization" },
-		{ "content-length", "0" },
 		{ "connection", "keep-alive" },
 		{ "keep-alive", "timeout=15, max=100" }
 	});

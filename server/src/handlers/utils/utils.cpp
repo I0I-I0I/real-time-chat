@@ -74,7 +74,6 @@ HttpResponseStruct get_resp_for_file(const HttpRequestStruct& http, HttpHeadersS
     }
 
     GetFileStruct file = get_file(file_path);
-    headers["content-length"] = std::to_string(file.body.size());
 
     std::map<std::string, std::string> headers_of_ext = get_headers_of_extantion(file.extantion);
     for (const auto& [key, value] : headers_of_ext) {

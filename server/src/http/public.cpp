@@ -1,4 +1,6 @@
+#include <sstream>
 #include <string>
+#include <vector>
 #include <regex>
 #include "../config.h"
 #include "../../lib/json.hpp"
@@ -56,13 +58,14 @@ HttpResponseStruct Http::response(const int& code, const std::string& body, Http
 	http.status = std::to_string(code) + " " + Http::get_status(code);
 	if (headers.find("content-type") == headers.end())
 		headers["content-type"] = "plain/text";
-	http.headers = headers;
-	http.body = body;
+    headers["content-length"] = std::to_string(body.size());
+    http.headers = headers;
+    http.body = body;
 
 	return http;
 }
 
-std::string Http::to_send(HttpResponseStruct http) {
+std::string Http::to_send(HttpResponseStruct& http) {
     std::string response = "";
 
 	response += "HTTP/1.1 " + http.status + " \r\n";
@@ -72,6 +75,36 @@ std::string Http::to_send(HttpResponseStruct http) {
 		response += header.first + ": " + header.second + "\r\n";
 	response += "\r\n";
 	response += http.body;
+
+	Http::log(http);
+
+	return response;
+}
+
+std::vector<std::string> Http::to_send(HttpResponseStruct& http, int size) {
+    std::vector<std::string> response;
+    std::ostringstream top;
+
+	top << "HTTP/1.1 " + http.status + " \r\n";
+
+	http.headers["access-control-allow-origin"] = "*";
+    http.headers["transfer-encoding"] = "chunked";
+    http.headers.erase("content-length");
+	for (const auto& header : http.headers)
+		top << header.first + ": " + header.second + "\r\n";
+	top << "\r\n";
+
+    response.push_back(top.str());
+
+    unsigned int cursor = 0;
+    while (cursor < http.body.size()) {
+        int chunk_size = std::min(size, static_cast<int>(http.body.size() - cursor));
+        std::ostringstream chunk;
+        chunk << std::hex << chunk_size << "\r\n" << http.body.substr(cursor, chunk_size) << "\r\n";
+        response.push_back(chunk.str());
+        cursor += chunk_size;
+    }
+    response.push_back("0\r\n\r\n");
 
 	Http::log(http);
 

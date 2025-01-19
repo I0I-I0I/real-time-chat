@@ -79,7 +79,15 @@ public:
      * @param http (HttpResponseStruct)
 	 * @return (string)
 	 */
-    static std::string to_send(HttpResponseStruct http);
+    static std::string to_send(HttpResponseStruct& http);
+
+	/**
+	 * @brief Transform HttpResponseStruct to vector<string>
+     * @param http (HttpResponseStruct)
+     * @param size (const int&)
+	 * @return (vector<string>)
+	 */
+    static std::vector<std::string> to_send(HttpResponseStruct& http, int size);
 
 private:
 	static HttpPathStruct get_path(std::string path);
