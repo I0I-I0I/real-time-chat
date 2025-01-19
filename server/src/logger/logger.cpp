@@ -4,6 +4,8 @@
 #include "../config.h"
 #include "./logger.h"
 
+const char* LOG_LEVEL = std::getenv("LOG_LEVEL") ? std::getenv("LOG_LEVEL") : "INFO";
+
 std::map<std::string, int> loggers = {
 	{ "ALL", 6 },
 	{ "LOG", 5 },

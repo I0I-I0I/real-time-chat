@@ -1,4 +1,3 @@
-#include <iostream>
 #include <string>
 #include "../lib/json.hpp"
 #include "./config.h"
@@ -32,12 +31,10 @@ int main() {
         else
             response = Http::response(404, "Unknown method");
 
-        std::cout << "Length: " << response.headers.at("content-length") << std::endl;
-        if (std::stoi(response.headers.at("content-length")) > 1024) {
+        if (std::stoi(response.headers.at("content-length")) > 1024)
             server.send_msg(socket, Http::to_send(response, 1024));
-        } else {
+        else
             server.send_msg(socket, Http::to_send(response));
-        }
 
         if ((response.headers.find("connection") != response.headers.end())
                 && (response.headers["connection"] == "close")) {

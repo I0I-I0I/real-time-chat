@@ -66,19 +66,19 @@ HttpResponseStruct Http::response(const int& code, const std::string& body, Http
 }
 
 std::string Http::to_send(HttpResponseStruct& http) {
-    std::string response = "";
+    std::ostringstream response;
 
-	response += "HTTP/1.1 " + http.status + " \r\n";
+	response << "HTTP/1.1 " + http.status + " \r\n";
 
 	http.headers["access-control-allow-origin"] = "*";
 	for (const auto& header : http.headers)
-		response += header.first + ": " + header.second + "\r\n";
-	response += "\r\n";
-	response += http.body;
+		response << header.first + ": " + header.second + "\r\n";
+	response << "\r\n";
+	response << http.body;
 
 	Http::log(http);
 
-	return response;
+	return response.str();
 }
 
 std::vector<std::string> Http::to_send(HttpResponseStruct& http, int size) {
