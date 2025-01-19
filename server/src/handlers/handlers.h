@@ -5,13 +5,13 @@
 #include <string>
 #include "../http/http.h"
 
-using HandlerOnFunc = std::function<std::string(const HttpRequestStruct&)>;
+using HandlerOnFunc = std::function<HttpResponseStruct(const HttpRequestStruct&)>;
 
 class HandlerOn {
 public:
-    static std::string get(const HttpRequestStruct& data);
-    static std::string post(const HttpRequestStruct& data);
-    static std::string put(const HttpRequestStruct& data);
-    static std::string del(const HttpRequestStruct& data);
-    static std::string options(const HttpRequestStruct& data);
+    static HttpResponseStruct get(const HttpRequestStruct& data);
+    static HttpResponseStruct post(const HttpRequestStruct& data);
+    static HttpResponseStruct put(const HttpRequestStruct& data);
+    static HttpResponseStruct del(const HttpRequestStruct& data);
+    static HttpResponseStruct options(const HttpRequestStruct& data);
 };

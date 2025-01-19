@@ -31,22 +31,6 @@ HttpPathStruct Http::get_path(std::string path) {
 	return http_path;
 }
 
-std::string Http::to_send(HttpResponseStruct http) {
-    std::string response = "";
-
-	response += "HTTP/1.1 " + http.status + " \r\n";
-
-	http.headers["access-control-allow-origin"] = "*";
-	for (const auto& header : http.headers)
-		response += header.first + ": " + header.second + "\r\n";
-	response += "\r\n";
-	response += http.body;
-
-	Http::log(http);
-
-	return response;
-}
-
 std::string Http::get_status(int code) {
 	std::map<int, std::string> status_codes = {
 		{ 200, "OK" },

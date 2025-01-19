@@ -8,15 +8,15 @@
 
 using json = nlohmann::json;
 
-std::string HandlerOn::get(const HttpRequestStruct& http) {
+HttpResponseStruct HandlerOn::get(const HttpRequestStruct& http) {
     HttpHeadersStruct headers = {
         { "content-type", "application/json" },
         { "connection", "close" }
     };
 
 	if (http.url.path.at(0) != "/api") {
-        if (http.headers.find("connection") != http.headers.end()
-                && http.headers.at("connection") == "keep-alive") {
+        if ((http.headers.find("connection") != http.headers.end())
+                && (http.headers.at("connection") == "keep-alive")) {
             headers["connection"] = "keep-alive";
             headers["keep-alive"] = "timeout=15, max=100";
         } else {

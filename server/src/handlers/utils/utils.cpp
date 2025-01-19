@@ -63,7 +63,7 @@ GetFileStruct get_file(const std::string& path) {
     };
 }
 
-std::string get_resp_for_file(const HttpRequestStruct& http, HttpHeadersStruct& headers) {
+HttpResponseStruct get_resp_for_file(const HttpRequestStruct& http, HttpHeadersStruct& headers) {
     std::string file_path;
     if (http.url.path.at(http.url.path.size() - 1).find('.') == std::string::npos) {
         file_path = "/index.html";

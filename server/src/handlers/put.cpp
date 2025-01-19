@@ -7,7 +7,7 @@
 
 using json = nlohmann::json;
 
-std::string HandlerOn::put(const HttpRequestStruct& http) {
+HttpResponseStruct HandlerOn::put(const HttpRequestStruct& http) {
     HttpHeadersStruct headers = {
         { "content-type", "application/json" },
         { "connection", "close" }

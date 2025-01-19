@@ -1,4 +1,3 @@
-#include <any>
 #include <string>
 #include <cstring>
 #include <sys/socket.h>
@@ -9,21 +8,20 @@ Socket::Socket(const char* host_, const char* port_, const SocketOpts& opts) {
 	this->port = port_;
 	this->timeout = opts.timeout ? opts.timeout : 0;
     this->backlog = opts.backlog ? opts.backlog : 5;
-
 	this->users = {};
 	for (auto& type_ : this->callback_types)
-		this->callback_on[type_] = [](int, std::any) -> void {};
+		this->callback_on[type_] = [](int, std::string) -> int {return 0;};
 }
 
 void Socket::start() {
 	if (this->socket_type == "server") {
 		this->start_listening();
-		while (true)
-			this->get_connection();
+		while (true) this->get_connection();
+
 	} else if (this->socket_type == "client") {
 		this->try_to_connect();
 		logger("Connection was established");
-		this->connection_handler();
+		this->establish_connection();
 	}
 }
 
@@ -39,37 +37,14 @@ void Socket::send_msg(int socket, const std::vector<std::string>& msgs) {
     }
 }
 
-std::string Socket::receive_msg(int socket) {
-	char* buffer_char = new char[BUFFER_SIZE];
-	memset(buffer_char, 0, BUFFER_SIZE);
-	recv(socket, buffer_char, BUFFER_SIZE, 0);
-
-	this->buffer = std::string(buffer_char);
-
-	this->log_date(socket, "RECV", this->buffer);
-	return this->buffer;
-}
-
-void Socket::handle_received_data(int socket, const std::string& type, const std::any& data) {
-	if (this->custom_callback_on.at(type))
-		this->custom_callback_on[type](socket, data);
-	else
-		this->callback_on["*"](socket, data);
-}
-
 void Socket::on(const std::string& type, const OnCallbackStruct& callback) {
 	if (type == "connection")
 		this->create("server");
 	else if (type == "open")
 		this->create("client");
 
-	for (unsigned int i = 0; i < this->callback_types.size(); i++) {
-		if (this->callback_types[i] == type) {
-			this->callback_on[type] = callback;
-			return;
-		}
-	}
-	this->custom_callback_on[type] = callback;
+    if (this->callback_on.find(type) != this->callback_on.end())
+        this->callback_on[type] = callback;
 }
 
 void Socket::send_all(int socket, const std::string& msg) {

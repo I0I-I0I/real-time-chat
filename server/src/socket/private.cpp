@@ -83,19 +83,23 @@ void Socket::start_listening() {
 	logger("Server waiting on port " + std::string(this->port));
 }
 
-void Socket::connection_handler() {
+void Socket::establish_connection() {
 	this->callback_on["open"](this->main_socket, this->buffer);
 	this->callback_on["close"](this->main_socket, this->buffer);
 	this->close_socket();
 	logger("Connection closed", "CONN");
 }
 
-void Socket::connection_handler(User user) {
-	int user_socket = user.get_socket();
-	this->callback_on["connection"](user_socket, this->buffer);
-	this->callback_on["close"](user_socket, this->buffer);
-	this->remove_user(user);
-	logger("Connection closed", "CONN");
+void Socket::establish_connection(User user) {
+    int user_socket = user.get_socket();
+    while (true) {
+        this->buffer = this->receive_msg(user_socket);
+        if (this->buffer == "") break;
+        if (this->callback_on["connection"](user_socket, this->buffer) != 0) break;
+    }
+    this->callback_on["close"](user_socket, this->buffer);
+    this->remove_user(user);
+    logger("Connection closed", "CONN");
 }
 
 int Socket::accept_connection() {
@@ -134,10 +138,21 @@ User Socket::wait_for_connection() {
 void Socket::get_connection() {
 	User user = this->wait_for_connection();
 	std::thread ([this, user]() {
-		this->connection_handler(user);
+		this->establish_connection(user);
 		logger("Count of users: " + std::to_string(this->users.size()));
 	}).detach();
 	logger("Count of users: " + std::to_string(this->users.size()));
+}
+
+std::string Socket::receive_msg(int socket) {
+	char* buffer_char = new char[BUFFER_SIZE];
+	memset(buffer_char, 0, BUFFER_SIZE);
+	recv(socket, buffer_char, BUFFER_SIZE, 0);
+
+	this->buffer = std::string(buffer_char);
+
+	this->log_date(socket, "RECV", this->buffer);
+	return this->buffer;
 }
 
 User Socket::get_current_user(int& socket) {

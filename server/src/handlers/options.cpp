@@ -2,7 +2,7 @@
 #include "../http/http.h"
 #include "./handlers.h"
 
-std::string HandlerOn::options(const HttpRequestStruct& http) {
+HttpResponseStruct HandlerOn::options(const HttpRequestStruct& http) {
 	return Http::response(200, "", {
 		{ "access-control-allow-methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS" },
 		{ "access-control-allow-headers", "content-type, authorization" },

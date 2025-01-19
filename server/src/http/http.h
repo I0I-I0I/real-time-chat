@@ -61,7 +61,7 @@ public:
 	/**
 	 * @brief Parse HTTP request
 	 * @param data (string)
-	 * @return HttpRequestStruct
+	 * @return (HttpRequestStruct)
 	 */
 	static HttpRequestStruct parce(const std::string& request);
 
@@ -70,12 +70,18 @@ public:
 	 * @param code (int)
 	 * @param body (string)
 	 * @param headers = {} (map<string, string>)
-	 * @return string
+	 * @return (HttpResponseStruct)
 	 */
-    static std::string response(const int& code, const std::string& body, HttpHeadersStruct headers = {});
+    static HttpResponseStruct response(const int& code, const std::string& body, HttpHeadersStruct headers = {});
+
+	/**
+	 * @brief Transform HttpResponseStruct to string
+     * @param http (HttpResponseStruct)
+	 * @return (string)
+	 */
+    static std::string to_send(HttpResponseStruct http);
 
 private:
-    static std::string to_send(HttpResponseStruct http);
 	static HttpPathStruct get_path(std::string path);
 	static std::string get_status(int code);
 

@@ -29,7 +29,8 @@ PacketStruct Packet::parce(char* char_packet) {
 	}
 
 	for (int i = idx; i < packet.length + idx; i++) {
-		if (char_packet[i] == ':' && index < 1) {
+		if ((char_packet[i] == ':')
+                && (index < 1)) {
 			index++;
 			continue;
 		}

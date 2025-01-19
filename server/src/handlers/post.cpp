@@ -8,7 +8,7 @@
 
 using json = nlohmann::json;
 
-std::string HandlerOn::post(const HttpRequestStruct& http) {
+HttpResponseStruct HandlerOn::post(const HttpRequestStruct& http) {
     HttpHeadersStruct headers = {
         { "content-type", "application/json" },
         { "connection", "close" }
@@ -33,7 +33,8 @@ std::string HandlerOn::post(const HttpRequestStruct& http) {
     DBDataListStruct data = json::parse(http.body);
 
     DBResponseStruct response;
-    if (http.url.params.find("type") != http.url.params.end() && http.url.params.at("type") == "check") {
+    if ((http.url.params.find("type") != http.url.params.end())
+            && (http.url.params.at("type") == "check")) {
         response = db.check_data(table, data[0]["login"], data[0]["password"]);
     } else {
         response = db.insert_data(table, data);

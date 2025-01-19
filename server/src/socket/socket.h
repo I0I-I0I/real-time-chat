@@ -11,7 +11,7 @@
 
 constexpr const int CLOSE_CONNECTION = -101;
 
-using OnCallbackStruct = std::function<void(int, const std::any&)>;
+using OnCallbackStruct = std::function<int(const int&, const std::string&)>;
 
 /**
  * @param backlog (unsigned int)
@@ -43,9 +43,8 @@ private:
 	std::string buffer;
 
 	std::vector<User> users;
-	const std::vector<std::string> callback_types = { "connection", "open", "close", "*" };
+	const std::vector<std::string> callback_types = { "connection", "open", "close" };
 	std::map<std::string, OnCallbackStruct> callback_on;
-	std::map<std::string, OnCallbackStruct> custom_callback_on;
 
 	void *get_in_addr(struct sockaddr*);
 	struct addrinfo* get_addr();
@@ -62,11 +61,18 @@ private:
 	User get_current_user(int &socket);
 	void remove_user(User& user);
 
-	void connection_handler();
-	void connection_handler(User user);
+	void establish_connection();
+	void establish_connection(User user);
 
 	void close_users();
 	void close_socket();
+
+	/**
+	 * @brief Receive message
+	 * @param socket (int)
+	 * @return (string)
+	 */
+	std::string receive_msg(int socket);
 
 	void log_date(int &socket, std::string log_type, std::string msg);
 	void error_handler(int error_type, std::string extra_msg = "", bool flag = true);
@@ -87,18 +93,10 @@ public:
 
 	/**
 	 * @brief response on message by type
-	 * @param type (string): "connection"(server only) or "open"(client only), "close", "*" or custom data type
+	 * @param type (string): "connection"(server only) or "open"(client only), "close"
 	 * @param callback (OnCallbackStruct): function(int socket, std::string info)
 	 */
 	void on(const std::string& type, const OnCallbackStruct& callback);
-
-	/**
-	 * @brief Handle received data. After than, the data is passed to on_callback function with a specific type
-	 * @param socket (const int)
-	 * @param type (const string)
-	 * @param data (const any)
-	 */
-	void handle_received_data(int socket, const std::string& type, const std::any& data);
 
 	/**
 	 * @brief Send message
@@ -120,13 +118,6 @@ public:
 	 * @param msg (const string)
 	 */
 	void send_all(int socket, const std::string& msg);
-
-	/**
-	 * @brief Receive message
-	 * @param socket (int)
-	 * @return (string)
-	 */
-	std::string receive_msg(int socket);
 
 	/**
 	 * @brief Close all connections and stop server

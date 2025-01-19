@@ -25,7 +25,7 @@ HttpRequestStruct Http::parce(const std::string& request) {
         }
 
     HttpHeadersStruct headers;
-    while (std::getline(stream, line) && line != "\r") {
+    while (std::getline(stream, line) && (line != "\r")) {
         if (std::regex_search(line, matches, header_pattern)) {
             if (matches.size() == 3) {
                 std::string key = matches[1].str();
@@ -51,7 +51,7 @@ HttpRequestStruct Http::parce(const std::string& request) {
 	return http;
 }
 
-std::string Http::response(const int& code, const std::string& body, HttpHeadersStruct headers) {
+HttpResponseStruct Http::response(const int& code, const std::string& body, HttpHeadersStruct headers) {
 	HttpResponseStruct http;
 	http.status = std::to_string(code) + " " + Http::get_status(code);
 	if (headers.find("content-type") == headers.end())
@@ -59,5 +59,21 @@ std::string Http::response(const int& code, const std::string& body, HttpHeaders
 	http.headers = headers;
 	http.body = body;
 
-	return Http::to_send(http);
+	return http;
+}
+
+std::string Http::to_send(HttpResponseStruct http) {
+    std::string response = "";
+
+	response += "HTTP/1.1 " + http.status + " \r\n";
+
+	http.headers["access-control-allow-origin"] = "*";
+	for (const auto& header : http.headers)
+		response += header.first + ": " + header.second + "\r\n";
+	response += "\r\n";
+	response += http.body;
+
+	Http::log(http);
+
+	return response;
 }
