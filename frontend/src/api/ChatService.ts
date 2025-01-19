@@ -17,7 +17,12 @@ export default class ChatService {
 	}
 
 	static async getAll(): Promise<IChat[] | null> {
-		const resp = await fetch(URL)
+		const resp = await fetch(URL, {
+            method: "GET",
+            headers: {
+                "Connection": "close"
+            }
+        })
 		const data = await resp.json() as IFetchData<IChat>
 		if (data.status !== "OK") {
 			return null

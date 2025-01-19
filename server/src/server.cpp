@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string>
 #include "../lib/json.hpp"
 #include "./config.h"
@@ -10,15 +11,24 @@ using json = nlohmann::json;
 int main() {
     SocketOpts opts = {
         .backlog = 5,
-        .timeout = 5000,
+        .timeout = 1,
     };
     Socket server("localhost",  "8080", opts);
 
     server.on("connection", [&server](int socket, const auto& _) -> void {
-        std::string info = server.receive_msg(socket);
-        if (info == "") return;
-        HttpRequestStruct http = Http::parce(info);
-        server.handle_received_data(socket, http.method, http);
+        for (;;) {
+            std::string info = server.receive_msg(socket);
+            if (info == "") return;
+            HttpRequestStruct http = Http::parce(info);
+            server.handle_received_data(socket, http.method, http);
+
+            if (http.headers.find("connection") != http.headers.end()
+                    && http.headers.at("connection") == "keep-alive") {
+                continue;
+            }
+            break;
+        }
+        std::cout << "GoodBye!!!" << std::endl;
     });
 
     server.on("*", [&server](int socket, const auto& info) -> void {

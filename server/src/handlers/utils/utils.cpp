@@ -29,16 +29,16 @@ std::map<std::string, std::string> get_headers_of_extantion(const std::string& e
     std::map<std::string, std::string> headers;
 
     if (extantion == "html") {
-        headers["Content-Type"] = "text/html";
-        headers["X-Content-Type-Options"] = "nosniff";
+        headers["content-type"] = "text/html";
+        headers["x-content-type-options"] = "nosniff";
     } else if (extantion == "js"){
-        headers["Content-Type"] = "text/javascript";
-        headers["X-Content-Type-Options"] = "script";
+        headers["content-type"] = "text/javascript";
+        headers["x-content-type-options"] = "script";
     } else if (extantion == "css") {
-        headers["Content-Type"] = "text/css";
-        headers["X-Content-Type-Options"] = "style";
+        headers["content-type"] = "text/css";
+        headers["x-content-type-options"] = "style";
     } else if (includes(image_types, extantion)) {
-        headers["Content-Type"] = "image/" + extantion;
+        headers["content-type"] = "image/" + extantion;
     }
 
     return headers;
@@ -63,23 +63,23 @@ GetFileStruct get_file(const std::string& path) {
     };
 }
 
-std::string get_resp_for_file(const HttpRequestStruct& http) {
+std::string get_resp_for_file(const HttpRequestStruct& http, HttpHeadersStruct& headers) {
     std::string file_path;
     if (http.url.path.at(http.url.path.size() - 1).find('.') == std::string::npos) {
         file_path = "/index.html";
     } else {
-        for (auto const& item : http.url.path)
+        for (auto const& item : http.url.path) {
             file_path += item;
+        }
     }
 
     GetFileStruct file = get_file(file_path);
-    std::map<std::string, std::string> headers = {
-        { "Content-Length", std::to_string(file.body.size()) }
-    };
+    headers["content-length"] = std::to_string(file.body.size());
 
     std::map<std::string, std::string> headers_of_ext = get_headers_of_extantion(file.extantion);
-    for (const auto& [key, value] : headers_of_ext)
-    headers[key] = value;
+    for (const auto& [key, value] : headers_of_ext) {
+        headers[key] = value;
+    }
 
     return Http::response(200, file.body, headers);
 }

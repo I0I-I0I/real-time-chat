@@ -5,6 +5,7 @@
 #include "./logger.h"
 
 std::map<std::string, int> loggers = {
+	{ "ALL", 6 },
 	{ "LOG", 5 },
 	{ "INFO", 4 },
 	{ "MSG", 3 },
@@ -13,7 +14,7 @@ std::map<std::string, int> loggers = {
 };
 
 void logger(std::string msg, std::string type) {
-	std::string log = "[" + type + "] " + msg + '\n';
+    std::string log = "[" + type + "] " + msg + '\n';
 	if (type == "ERROR") {
 		std::cerr << log;
 		return;

@@ -9,11 +9,24 @@
 using json = nlohmann::json;
 
 std::string HandlerOn::get(const HttpRequestStruct& http) {
-	if (http.url.path.at(0) != "/api")
-		return get_resp_for_file(http);
+    HttpHeadersStruct headers = {
+        { "content-type", "application/json" },
+        { "connection", "close" }
+    };
+
+	if (http.url.path.at(0) != "/api") {
+        if (http.headers.find("connection") != http.headers.end()
+                && http.headers.at("connection") == "keep-alive") {
+            headers["connection"] = "keep-alive";
+            headers["keep-alive"] = "timeout=15, max=100";
+        } else {
+            headers["connection"] = "close";
+        }
+		return get_resp_for_file(http, headers);
+    }
 
 	if (http.url.path.size() < 3)
-		return Http::response(400, "Something missing in URL");
+		return Http::response(400, "Something missing in URL", headers);
 
 	DB db(DB_PATH);
 
@@ -27,12 +40,5 @@ std::string HandlerOn::get(const HttpRequestStruct& http) {
         response = db.get_data(table);
     }
 
-	return Http::response(
-		response.status,
-		get_resp_body(response),
-		{
-			{ "Content-Type", "application/json" },
-			{ "Connection", "close" }
-		}
-	);
+	return Http::response(response.status, get_resp_body(response), headers);
 }

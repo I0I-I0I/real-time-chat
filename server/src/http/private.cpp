@@ -36,7 +36,7 @@ std::string Http::to_send(HttpResponseStruct http) {
 
 	response += "HTTP/1.1 " + http.status + " \r\n";
 
-	http.headers["Access-Control-Allow-Origin"] = "*";
+	http.headers["access-control-allow-origin"] = "*";
 	for (const auto& header : http.headers)
 		response += header.first + ": " + header.second + "\r\n";
 	response += "\r\n";
@@ -70,18 +70,18 @@ void Http::log(HttpRequestStruct http) {
     logger(" \tPath: " + paths, "INFO");
 	for (auto& param : http.url.params)
 		logger(" \tParams: " + param.first + " = " + param.second, "INFO");
-	logger(" \tVersion: " + http.version, "LOG");
-	logger(" \tHeaders:", "LOG");
+	logger("  \tVersion: " + http.version, "LOG");
+	logger("\tHeaders:", "LOG");
 	for (auto& header : http.headers)
-		logger(" \t" + header.first + ": " + header.second, "LOG");
-	logger(" \tBody: " + http.body, "LOG");
+		logger("  \t" + header.first + ": " + header.second, "LOG");
+	logger(" \tBody: " + http.body, "ALL");
 }
 
 void Http::log(HttpResponseStruct http) {
 	logger("Response:", "INFO");
 	logger(" \tStatus: " + http.status, "INFO");
-	logger(" \tBody: " + http.body, "LOG");
+	logger(" \tBody: " + http.body, "ALL");
 	logger(" \tHeaders:", "LOG");
 	for (auto& header : http.headers)
-		logger(" \t" + header.first + ": " + header.second, "LOG");
+		logger("  \t" + header.first + ": " + header.second, "LOG");
 }

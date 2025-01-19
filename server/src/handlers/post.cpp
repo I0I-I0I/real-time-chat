@@ -9,21 +9,27 @@
 using json = nlohmann::json;
 
 std::string HandlerOn::post(const HttpRequestStruct& http) {
+    HttpHeadersStruct headers = {
+        { "content-type", "application/json" },
+        { "connection", "close" }
+    };
+
 	if (http.url.path.at(0) != "/api")
-		return Http::response(400, "You missed '/api'");
+		return Http::response(400, "You missed '/api'", headers);
 
     if (http.url.path.size() < 3)
-		return Http::response(400, "You missed table name or something");
+		return Http::response(400, "You missed table name or something", headers);
 
 	if (http.headers.at("content-type") != "application/json")
-		return Http::response(400, "Unknown Content-Type, you can only pass 'application/json'");
+		return Http::response(400, "Unknown Content-Type, you can only pass 'application/json'", headers);
 
 	DB db(DB_PATH);
 
 	std::string table = http.url.path[2].substr(1);
 
     if (!json::accept(http.body))
-		return Http::response(400, "Not valid json");
+		return Http::response(400, "Not valid json", headers);
+
     DBDataListStruct data = json::parse(http.body);
 
     DBResponseStruct response;
@@ -33,13 +39,5 @@ std::string HandlerOn::post(const HttpRequestStruct& http) {
         response = db.insert_data(table, data);
     }
 
-
-	return Http::response(
-		response.status,
-		get_resp_body(response),
-		{
-			{ "Content-Type", "application/json" },
-			{ "Connection", "close" }
-		}
-	);
+	return Http::response(response.status, get_resp_body(response), headers);
 }

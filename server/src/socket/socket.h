@@ -70,7 +70,6 @@ private:
 
 	void log_date(int &socket, std::string log_type, std::string msg);
 	void error_handler(int error_type, std::string extra_msg = "", bool flag = true);
-	void socket_logger(std::string msg, std::string type = "INFO");
 
 public:
 	/**

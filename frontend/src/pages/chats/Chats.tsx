@@ -38,7 +38,7 @@ const messages: MessageType[] = [
 const ChatsPage = (): JSX.Element => {
     const [friends, setFriends] = useState<IChat[] | null>(null)
 
-	const [fetchUsers, isLoading, error] = useFetching(async () => {
+	const [fetchUsers, _, error] = useFetching(async () => {
 		const data = await ChatService.getAll()
 		setFriends(data)
 	})
@@ -51,9 +51,9 @@ const ChatsPage = (): JSX.Element => {
 		return <div>{error}</div>
 	}
 
-	if (isLoading) {
-		return <div>Loading...</div>
-	}
+	// if (isLoading) {
+	// 	return <div>Loading...</div>
+	// }
 
 	return (
 		<div className={styles.wrapper}>

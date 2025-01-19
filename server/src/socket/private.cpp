@@ -35,7 +35,7 @@ void Socket::create(std::string type_) {
 	this->socket_type = type_;
 	this->addr = this->get_addr();
 	this->main_socket = this->setup_socket();
-	socket_logger("Socket was created");
+	logger("Socket was created");
 }
 
 int Socket::setup_socket() {
@@ -74,20 +74,20 @@ void Socket::try_to_connect() {
 	}
 
 	inet_ntop(this->addr->ai_family, get_in_addr((struct sockaddr *)this->addr->ai_addr), s, sizeof s);
-	socket_logger("client: connected to " + (std::string)s + ":" + this->port, "CONN");
+	logger("client: connected to " + (std::string)s + ":" + this->port, "CONN");
 }
 
 void Socket::start_listening() {
 	if (listen(this->main_socket, this->backlog) == -1)
 		error_handler(ERROR_LISTEN);
-	socket_logger("Server waiting on port " + std::string(this->port));
+	logger("Server waiting on port " + std::string(this->port));
 }
 
 void Socket::connection_handler() {
 	this->callback_on["open"](this->main_socket, this->buffer);
 	this->callback_on["close"](this->main_socket, this->buffer);
 	this->close_socket();
-	socket_logger("Connection closed", "CONN");
+	logger("Connection closed", "CONN");
 }
 
 void Socket::connection_handler(User user) {
@@ -95,7 +95,7 @@ void Socket::connection_handler(User user) {
 	this->callback_on["connection"](user_socket, this->buffer);
 	this->callback_on["close"](user_socket, this->buffer);
 	this->remove_user(user);
-	socket_logger("Connection closed", "CONN");
+	logger("Connection closed", "CONN");
 }
 
 int Socket::accept_connection() {
@@ -120,14 +120,14 @@ int Socket::accept_connection() {
     }
 
 	inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *)&their_addr), s, sizeof s);
-	socket_logger("server: got connection from " + (std::string)s + ":" + this->port, "CONN");
+	logger("server: got connection from " + (std::string)s + ":" + this->port, "CONN");
 	return socket;
 }
 
 User Socket::wait_for_connection() {
 	User user(this->accept_connection());
 	this->users.push_back(user);
-	socket_logger("User " + std::to_string(user.get_id()) + " connected", "CONN");
+	logger("User " + std::to_string(user.get_id()) + " connected", "CONN");
 	return user;
 }
 
@@ -135,16 +135,16 @@ void Socket::get_connection() {
 	User user = this->wait_for_connection();
 	std::thread ([this, user]() {
 		this->connection_handler(user);
-		socket_logger("Count of users: " + std::to_string(this->users.size()));
+		logger("Count of users: " + std::to_string(this->users.size()));
 	}).detach();
-	socket_logger("Count of users: " + std::to_string(this->users.size()));
+	logger("Count of users: " + std::to_string(this->users.size()));
 }
 
 User Socket::get_current_user(int& socket) {
 	for (auto& user : this->users)
 		if (user.get_socket() == socket)
 			return user;
-	socket_logger("User not found", "ERROR");
+	logger("User not found", "ERROR");
 	return User(-1);
 }
 
@@ -174,11 +174,7 @@ void Socket::log_date(int& socket, std::string log_type, std::string msg) {
 	} else {
 		log_msg += ": " + msg;
 	}
-	socket_logger(log_msg, "LOG");
-}
-
-void Socket::socket_logger(std::string msg, std::string type) {
-	logger(msg, type);
+	logger(log_msg, "ALL");
 }
 
 void Socket::error_handler(int error_type, std::string extra_msg, bool flag) {

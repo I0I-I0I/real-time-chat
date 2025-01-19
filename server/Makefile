@@ -32,7 +32,7 @@ all: create server
 create:
 	@[ -d $(BUILD_DIR) ] || (mkdir $(BUILD_DIR) && echo "Directory $(BUILD_DIR) created")
 
-run:
+run: create server
 	@clear
 	@$(SERVER_EXEC)
 

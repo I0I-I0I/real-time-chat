@@ -8,16 +8,21 @@
 using json = nlohmann::json;
 
 std::string HandlerOn::del(const HttpRequestStruct& http) {
+    HttpHeadersStruct headers = {
+        { "content-type", "application/json" },
+        { "connection", "close" }
+    };
+
 	if (http.url.path.at(0) != "/api")
-		return Http::response(400, "You missed '/api'");
+		return Http::response(400, "You missed '/api'", headers);
 
     if (http.url.path.size() < 3)
-		return Http::response(400, "You missed table name or something");
+		return Http::response(400, "You missed table name or something", headers);
 
 	DB db(DB_PATH);
 
 	if (http.url.params.find("id") == http.url.params.end())
-		return Http::response(400, "Missing 'id'");
+		return Http::response(400, "Missing 'id'", headers);
 	std::string id = http.url.params.at("id");
 
 	std::string table = http.url.path[2];
@@ -29,8 +34,5 @@ std::string HandlerOn::del(const HttpRequestStruct& http) {
 		{ "message", response.body.msg },
 	};
 
-	return Http::response(response.status, body.dump(), {
-		{ "Content-Type", "application/json" },
-		{ "Connection", "close" }
-	});
+	return Http::response(response.status, body.dump(), headers);
 }

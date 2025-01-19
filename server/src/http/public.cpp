@@ -54,8 +54,8 @@ HttpRequestStruct Http::parce(const std::string& request) {
 std::string Http::response(const int& code, const std::string& body, HttpHeadersStruct headers) {
 	HttpResponseStruct http;
 	http.status = std::to_string(code) + " " + Http::get_status(code);
-	if (headers.find("Content-Type") == headers.end())
-		headers["Content-Type"] = "plain/text";
+	if (headers.find("content-type") == headers.end())
+		headers["content-type"] = "plain/text";
 	http.headers = headers;
 	http.body = body;
 

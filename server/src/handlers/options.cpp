@@ -4,9 +4,10 @@
 
 std::string HandlerOn::options(const HttpRequestStruct& http) {
 	return Http::response(200, "", {
-		{ "Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS" },
-		{ "Access-Control-Allow-Headers", "Content-Type, Authorization" },
-		{ "Content-Length", "0" },
-		{ "Connection", "keep-alive" }
+		{ "access-control-allow-methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS" },
+		{ "access-control-allow-headers", "content-type, authorization" },
+		{ "content-length", "0" },
+		{ "connection", "keep-alive" },
+		{ "keep-alive", "timeout=15, max=100" }
 	});
 }

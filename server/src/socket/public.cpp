@@ -22,7 +22,7 @@ void Socket::start() {
 			this->get_connection();
 	} else if (this->socket_type == "client") {
 		this->try_to_connect();
-		socket_logger("Connection was established");
+		logger("Connection was established");
 		this->connection_handler();
 	}
 }
