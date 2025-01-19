@@ -44,15 +44,17 @@ std::map<std::string, std::string> get_headers_of_extantion(const std::string& e
     return headers;
 }
 
-GetFileStruct get_file(const std::string& path) {
+GetFileStruct get_file_form_frontend(std::string path) {
     std::ifstream file(FRONTED_PATH + path);
 
-    if (!file.is_open())
-        return {
-            "File not found",
-            path,
-            "ERROR"
-        };
+    if (!file.is_open()) {
+        if (SPA_MODE) {
+            path = "/index.html";
+            file = std::ifstream(std::string(FRONTED_PATH) + path);
+        } else {
+            return { "File not found", path, "ERROR" };
+        }
+    }
 
     std::stringstream buffer;
     buffer << file.rdbuf();
@@ -73,7 +75,7 @@ HttpResponseStruct get_resp_for_file(const HttpRequestStruct& http, HttpHeadersS
         }
     }
 
-    GetFileStruct file = get_file(file_path);
+    GetFileStruct file = get_file_form_frontend(file_path);
 
     std::map<std::string, std::string> headers_of_ext = get_headers_of_extantion(file.extantion);
     for (const auto& [key, value] : headers_of_ext) {
