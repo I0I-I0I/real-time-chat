@@ -3,23 +3,25 @@ import { Input, Modal, Button, Link, Typography } from "@/components/UI"
 import styles from "../Auth.module.css"
 import useInput from "@/hooks/useInput"
 import UserService from "@/api/UserService"
-import { useNavigate } from "react-router"
+import { useNavigate, useOutletContext } from "react-router"
 
-export const Register = (context: any): JSX.Element => {
+export const Register = (): JSX.Element => {
 	const [login_prop,] = useInput("")
 	const [username_prop,] = useInput("")
 	const [password_prop,] = useInput("")
     const navigate = useNavigate()
+    const setUserState = useOutletContext() as any;
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
-        context(login_prop.value, username_prop.value)
         const status = await UserService.createOne({
             login: login_prop.value,
             username: username_prop.value,
             password: password_prop.value
         })
-        if (status) navigate("/")
+        if (!status) return
+        setUserState(login_prop.value, username_prop.value)
+        navigate("/")
 	}
 
 	return (

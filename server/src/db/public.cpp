@@ -2,6 +2,8 @@
 #include "../logger/logger.h"
 #include "./db.h"
 
+using json = nlohmann::json;
+
 DB::DB(const std::string path) {
 	if (sqlite3_open(path.c_str(), &this->db))
 		logger("Can't open database: " + std::string(sqlite3_errmsg(db)), "ERROR");
@@ -17,8 +19,8 @@ DBResponseStruct DB::get_data(const std::string& table, std::string fields) {
 	return this->response;
 }
 
-DBResponseStruct DB::get_data_by(const std::string by, const std::string& table, const std::string& id, std::string fields) {
-	std::string sql = "SELECT " + fields + " FROM " + table + " WHERE " + by + " = '" + id + "'";
+DBResponseStruct DB::get_data_by(const std::string by, const std::string& table, const std::string& value, std::string fields) {
+	std::string sql = "SELECT " + fields + " FROM " + table + " WHERE " + by + " = '" + value + "'";
 	if (this->execute_sql(sql, true) != 0) return this->response;
 
 	this->response.body.status = "OK";
@@ -88,12 +90,12 @@ DBResponseStruct DB::delete_data(const std::string& table, std::string& id) {
 	};
 }
 
-DBResponseStruct DB::check_data(const std::string& table, const std::string& login, const std::string& password) {
+DBResponseStruct DB::check_password(const std::string& table, const std::string& login, const std::string& password, const std::vector<std::string>& fields) {
 	std::string sql = "SELECT * FROM " + table + " WHERE login = '" + login + "'";
 	if (this->execute_sql(sql, true) != 0)
 		return this->response;
 
-	if (this->response.body.data.at(0)["password"] != password)
+	if (this->response.body.data.at(0)["password"] != password) {
 		return {
 			.status = 404,
 			.body = {
@@ -101,12 +103,20 @@ DBResponseStruct DB::check_data(const std::string& table, const std::string& log
 				.msg = "Wrong password"
 			}
 		};
+    }
+
+    std::vector<json> data;
+    data.push_back({});
+    for (const auto& field : fields) {
+        data[0][field] = this->response.body.data.at(0)[field];
+    }
 
 	return {
 		.status = 200,
 		.body = {
 			.status = "OK",
-			.msg = "Password correct"
+			.msg = "Password correct",
+            .data = data
 		}
 	};
 }

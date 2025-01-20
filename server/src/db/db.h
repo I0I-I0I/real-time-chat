@@ -86,9 +86,10 @@ public:
 	 * @param table (string)
 	 * @param login (string)
 	 * @param password (string)
+	 * @param fields (string)
 	 * @return (DBResponseStruct)
 	 */
-	DBResponseStruct check_data(const std::string& table, const std::string& login, const std::string& password);
+	DBResponseStruct check_password(const std::string& table, const std::string& login, const std::string& password, const std::vector<std::string>& fields = {});
 
 private:
 	sqlite3 *db;

@@ -12,7 +12,6 @@ export default class UserService {
 		if (data.status !== "OK") {
 			return null
 		}
-		console.log(data.message)
 		return data.data[0]
 	}
 
@@ -24,7 +23,6 @@ export default class UserService {
 		if (data.status !== "OK") {
 			return null
 		}
-		console.log(data.message)
 		return data.data[0]
 	}
 
@@ -34,7 +32,6 @@ export default class UserService {
 		if (data.status !== "OK") {
 			return null
 		}
-		console.log(data.message)
 		return data.data
 	}
 
@@ -51,14 +48,13 @@ export default class UserService {
 			}])
 		})
 		const data = await resp.json() as IFetchData<IUser>
-		console.log(data.message)
-		if (data.status === "OK") {
-			return data.status
+		if (data.status !== "OK") {
+            return null
 		}
-		return null
+        return data.status
 	}
 
-	static async checkOne(check_data: ICheckUser): Promise<boolean> {
+	static async checkOne(check_data: ICheckUser): Promise<IUser | null> {
 		const resp = await fetch(URL + "?type=check", {
 			method: "POST",
 			headers: {
@@ -71,9 +67,8 @@ export default class UserService {
 		})
 		const data = await resp.json() as IFetchData<IUser>
 		if (data.status !== "OK") {
-            return false
+            return null
 		}
-        console.log(data.message)
-        return true
+        return data.data[0]
 	}
 }

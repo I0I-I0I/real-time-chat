@@ -35,7 +35,7 @@ HttpResponseStruct HandlerOn::post(const HttpRequestStruct& http) {
     DBResponseStruct response;
     if ((http.url.params.find("type") != http.url.params.end())
             && (http.url.params.at("type") == "check")) {
-        response = db.check_data(table, data[0]["login"], data[0]["password"]);
+        response = db.check_password(table, data[0]["login"], data[0]["password"], { "id", "login", "username", "created_at" });
     } else {
         response = db.insert_data(table, data);
     }
