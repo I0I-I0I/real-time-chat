@@ -22,6 +22,15 @@
 	}
 }
 
+.login {
+    color: gray;
+    font-size: 16px;
+
+    &:hover, &focus-visible {
+        color: rgb(var(--purple));
+    }
+}
+
 .icon {
 	padding: 0;
 	width: 24px;

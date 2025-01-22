@@ -35,7 +35,7 @@ export default class UserService {
 		return data.data
 	}
 
-	static async createOne(post_data: IPostUser): Promise<string | null>  {
+	static async createOne(post_data: IPostUser): Promise<IUser | null>  {
 		const resp = await fetch(URL, {
 			method: "POST",
 			headers: {
@@ -51,7 +51,7 @@ export default class UserService {
 		if (data.status !== "OK") {
             return null
 		}
-        return data.status
+        return data.data[0]
 	}
 
 	static async checkOne(check_data: ICheckUser): Promise<IUser | null> {

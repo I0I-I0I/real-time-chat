@@ -6,6 +6,7 @@ type ButtonVariants =
 	| "default"
 	| "send"
 	| "icon"
+    | "link"
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>  {
 	children: string | React.ReactElement

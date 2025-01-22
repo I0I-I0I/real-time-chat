@@ -69,3 +69,15 @@
 		height: 18px;
 	}
 }
+
+.link {
+	border: none;
+	background: transparent;
+	color: inherit;
+
+    transition: color .1s;
+
+    &:hover, &:focus-visible {
+        color: rgb(var(--purple));
+    }
+}

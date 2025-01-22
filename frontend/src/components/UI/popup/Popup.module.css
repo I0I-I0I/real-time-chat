@@ -1,0 +1,112 @@
+.popup {
+    position: fixed;
+    padding: 10px 20px;
+    border-radius: 30px;
+    background-color: rgb(var(--black) / 0.4);
+    z-index: 1000;
+
+    &.down_top {
+        animation: OnOpenVerticalDownTopAnimation 5s ease-in-out forwards;
+        transform: translate(-50%, 0);
+    }
+
+    &.top_down {
+        animation: OnOpenVerticalTopDownAnimation 5s ease-in-out forwards;
+        transform: translate(-50%, 0);
+    }
+
+    &.left_right {
+        animation: OnOpenHorizontalLeftRightAnimation 5s ease-in-out forwards;
+        transform: translate(0, -50%);
+    }
+
+    &.right_left {
+        animation: OnOpenHorizontalRightLeftAnimation 5s ease-in-out forwards;
+        transform: translate(0, -50%);
+    }
+}
+
+@keyframes OnOpenVerticalDownTopAnimation {
+    0% {
+        bottom: -50vh;
+        left: 50%;
+    }
+    10% {
+        bottom: 40px;
+        left: 50%;
+    }
+    90% {
+        opacity: 1;
+        bottom: 40px;
+        left: 50%;
+    }
+    100% {
+        opacity: 0;
+        bottom: 40px;
+        left: 50%;
+    }
+}
+
+@keyframes OnOpenVerticalTopDownAnimation {
+    0% {
+        top: -50vh;
+        left: 50%;
+    }
+    10% {
+        top: 40px;
+        left: 50%;
+    }
+    90% {
+        opacity: 1;
+        top: 40px;
+        left: 50%;
+    }
+    100% {
+        opacity: 0;
+        top: 40px;
+        left: 50%;
+    }
+}
+
+@keyframes OnOpenHorizontalLeftRightAnimation {
+    0% {
+        left: -50vh;
+        top: 25px;
+    }
+    10% {
+        left: 20px;
+        top: 25px;
+    }
+    90% {
+        opacity: 1;
+        left: 20px;
+        top: 25px;
+    }
+    100% {
+        opacity: 0;
+        left: 20px;
+        top: 25px;
+    }
+}
+
+
+@keyframes OnOpenHorizontalRightLeftAnimation {
+    0% {
+        right: -50vh;
+        top: 25px;
+    }
+    10% {
+        right: 20px;
+        top: 25px;
+    }
+    90% {
+        opacity: 1;
+        right: 20px;
+        top: 25px;
+    }
+    100% {
+        opacity: 0;
+        right: 20px;
+        top: 25px;
+    }
+}

@@ -1,8 +1,9 @@
 import styles from "./Settings.module.css"
-import { Button, Link, Typography, Dropdown, DropdownItem } from "@/components/UI"
+import { Button, Link, Typography, Dropdown, DropdownItem, Popup } from "@/components/UI"
 import cls from "@/utils/cls"
 import { useState } from "react"
 import { ReactSVG } from "react-svg"
+import { useUserStore } from "@/state/user"
 
 interface SettingsProps {
 	className?: string
@@ -37,10 +38,21 @@ export const Settings = ({
 	const [dropdownAccountState, setDropdownState] = useState<boolean>(false)
 	const [dropdownSettingsState, setDropdownSettingsState] = useState<boolean>(false)
 	const [themeState, setThemeState] = useState<ThemeType>("light")
+    const [popupState, setPopupState] = useState<boolean>(false)
+    const username = useUserStore((state) => state.username)
+    const login = useUserStore((state) => state.login)
 
 	const onAccountClick = () => {
 		setDropdownState((prev: boolean): boolean => !prev)
 	}
+
+    const onLoginClick = () => {
+        navigator.clipboard.writeText(`@${login}`)
+        setPopupState(true)
+        setTimeout(() => {
+            setPopupState(false)
+        }, 5000)
+    }
 
 	const onSettingsClick = () => {
 		setDropdownSettingsState((prev: boolean): boolean => !prev)
@@ -78,7 +90,9 @@ export const Settings = ({
 					src="/account.svg"
 				/>
 			</Button>
-			<Typography tag="h2" variant="title-4">Timofey</Typography>
+			<Typography tag="h2" variant="title-4">{username}</Typography>
+			<Button onClick={onLoginClick} variant="link" className={styles.login}><>@{login}</></Button>
+            { popupState && <Popup direction="down_top">Copied!</Popup> }
 
 			<Dropdown dropdownState={dropdownSettingsState} className={cls(styles.dropdown, styles.dropdown_settings)}>
 				{ data_settings.map((_, index: number): JSX.Element => (
