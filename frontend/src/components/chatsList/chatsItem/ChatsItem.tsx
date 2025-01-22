@@ -27,7 +27,6 @@ export const ChatsItem = ({
 			className={styles.button}
 			onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
 				if (onAddChat !== null) {
-					console.log("TEST")
 					onAddChat(e, { name: "Test", lastMessage: "Message" })
 				}
 			}

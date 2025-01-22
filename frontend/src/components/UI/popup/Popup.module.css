@@ -29,63 +29,63 @@
 @keyframes OnOpenVerticalDownTopAnimation {
     0% {
         bottom: -50vh;
-        left: 50%;
+        left: var(--left);
     }
     10% {
-        bottom: 40px;
-        left: 50%;
+        bottom: var(--bottom);
+        left: var(--left);
     }
     90% {
         opacity: 1;
-        bottom: 40px;
-        left: 50%;
+        bottom: var(--bottom);
+        left: var(--left);
     }
     100% {
         opacity: 0;
-        bottom: 40px;
-        left: 50%;
+        bottom: var(--bottom);
+        left: var(--left);
     }
 }
 
 @keyframes OnOpenVerticalTopDownAnimation {
     0% {
         top: -50vh;
-        left: 50%;
+        left: var(--left);
     }
     10% {
-        top: 40px;
-        left: 50%;
+        top: var(--top);
+        left: var(--left);
     }
     90% {
         opacity: 1;
-        top: 40px;
-        left: 50%;
+        top: var(--top);
+        left: var(--left);
     }
     100% {
         opacity: 0;
-        top: 40px;
-        left: 50%;
+        top: var(--top);
+        left: var(--left);
     }
 }
 
 @keyframes OnOpenHorizontalLeftRightAnimation {
     0% {
         left: -50vh;
-        top: 25px;
+        top: var(--top);
     }
     10% {
-        left: 20px;
-        top: 25px;
+        left: var(--left);
+        top: var(--top);
     }
     90% {
         opacity: 1;
-        left: 20px;
-        top: 25px;
+        left: var(--left);
+        top: var(--top);
     }
     100% {
         opacity: 0;
-        left: 20px;
-        top: 25px;
+        left: var(--left);
+        top: var(--top);
     }
 }
 
@@ -93,20 +93,20 @@
 @keyframes OnOpenHorizontalRightLeftAnimation {
     0% {
         right: -50vh;
-        top: 25px;
+        top: var(--top);
     }
     10% {
-        right: 20px;
-        top: 25px;
+        right: var(--right);
+        top: var(--top);
     }
     90% {
         opacity: 1;
-        right: 20px;
-        top: 25px;
+        right: var(--right);
+        top: var(--top);
     }
     100% {
         opacity: 0;
-        right: 20px;
-        top: 25px;
+        right: var(--right);
+        top: var(--top);
     }
 }

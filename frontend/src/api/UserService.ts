@@ -35,7 +35,7 @@ export default class UserService {
 		return data.data
 	}
 
-	static async createOne(post_data: IPostUser): Promise<IUser | null>  {
+	static async createOne(post_data: IPostUser): Promise<IFetchData<IUser> | null>  {
 		const resp = await fetch(URL, {
 			method: "POST",
 			headers: {
@@ -49,12 +49,14 @@ export default class UserService {
 		})
 		const data = await resp.json() as IFetchData<IUser>
 		if (data.status !== "OK") {
+            if (data.message === "SQL: UNIQUE constraint failed: users.login")
+                return data
             return null
 		}
-        return data.data[0]
+        return data
 	}
 
-	static async checkOne(check_data: ICheckUser): Promise<IUser | null> {
+	static async checkOne(check_data: ICheckUser): Promise<IFetchData<IUser> | null> {
 		const resp = await fetch(URL + "?type=check", {
 			method: "POST",
 			headers: {
@@ -67,8 +69,10 @@ export default class UserService {
 		})
 		const data = await resp.json() as IFetchData<IUser>
 		if (data.status !== "OK") {
+            if (data.message === "Wrong password")
+                return data
             return null
 		}
-        return data.data[0]
+        return data
 	}
 }

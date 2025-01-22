@@ -12,7 +12,6 @@ export default class ChatService {
 		if (data.status !== "OK") {
 			return null
 		}
-		console.log(data.message)
 		return data.data[0]
 	}
 
@@ -27,7 +26,6 @@ export default class ChatService {
 		if (data.status !== "OK") {
 			return null
 		}
-		console.log(data.message)
 		return data.data
 	}
 
@@ -43,7 +41,6 @@ export default class ChatService {
 			}])
 		})
 		const data = await resp.json() as IFetchData<IChat>
-		console.log(data.message)
 		if (data.status === "OK") {
 			return data.status
 		}

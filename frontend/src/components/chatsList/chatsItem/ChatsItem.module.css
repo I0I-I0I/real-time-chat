@@ -10,6 +10,7 @@
 .button {
 	background-color: transparent;
 	border: none;
+    border-radius: 0;
 	cursor: pointer;
 	padding: var(--gap) calc(var(--gap) / 2);
 	color: inherit;

@@ -92,7 +92,7 @@ export const Settings = ({
 			</Button>
 			<Typography tag="h2" variant="title-4">{username}</Typography>
 			<Button onClick={onLoginClick} variant="link" className={styles.login}><>@{login}</></Button>
-            { popupState && <Popup direction="down_top">Copied!</Popup> }
+            { popupState && <Popup className={styles.popup} direction="down_top">Copied!</Popup> }
 
 			<Dropdown dropdownState={dropdownSettingsState} className={cls(styles.dropdown, styles.dropdown_settings)}>
 				{ data_settings.map((_, index: number): JSX.Element => (

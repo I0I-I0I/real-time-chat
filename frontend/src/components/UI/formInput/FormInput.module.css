@@ -1,0 +1,25 @@
+.wrapper {
+    position: relative;
+}
+
+.form_input {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+
+    &.invalid {
+        border: 2px solid rgb(var(--red)) !important;
+    }
+}
+
+.invalid_text {
+    color: rgb(var(--red));
+    position: absolute;
+    bottom: -18px;
+    left: 0;
+    display: none;
+
+    &.on {
+        display: block;
+    }
+}

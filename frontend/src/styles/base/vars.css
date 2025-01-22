@@ -6,6 +6,7 @@
 	--white: 255 255 255;
 	--black: 0 0 0;
 	--purple: 138 43 226;
+    --red: 255 26 26;
 
 	--bd-color: rgb(var(--white) / 0.3);
 }
