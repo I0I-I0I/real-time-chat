@@ -1,10 +1,10 @@
 #include <string>
-#include "../../lib/json.hpp"
-#include "../http/http.h"
-#include "../db/db.h"
-#include "../config.h"
-#include "./handlers.h"
-#include "utils/utils.h"
+#include "../../../lib/json.hpp"
+#include "../../http/http.h"
+#include "../../db/db.h"
+#include "../../config.h"
+#include "../handlers.h"
+#include "../utils/utils.h"
 
 using json = nlohmann::json;
 

@@ -15,6 +15,15 @@ bool includes(const std::vector<std::string>& arr, const std::string& str) {
     return false;
 }
 
+std::string get_resp_body(const DBResponseStruct& response) {
+    json body = {
+        { "status", response.body.status },
+        { "data", response.body.data },
+        { "message", response.body.msg },
+    };
+    return body.dump();
+}
+
 std::map<std::string, std::string> get_headers_of_extantion(const std::string& extantion) {
     std::vector<std::string> image_types = {
         "png",
@@ -83,13 +92,4 @@ HttpResponseStruct get_resp_for_file(const HttpRequestStruct& http, HttpHeadersS
     }
 
     return Http::response(200, file.body, headers);
-}
-
-std::string get_resp_body(const DBResponseStruct& response) {
-    json body = {
-        { "status", response.body.status },
-        { "data", response.body.data },
-        { "message", response.body.msg },
-    };
-    return body.dump();
 }

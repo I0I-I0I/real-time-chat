@@ -1,8 +1,5 @@
 #pragma once
 
-#include <fstream>
-#include <map>
-#include <sstream>
 #include <string>
 #include <vector>
 #include "../../http/http.h"
@@ -15,7 +12,7 @@ struct GetFileStruct {
 };
 
 bool includes(const std::vector<std::string>& arr, const std::string& str);
-std::map<std::string, std::string> get_headers_of_extantion(const std::string& extantion);
-GetFileStruct get_file(const std::string& path);
 std::string get_resp_body(const DBResponseStruct& response);
 HttpResponseStruct get_resp_for_file(const HttpRequestStruct& http, HttpHeadersStruct& headers);
+GetFileStruct get_file_form_frontend(std::string path);
+std::map<std::string, std::string> get_headers_of_extantion(const std::string& extantion);
