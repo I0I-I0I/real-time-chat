@@ -8,11 +8,11 @@
 
 using json = nlohmann::json;
 
-HttpRequestStruct Http::parce(const std::string& request) {
+HttpRequestStruct Http::parse(const std::string& request) {
 	HttpRequestStruct http;
 
 	std::regex request_line_pattern(R"((\w+) ([^ ]+) HTTP/(\d.\d))");
-    std::regex header_pattern(R"(([^:]+): (.+))");
+    std::regex header_pattern(R"(([^:]+):\s?(.+))");
 	std::smatch matches;
 
     std::istringstream stream(request);

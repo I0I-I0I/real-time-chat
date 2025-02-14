@@ -11,6 +11,7 @@ int main() {
     SocketOpts opts = {
         .backlog = 5,
         .timeout = 5,
+        .type = "server"
     };
     Socket server("localhost", "8080", opts);
 
@@ -23,7 +24,7 @@ int main() {
     };
 
     server.on("chatting", [&server, &method_handlers](const int& socket, const std::string& info) -> int {
-        HttpRequestStruct http = Http::parce(info);
+        HttpRequestStruct http = Http::parse(info);
         HttpResponseStruct response;
 
         if (method_handlers.find(http.method) != method_handlers.end())

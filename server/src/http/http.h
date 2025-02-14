@@ -63,7 +63,7 @@ public:
 	 * @param data (string)
 	 * @return (HttpRequestStruct)
 	 */
-	static HttpRequestStruct parce(const std::string& request);
+	static HttpRequestStruct parse(const std::string& request);
 
 	/**
 	 * @brief Create HTTP response

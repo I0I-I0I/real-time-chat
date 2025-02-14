@@ -8,6 +8,7 @@ Socket::Socket(const char* host_, const char* port_, const SocketOpts& opts) {
 	this->port = port_;
 	this->timeout = opts.timeout ? opts.timeout : 0;
     this->backlog = opts.backlog ? opts.backlog : 5;
+    this->socket_type = opts.type != "" ? opts.type : "";
 	this->users = {};
 	for (auto& type_ : this->callback_types)
 		this->callback_on[type_] = [](int, std::string) -> int {return 0;};
@@ -38,9 +39,9 @@ void Socket::send_msg(int socket, const std::vector<std::string>& msgs) {
 }
 
 void Socket::on(const std::string& type, const OnCallbackStruct& callback) {
-	if (type == "connection")
+	if (type == "connection" || this->socket_type == "server")
 		this->create("server");
-	else if (type == "open")
+	else if (type == "open" || this->socket_type == "client")
 		this->create("client");
 
     if (this->callback_on.find(type) != this->callback_on.end())

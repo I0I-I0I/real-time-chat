@@ -92,12 +92,11 @@ void Socket::establish_connection() {
 
 void Socket::establish_connection(User user) {
     int user_socket = user.get_socket();
-    this->buffer = this->receive_msg(user_socket);
     this->callback_on["connection"](user_socket, this->buffer);
     while (true) {
         this->buffer = this->receive_msg(user_socket);
         if (this->buffer == "") break;
-        if (this->callback_on["chating"](user_socket, this->buffer) != 0) break;
+        if (this->callback_on["chatting"](user_socket, this->buffer) != 0) break;
     }
     this->callback_on["close"](user_socket, this->buffer);
     this->remove_user(user);

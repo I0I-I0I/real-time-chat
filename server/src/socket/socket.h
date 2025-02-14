@@ -20,6 +20,7 @@ using OnCallbackStruct = std::function<int(const int&, const std::string&)>;
 struct SocketOpts {
 	unsigned int backlog;
 	unsigned int timeout;
+    std::string type;
 };
 
 /**
@@ -43,7 +44,7 @@ private:
 	std::string buffer;
 
 	std::vector<User> users;
-	const std::vector<std::string> callback_types = { "connection", "chating", "open", "close" };
+	const std::vector<std::string> callback_types = { "connection", "chatting", "open", "close" };
 	std::map<std::string, OnCallbackStruct> callback_on;
 
 	void *get_in_addr(struct sockaddr*);
