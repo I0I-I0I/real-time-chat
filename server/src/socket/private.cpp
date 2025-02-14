@@ -92,10 +92,12 @@ void Socket::establish_connection() {
 
 void Socket::establish_connection(User user) {
     int user_socket = user.get_socket();
+    this->buffer = this->receive_msg(user_socket);
+    this->callback_on["connection"](user_socket, this->buffer);
     while (true) {
         this->buffer = this->receive_msg(user_socket);
         if (this->buffer == "") break;
-        if (this->callback_on["connection"](user_socket, this->buffer) != 0) break;
+        if (this->callback_on["chating"](user_socket, this->buffer) != 0) break;
     }
     this->callback_on["close"](user_socket, this->buffer);
     this->remove_user(user);
@@ -128,15 +130,15 @@ int Socket::accept_connection() {
 	return socket;
 }
 
-User Socket::wait_for_connection() {
+User Socket::get_connection() {
 	User user(this->accept_connection());
 	this->users.push_back(user);
 	logger("User " + std::to_string(user.get_id()) + " connected", "CONN");
 	return user;
 }
 
-void Socket::get_connection() {
-	User user = this->wait_for_connection();
+void Socket::wait_for_connection() {
+	User user = this->get_connection();
 	std::thread ([this, user]() {
 		this->establish_connection(user);
 		logger("Count of users: " + std::to_string(this->users.size()));

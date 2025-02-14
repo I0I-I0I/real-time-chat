@@ -1,5 +1,6 @@
 #include <sqlite3.h>
 #include "../logger/logger.h"
+#include "./utils/utils.h"
 #include "./db.h"
 
 using json = nlohmann::json;
@@ -9,8 +10,9 @@ DB::DB(const std::string path) {
 		logger("Can't open database: " + std::string(sqlite3_errmsg(db)), "ERROR");
 }
 
-DBResponseStruct DB::get_data(const std::string& table, std::string fields) {
-	std::string sql = "SELECT " + fields + " FROM " + table;
+DBResponseStruct DB::get_data(const std::string& table, const std::vector<std::string>& fields) {
+    std::string fls = join(fields, ", ");
+	std::string sql = "SELECT " + fls + " FROM " + table;
 	if (this->execute_sql(sql, true) != 0) return this->response;
 
 	this->response.status = 200;
@@ -19,8 +21,9 @@ DBResponseStruct DB::get_data(const std::string& table, std::string fields) {
 	return this->response;
 }
 
-DBResponseStruct DB::get_data_by(const std::string by, const std::string& table, const std::string& value, std::string fields) {
-	std::string sql = "SELECT " + fields + " FROM " + table + " WHERE " + by + " = '" + value + "'";
+DBResponseStruct DB::get_data_by(const std::string by, const std::string& table, const std::string& value, const std::vector<std::string>& fields) {
+    std::string fls = join(fields, ", ");
+	std::string sql = "SELECT " + fls + " FROM " + table + " WHERE " + by + " = '" + value + "'";
 	if (this->execute_sql(sql, true) != 0) return this->response;
 
 	this->response.body.status = "OK";

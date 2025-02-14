@@ -16,7 +16,7 @@ Socket::Socket(const char* host_, const char* port_, const SocketOpts& opts) {
 void Socket::start() {
 	if (this->socket_type == "server") {
 		this->start_listening();
-		while (true) this->get_connection();
+		while (true) this->wait_for_connection();
 
 	} else if (this->socket_type == "client") {
 		this->try_to_connect();

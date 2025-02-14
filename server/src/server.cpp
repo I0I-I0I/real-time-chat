@@ -12,7 +12,7 @@ int main() {
         .backlog = 5,
         .timeout = 5,
     };
-    Socket server("localhost",  "8080", opts);
+    Socket server("localhost", "8080", opts);
 
     std::map<std::string, HandlerOnFunc> method_handlers = {
         { "GET", HandlerOn::get },
@@ -22,7 +22,7 @@ int main() {
         { "PUT", HandlerOn::put }
     };
 
-    server.on("connection", [&server, &method_handlers](const int& socket, const std::string& info) -> int {
+    server.on("chatting", [&server, &method_handlers](const int& socket, const std::string& info) -> int {
         HttpRequestStruct http = Http::parce(info);
         HttpResponseStruct response;
 

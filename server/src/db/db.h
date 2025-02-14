@@ -44,7 +44,7 @@ public:
 	 * @param fields (string) = "*"
 	 * @return (DBResponseStruct)
 	 */
-	DBResponseStruct get_data(const std::string& table, const std::string fields = "*");
+	DBResponseStruct get_data(const std::string& table, const std::vector<std::string>& fields = { "*" });
 
 	/**
 	 * @brief Get specific data from a table
@@ -54,7 +54,7 @@ public:
 	 * @param fields (string) = "*"
 	 * @return (DBResponseStruct)
 	 */
-    DBResponseStruct get_data_by(const std::string by, const std::string& table, const std::string& id, const std::string fields = "*");
+    DBResponseStruct get_data_by(const std::string by, const std::string& table, const std::string& id, const std::vector<std::string>& fields = { "*" });
 
 	/**
 	 * @brief Push data to a table

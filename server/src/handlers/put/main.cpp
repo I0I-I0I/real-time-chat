@@ -9,7 +9,6 @@ using json = nlohmann::json;
 
 HttpResponseStruct HandlerOn::put(const HttpRequestStruct& http) {
     HttpHeadersStruct headers = {
-        { "content-type", "application/json" },
         { "connection", "close" }
     };
 
@@ -35,6 +34,9 @@ HttpResponseStruct HandlerOn::put(const HttpRequestStruct& http) {
 
     if (!json::accept(http.body))
 		return Http::response(400, "Not valid json");
+
+    headers["content-type"] = "application/json";
+
 	DBDataListStruct recv_body = json::parse(http.body);
 	DBResponseStruct response = db.update_data(table, id, recv_body[0]);
 

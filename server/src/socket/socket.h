@@ -43,7 +43,7 @@ private:
 	std::string buffer;
 
 	std::vector<User> users;
-	const std::vector<std::string> callback_types = { "connection", "open", "close" };
+	const std::vector<std::string> callback_types = { "connection", "chating", "open", "close" };
 	std::map<std::string, OnCallbackStruct> callback_on;
 
 	void *get_in_addr(struct sockaddr*);
@@ -54,10 +54,10 @@ private:
 
 	void start_listening();
 	int accept_connection();
-	void get_connection();
+	void wait_for_connection();
 	void try_to_connect();
 
-	User wait_for_connection();
+	User get_connection();
 	User get_current_user(int &socket);
 	void remove_user(User& user);
 
@@ -93,7 +93,7 @@ public:
 
 	/**
 	 * @brief response on message by type
-	 * @param type (string): "connection"(server only) or "open"(client only), "close"
+	 * @param type (string): "connection"(server only) or "open"(client only), "chatting", "close"
 	 * @param callback (OnCallbackStruct): function(int socket, std::string info)
 	 */
 	void on(const std::string& type, const OnCallbackStruct& callback);

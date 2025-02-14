@@ -9,30 +9,31 @@ using json = nlohmann::json;
 
 HttpResponseStruct HandlerOn::del(const HttpRequestStruct& http) {
     HttpHeadersStruct headers = {
-        { "content-type", "application/json" },
         { "connection", "close" }
     };
 
-	if (http.url.path.at(0) != "/api")
-		return Http::response(400, "You missed '/api'", headers);
+    if (http.url.path.at(0) != "/api")
+        return Http::response(400, "You missed '/api'", headers);
 
     if (http.url.path.size() < 3)
-		return Http::response(400, "You missed table name or something", headers);
+        return Http::response(400, "You missed table name or something", headers);
 
-	DB db(DB_PATH);
+    headers["content-type"] = "application/json";
 
-	if (http.url.params.find("id") == http.url.params.end())
-		return Http::response(400, "Missing 'id'", headers);
-	std::string id = http.url.params.at("id");
+    DB db(DB_PATH);
 
-	std::string table = http.url.path[2];
-	DBResponseStruct response = db.delete_data(table, id);
+    if (http.url.params.find("id") == http.url.params.end())
+        return Http::response(400, "Missing 'id'", headers);
+    std::string id = http.url.params.at("id");
 
-	json body = {
-		{ "status", response.body.status },
-		{ "data", response.body.data },
-		{ "message", response.body.msg },
-	};
+    std::string table = http.url.path[2];
+    DBResponseStruct response = db.delete_data(table, id);
 
-	return Http::response(response.status, body.dump(), headers);
+    json body = {
+        { "status", response.body.status },
+        { "data", response.body.data },
+        { "message", response.body.msg },
+    };
+
+    return Http::response(response.status, body.dump(), headers);
 }
