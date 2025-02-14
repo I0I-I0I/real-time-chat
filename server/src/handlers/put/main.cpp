@@ -18,6 +18,9 @@ HttpResponseStruct HandlerOn::put(const HttpRequestStruct& http) {
     if (http.url.path.size() < 3)
 		return Http::response(400, "You missed table name or something", headers);
 
+	if (http.headers.find("content-type") == http.url.params.end())
+        return Http::response(400, "Missing Content-Type", headers);
+
 	if (http.headers.at("content-type") != "application/json")
 		return Http::response(400, "Unknown Content-Type, you can only pass 'application/json'", headers);
 
