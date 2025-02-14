@@ -1,0 +1,47 @@
+# @name Check client for password
+
+POST {{URL_CLIENT}}?type=check HTTP/1.1
+content-type: application/json
+connection: keep-alive
+cache-control: no-cache
+accept: */*
+accept-encoding: gzip, deflate, br
+conten-length: 80
+
+[{
+    "login": "test_login",
+    "password": "test_password"
+}]
+
+
+###
+# @name create one client
+
+POST {{URL_CLIENT}}
+content-type: application/json
+connection: keep-alive
+
+[{
+    "login": "test_login",
+    "username": "test_username",
+    "password": "test_password"
+}]
+
+###
+# @name Get all
+
+GET {{URL_CLIENT}} HTTP/1.1
+cache-control: no-cache
+accept: */*
+accept-encoding: gzip, deflate, br
+host: localhost:8080
+
+###
+# @name Get by id
+
+GET {{URL_CLIENT}}?id=1 HTTP/1.1
+authorization: Basic Og==
+cache-control: no-cache
+accept: */*
+accept-encoding: gzip, deflate, br
+connection: keep-alive
