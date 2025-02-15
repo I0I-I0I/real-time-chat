@@ -11,7 +11,8 @@
 using json = nlohmann::json;
 
 std::map<std::string, OnUrlFunc> paths = {
-    { "/users", on_users }
+    { "/users", on_users },
+    { "/chats", on_chats }
 };
 
 HttpResponseStruct HandlerOn::get(const HttpRequestStruct& http) {
