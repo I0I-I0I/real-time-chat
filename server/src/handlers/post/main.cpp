@@ -13,17 +13,21 @@ HttpResponseStruct HandlerOn::post(const HttpRequestStruct& http) {
         { "connection", "close" }
     };
 
-    if (http.url.path.at(0) != "/api")
+    if (http.url.path.at(0) != "/api") {
         return Http::response(400, "You missed '/api'", headers);
+    }
 
-    if (http.url.path.size() < 3)
+    if (http.url.path.size() < 3) {
         return Http::response(400, "You missed table name or something", headers);
+    }
 
-	if (http.headers.find("content-type") == http.url.params.end())
+	if (http.headers.find("content-type") == http.url.params.end()) {
         return Http::response(400, "Missing Content-Type", headers);
+    }
 
-    if (http.headers.at("content-type") != "application/json")
+    if (http.headers.at("content-type") != "application/json") {
         return Http::response(400, "Unknown Content-Type, you can only pass 'application/json'", headers);
+    }
 
     DB db(DB_PATH);
 

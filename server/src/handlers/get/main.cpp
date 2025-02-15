@@ -1,4 +1,3 @@
-#include <functional>
 #include <map>
 #include <string>
 #include "../../../lib/json.hpp"
@@ -27,13 +26,11 @@ HttpResponseStruct HandlerOn::get(const HttpRequestStruct& http) {
 
 	DB db(DB_PATH);
 
-    DBResponseStruct response;
-    std::string path = http.url.path[2];
-    if (paths.find(path) != paths.end()) {
-        response = paths.at(path)(http, db);
-    } else {
+    int status = 0;
+    HandelPathRet create_response = handle_path(&status, paths, http.url.path[2]);
+
+    if (status == -1) {
         return Http::response(404, "No such table");
     }
-
-	return Http::response(response.status, get_resp_body(response), headers);
+	return create_response(http, db, headers);
 }

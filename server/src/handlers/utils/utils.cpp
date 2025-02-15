@@ -9,6 +9,20 @@
 #include "../../db/db.h"
 #include "./utils.h"
 
+HandelPathRet handle_path(
+    int *status,
+    std::map<std::string, OnUrlFunc> paths,
+    std::string path
+) {
+    if (paths.find(path) == paths.end()) {
+        *status = -1;
+    }
+    return [paths, path](HttpRequestStruct http, DB db, HttpHeadersStruct headers) {
+        DBResponseStruct response = paths.at(path)(http, db);
+        return Http::response(response.status, get_resp_body(response), headers);
+    };
+}
+
 bool includes(const std::vector<std::string>& arr, const std::string& str) {
     for (const auto& item : arr)
         if (item == str) return true;
