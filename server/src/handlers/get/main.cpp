@@ -20,12 +20,12 @@ HttpResponseStruct HandlerOn::get(const HttpRequestStruct& http) {
         { "connection", "close" }
     };
 
-	if (http.url.path.at(0) != "/api") return on_file(http, headers);
-	if (http.url.path.size() < 3) return Http::response(400, "Something missing in URL");
+    if (http.url.path.at(0) != "/api") return on_file(http, headers);
+    if (http.url.path.size() < 3) return Http::response(400, "Something missing in URL");
 
     headers["content-type"] = "application/json";
 
-	DB db(DB_PATH);
+    DB db(DB_PATH);
 
     int status = 0;
     HandelPathRet create_response = handle_path(&status, paths, http.url.path[2]);
@@ -33,5 +33,5 @@ HttpResponseStruct HandlerOn::get(const HttpRequestStruct& http) {
     if (status == -1) {
         return Http::response(404, "No such table");
     }
-	return create_response(http, db, headers);
+    return create_response(http, db, headers);
 }

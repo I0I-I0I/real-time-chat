@@ -9,11 +9,11 @@
 using json = nlohmann::json;
 
 HttpRequestStruct Http::parse(const std::string& request) {
-	HttpRequestStruct http;
+    HttpRequestStruct http;
 
-	std::regex request_line_pattern(R"((\w+) ([^ ]+) HTTP/(\d.\d))");
+    std::regex request_line_pattern(R"((\w+) ([^ ]+) HTTP/(\d.\d))");
     std::regex header_pattern(R"(([^:]+):\s?(.+))");
-	std::smatch matches;
+    std::smatch matches;
 
     std::istringstream stream(request);
     std::string line;
@@ -22,7 +22,7 @@ HttpRequestStruct Http::parse(const std::string& request) {
     if (std::regex_search(line, matches, request_line_pattern))
         if (matches.size() == 4) {
             http.method = matches[1].str();
-			http.url = get_path(matches[2].str());
+            http.url = get_path(matches[2].str());
             http.version = matches[3].str();
         }
 
@@ -48,53 +48,53 @@ HttpRequestStruct Http::parse(const std::string& request) {
     }
     http.body = body;
 
-	Http::log(http);
+    Http::log(http);
 
-	return http;
+    return http;
 }
 
 HttpResponseStruct Http::response(const int& code, const std::string& body, HttpHeadersStruct headers) {
-	HttpResponseStruct http;
-	http.status = std::to_string(code) + " " + Http::get_status(code);
+    HttpResponseStruct http;
+    http.status = std::to_string(code) + " " + Http::get_status(code);
 
-	if (headers.find("content-type") == headers.end()) headers["content-type"] = "plain/text";
+    if (headers.find("content-type") == headers.end()) headers["content-type"] = "plain/text";
     if (headers.find("connection") == headers.end()) headers["connection"] = "close";
     headers["content-length"] = std::to_string(body.size());
 
     http.headers = headers;
     http.body = body;
 
-	return http;
+    return http;
 }
 
 std::string Http::to_send(HttpResponseStruct& http) {
     std::ostringstream response;
 
-	response << "HTTP/1.1 " + http.status + " \r\n";
+    response << "HTTP/1.1 " + http.status + " \r\n";
 
-	http.headers["access-control-allow-origin"] = "*";
-	for (const auto& header : http.headers)
-		response << header.first + ": " + header.second + "\r\n";
-	response << "\r\n";
-	response << http.body;
+    http.headers["access-control-allow-origin"] = "*";
+    for (const auto& header : http.headers)
+        response << header.first + ": " + header.second + "\r\n";
+    response << "\r\n";
+    response << http.body;
 
-	Http::log(http);
+    Http::log(http);
 
-	return response.str();
+    return response.str();
 }
 
 std::vector<std::string> Http::to_send(HttpResponseStruct& http, int size) {
     std::vector<std::string> response;
     std::ostringstream top;
 
-	top << "HTTP/1.1 " + http.status + " \r\n";
+    top << "HTTP/1.1 " + http.status + " \r\n";
 
-	http.headers["access-control-allow-origin"] = "*";
+    http.headers["access-control-allow-origin"] = "*";
     http.headers["transfer-encoding"] = "chunked";
     http.headers.erase("content-length");
-	for (const auto& header : http.headers)
-		top << header.first + ": " + header.second + "\r\n";
-	top << "\r\n";
+    for (const auto& header : http.headers)
+        top << header.first + ": " + header.second + "\r\n";
+    top << "\r\n";
 
     response.push_back(top.str());
 
@@ -108,7 +108,7 @@ std::vector<std::string> Http::to_send(HttpResponseStruct& http, int size) {
     }
     response.push_back("0\r\n\r\n");
 
-	Http::log(http);
+    Http::log(http);
 
-	return response;
+    return response;
 }

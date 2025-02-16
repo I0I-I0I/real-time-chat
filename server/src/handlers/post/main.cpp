@@ -21,7 +21,7 @@ HttpResponseStruct HandlerOn::post(const HttpRequestStruct& http) {
         return Http::response(400, "You missed table name or something", headers);
     }
 
-	if (http.headers.find("content-type") == http.url.params.end()) {
+    if (http.headers.find("content-type") == http.url.params.end()) {
         return Http::response(400, "Missing Content-Type", headers);
     }
 

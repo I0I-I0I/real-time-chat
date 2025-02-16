@@ -5,24 +5,24 @@ import styles from "./Input.module.css"
 import cls from "@/utils/cls"
 
 type VariantsType =
-	| "default"
-	| "file"
-	| "message_input"
-	| "search"
+    | "default"
+    | "file"
+    | "message_input"
+    | "search"
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-	className?: string
-	variant?: VariantsType
+    className?: string
+    variant?: VariantsType
 }
 
 export const Input: React.FC<InputProps> = ({
-	className = "",
-	variant = "default",
-	...props
+    className = "",
+    variant = "default",
+    ...props
 }) => {
-	const id = useId()
+    const id = useId()
 
-	return (
-		<input className={cls(styles.input , styles[variant], className)} id={id} {...props} />
-	)
+    return (
+        <input className={cls(styles.input , styles[variant], className)} id={id} {...props} />
+    )
 }

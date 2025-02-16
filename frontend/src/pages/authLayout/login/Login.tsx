@@ -11,14 +11,14 @@ import { IUser } from "@/types"
 export const Login = (): JSX.Element => {
     const [invalidData, setInvalidData] = useState(false)
     const [invalidPassword, setInvalidPassword] = useState(false)
-	const [login_prop,] = useInput("")
-	const [password_prop,] = useInput("")
+    const [login_prop,] = useInput("")
+    const [password_prop,] = useInput("")
     const navigate = useNavigate()
     const setUserState = useUserStore((state) => state.setUser)
     const setUserAuthState = useUserStore((state) => state.setAuth)
 
-	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault()
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
         const response = await UserService.checkOne({
             login: login_prop.value,
             password: password_prop.value
@@ -37,9 +37,9 @@ export const Login = (): JSX.Element => {
         setUserState(data.login, data.username)
         setUserAuthState(true)
         navigate("/")
-	}
+    }
 
-	return (
+    return (
         <Modal className={styles.modal_login}>
             <Typography tag="h1" variant="title-1">Sing in</Typography>
             <form action="POST" className="form sing-in" onSubmit={handleSubmit}>
@@ -67,5 +67,5 @@ export const Login = (): JSX.Element => {
                 <Link href="/register" className={styles.link}>or sing up</Link>
             </form>
         </Modal>
-	)
+    )
 }

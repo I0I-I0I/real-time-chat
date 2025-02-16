@@ -3,15 +3,15 @@ import styles from "./AddChat.module.css"
 import { Search } from "@/components/UI/search/Search"
 
 interface AddChatProps {
-	className?: string
+    className?: string
 }
 
 export const AddChat = ({
-	className = ""
+    className = ""
 }: AddChatProps) => {
-	return (
-		<div className={cls(styles.add_chat, className)}>
-			<Search />
-		</div>
-	)
+    return (
+        <div className={cls(styles.add_chat, className)}>
+            <Search />
+        </div>
+    )
 }

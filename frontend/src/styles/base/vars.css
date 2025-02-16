@@ -1,12 +1,12 @@
 :root {
-	--font-main: "Maple Mono NF", sans-serif;
+    --font-main: "Maple Mono NF", sans-serif;
 
-	--font-size: 16px;
+    --font-size: 16px;
 
-	--white: 255 255 255;
-	--black: 0 0 0;
-	--purple: 138 43 226;
+    --white: 255 255 255;
+    --black: 0 0 0;
+    --purple: 138 43 226;
     --red: 255 26 26;
 
-	--bd-color: rgb(var(--white) / 0.3);
+    --bd-color: rgb(var(--white) / 0.3);
 }

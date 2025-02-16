@@ -15,8 +15,8 @@ using HttpHeadersStruct = std::map<std::string, std::string>;
  * @param params (map<string, string>)
  */
 struct HttpPathStruct {
-	std::vector<std::string> path;
-	std::map<std::string, std::string> params;
+    std::vector<std::string> path;
+    std::map<std::string, std::string> params;
 };
 
 /**
@@ -27,11 +27,11 @@ struct HttpPathStruct {
  * @param body (string)
  */
 struct HttpRequestStruct {
-	std::string method;
-	HttpPathStruct url;
-	std::string version;
-	HttpHeadersStruct headers;
-	std::string body;
+    std::string method;
+    HttpPathStruct url;
+    std::string version;
+    HttpHeadersStruct headers;
+    std::string body;
 };
 
 /**
@@ -40,9 +40,9 @@ struct HttpRequestStruct {
  * @param body (string)
  */
 struct HttpResponseStruct {
-	std::string status;
-	HttpHeadersStruct headers;
-	std::string body;
+    std::string status;
+    HttpHeadersStruct headers;
+    std::string body;
 };
 
 /**
@@ -51,48 +51,48 @@ struct HttpResponseStruct {
  * @param response (string)
  */
 struct HttpCastResultStruct  {
-	bool is_error;
-	HttpRequestStruct http;
-	std::string response;
+    bool is_error;
+    HttpRequestStruct http;
+    std::string response;
 };
 
 class Http {
 public:
-	/**
-	 * @brief Parse HTTP request
-	 * @param data (string)
-	 * @return (HttpRequestStruct)
-	 */
-	static HttpRequestStruct parse(const std::string& request);
+    /**
+     * @brief Parse HTTP request
+     * @param data (string)
+     * @return (HttpRequestStruct)
+     */
+    static HttpRequestStruct parse(const std::string& request);
 
-	/**
-	 * @brief Create HTTP response
-	 * @param code (int)
-	 * @param body (string)
-	 * @param headers = {} (map<string, string>)
-	 * @return (HttpResponseStruct)
-	 */
+    /**
+     * @brief Create HTTP response
+     * @param code (int)
+     * @param body (string)
+     * @param headers = {} (map<string, string>)
+     * @return (HttpResponseStruct)
+     */
     static HttpResponseStruct response(const int& code, const std::string& body, HttpHeadersStruct headers = {});
 
-	/**
-	 * @brief Transform HttpResponseStruct to string
+    /**
+     * @brief Transform HttpResponseStruct to string
      * @param http (HttpResponseStruct)
-	 * @return (string)
-	 */
+     * @return (string)
+     */
     static std::string to_send(HttpResponseStruct& http);
 
-	/**
-	 * @brief Transform HttpResponseStruct to vector<string>
+    /**
+     * @brief Transform HttpResponseStruct to vector<string>
      * @param http (HttpResponseStruct)
      * @param size (const int&)
-	 * @return (vector<string>)
-	 */
+     * @return (vector<string>)
+     */
     static std::vector<std::string> to_send(HttpResponseStruct& http, int size);
 
 private:
-	static HttpPathStruct get_path(std::string path);
-	static std::string get_status(int code);
+    static HttpPathStruct get_path(std::string path);
+    static std::string get_status(int code);
 
-	static void log(HttpRequestStruct http);
-	static void log(HttpResponseStruct http);
+    static void log(HttpRequestStruct http);
+    static void log(HttpResponseStruct http);
 };

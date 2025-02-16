@@ -10,15 +10,15 @@ import { useState } from "react"
 export const Register = (): JSX.Element => {
     const [invalidData, setInvalidData] = useState(false)
     const [ununiqueLogin, setUnuniqueLogin] = useState(false)
-	const [login_prop,] = useInput("")
-	const [username_prop,] = useInput("")
-	const [password_prop,] = useInput("")
+    const [login_prop,] = useInput("")
+    const [username_prop,] = useInput("")
+    const [password_prop,] = useInput("")
     const navigate = useNavigate()
     const setUserState = useUserStore((state) => state.setUser)
     const setUserAuthState = useUserStore((state) => state.setAuth)
 
-	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault()
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
         setUnuniqueLogin(false)
         setInvalidData(false)
         const status = await UserService.createOne({
@@ -39,9 +39,9 @@ export const Register = (): JSX.Element => {
         setUserState(data.login, data.username)
         setUserAuthState(true)
         navigate("/")
-	}
+    }
 
-	return (
+    return (
         <Modal className={styles.modal_login}>
             <Typography tag="h1" variant="title-1">Sing in</Typography>
             <form action="POST" className="form sing-in" onSubmit={handleSubmit}>
@@ -77,5 +77,5 @@ export const Register = (): JSX.Element => {
                 <Link href="/login" className={styles.link}>or sing in</Link>
             </form>
         </Modal>
-	)
+    )
 }

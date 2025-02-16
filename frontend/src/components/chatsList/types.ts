@@ -1,5 +1,5 @@
 export type ChatsData = {
-	id: number
-	name: string
-	lastMessage: string
+    id: number
+    name: string
+    lastMessage: string
 }

@@ -8,9 +8,9 @@
 using OnUrlFunc = std::function<DBResponseStruct(const HttpRequestStruct&, DB&)>;
 
 struct GetFileStruct {
-	std::string body;
-	std::string path;
-	std::string extantion;
+    std::string body;
+    std::string path;
+    std::string extantion;
 };
 
 bool includes(const std::vector<std::string>& arr, const std::string& str);

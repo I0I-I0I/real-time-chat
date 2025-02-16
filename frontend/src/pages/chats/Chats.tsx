@@ -8,33 +8,33 @@ import { useUserStore } from "@/state/user"
 // import { useUserStore } from "@/state/user"
 
 import {
-	ChatInfo,
-	AddChat,
-	ChatsList,
-	Settings,
-	MessagePrompt,
-	Chat
+    ChatInfo,
+    AddChat,
+    ChatsList,
+    Settings,
+    MessagePrompt,
+    Chat
 } from "@/components"
 import { useEffect, useState } from "react"
 import ChatService from "@/api/ChatService"
 
 const messages: MessageType[] = [
-	{
-		text: "Hi",
-		author: "Ivan"
-	},
-	{
-		text: "How are u?",
-		author: "Ivan"
-	},
-	{
-		text: "Hello!",
-		author: "me"
-	},
-	{
-		text: "Ok",
-		author: "Ivan"
-	}
+    {
+        text: "Hi",
+        author: "Ivan"
+    },
+    {
+        text: "How are u?",
+        author: "Ivan"
+    },
+    {
+        text: "Hello!",
+        author: "me"
+    },
+    {
+        text: "Ok",
+        author: "Ivan"
+    }
 ]
 
 const ChatsPage = (): JSX.Element => {
@@ -45,35 +45,35 @@ const ChatsPage = (): JSX.Element => {
         return <NotAuthPage />
     }
 
-	const [fetchUsers, _, error] = useFetching(async () => {
-		const data = await ChatService.getAll()
-		setFriends(data)
-	})
+    const [fetchUsers, _, error] = useFetching(async () => {
+        const data = await ChatService.getAll()
+        setFriends(data)
+    })
 
-	useEffect(() => {
-		fetchUsers();
-	}, []);
+    useEffect(() => {
+        fetchUsers();
+    }, []);
 
-	if (error) {
-		return <div>{error}</div>
-	}
+    if (error) {
+        return <div>{error}</div>
+    }
 
-	return (
-		<div className={styles.wrapper}>
-			<Gradient />
-			<div className={styles.container}>
-				<AddChat className={styles.add_friends} />
-				<ChatInfo className={styles.info} />
-				<ChatsList
-					data={friends}
-					className={styles.list}
-				/>
-				<Chat className={styles.messages} data={messages} />
-				<Settings className={styles.settings} />
-				<MessagePrompt className={styles.prompt} />
-			</div>
-		</div>
-	)
+    return (
+        <div className={styles.wrapper}>
+            <Gradient />
+            <div className={styles.container}>
+                <AddChat className={styles.add_friends} />
+                <ChatInfo className={styles.info} />
+                <ChatsList
+                    data={friends}
+                    className={styles.list}
+                />
+                <Chat className={styles.messages} data={messages} />
+                <Settings className={styles.settings} />
+                <MessagePrompt className={styles.prompt} />
+            </div>
+        </div>
+    )
 }
 
 export default ChatsPage

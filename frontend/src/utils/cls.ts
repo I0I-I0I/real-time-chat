@@ -1,4 +1,4 @@
 const cls = (...classes: string[]) =>
-	classes.join(' ')
+    classes.join(' ')
 
 export default cls

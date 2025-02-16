@@ -1,36 +1,36 @@
 .modal_login {
-	max-width: 400px;
-	width: 100%;
-	padding: 30px 20px;
-	border-radius: 10px;
-	background-color: rgb(var(--white));
-	color: rgb(var(--black));
-	font-size: 1.2rem;
+    max-width: 400px;
+    width: 100%;
+    padding: 30px 20px;
+    border-radius: 10px;
+    background-color: rgb(var(--white));
+    color: rgb(var(--black));
+    font-size: 1.2rem;
 
-	& > h1 {
-		margin-bottom: 30px;
-		font-size: 2rem;
-	}
+    & > h1 {
+        margin-bottom: 30px;
+        font-size: 2rem;
+    }
 
-	& > form {
-		display: flex;
-		flex-direction: column;
-		gap: 20px;
-		font-size: inherit;
+    & > form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        font-size: inherit;
 
-		& > input {
-			min-width: 100%;
-			font-size: inherit;
-			text-align: center;
-		}
+        & > input {
+            min-width: 100%;
+            font-size: inherit;
+            text-align: center;
+        }
 
-		& > .link {
-			font-size: 0.9rem;
-			text-decoration: underline;
-		}
+        & > .link {
+            font-size: 0.9rem;
+            text-decoration: underline;
+        }
 
-		& > .button {
-			align-self: center;
-		}
-	}
+        & > .button {
+            align-self: center;
+        }
+    }
 }

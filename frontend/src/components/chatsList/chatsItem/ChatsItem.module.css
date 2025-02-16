@@ -1,53 +1,53 @@
 .item {
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
-	border-bottom: 1px solid var(--bd-color);
-	padding: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-bottom: 1px solid var(--bd-color);
+    padding: 0;
 }
 
 .button {
-	background-color: transparent;
-	border: none;
+    background-color: transparent;
+    border: none;
     border-radius: 0;
-	cursor: pointer;
-	padding: var(--gap) calc(var(--gap) / 2);
-	color: inherit;
-	font-size: inherit;
-	font-family: inherit;
-	text-align: left;
-	display: flex;
-	align-items: center;
-	gap: 20px;
+    cursor: pointer;
+    padding: var(--gap) calc(var(--gap) / 2);
+    color: inherit;
+    font-size: inherit;
+    font-family: inherit;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 20px;
 
-	transition: background-color .1s ease-in-out;
+    transition: background-color .1s ease-in-out;
 
-	&:focus {
-		outline: none;
-	}
+    &:focus {
+        outline: none;
+    }
 
-	&:hover, &:focus-visible {
-		background-color: rgb(var(--white) / 0.1);
-	}
+    &:hover, &:focus-visible {
+        background-color: rgb(var(--white) / 0.1);
+    }
 }
 
 .index {
-	position: absolute;
-	right: 10px;
-	top: 5px;
-	font-weight: bold;
-	color: rgb(var(--white) / 0.5);
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    font-weight: bold;
+    color: rgb(var(--white) / 0.5);
 }
 
 .icon {
-	--padding: 10px;
+    --padding: 10px;
 
-	padding: var(--padding);
-	width: calc((var(--padding) * 2) + 24px);
-	height: calc((var(--padding) * 2) + 24px);
-	stroke: rgb(var(--white));
-	fill: none;
-	border-radius: 50%;
-	border: 1px solid rgb(var(--white));
+    padding: var(--padding);
+    width: calc((var(--padding) * 2) + 24px);
+    height: calc((var(--padding) * 2) + 24px);
+    stroke: rgb(var(--white));
+    fill: none;
+    border-radius: 50%;
+    border: 1px solid rgb(var(--white));
 }

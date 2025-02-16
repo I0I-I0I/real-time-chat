@@ -2,16 +2,16 @@ import cls from "@/utils/cls"
 import styles from "./Modal.module.css"
 
 interface ModalProps {
-	children: React.ReactNode
-	className?: string
+    children: React.ReactNode
+    className?: string
 }
 
 export const Modal = ({
-	children,
-	className = ""
+    children,
+    className = ""
 }: ModalProps) => (
-	<div className={cls(styles.modal, className)}>
-		{children}
-	</div>
+    <div className={cls(styles.modal, className)}>
+        {children}
+    </div>
 )
 

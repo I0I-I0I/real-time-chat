@@ -1,24 +1,24 @@
 .chat_info {
-	padding-bottom: 10px;
-	padding-top: 10px;
-	padding-left: 10px;
-	display: grid;
-	grid-template-columns: max-content 1fr;
-	grid-template-rows: max-content max-content;
-	align-items: center;
-	row-gap: 10px;
-	column-gap: 20px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    padding-left: 10px;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    grid-template-rows: max-content max-content;
+    align-items: center;
+    row-gap: 10px;
+    column-gap: 20px;
 }
 
 .icon {
-	--padding: 10px;
+    --padding: 10px;
 
-	grid-column: span 1;
-	grid-row: span 2;
-	padding: var(--padding);
-	width: calc((var(--padding) * 2) + 24px);
-	height: calc((var(--padding) * 2) + 24px);
-	stroke: rgb(var(--white));
-	border-radius: 50%;
-	border: 1px solid rgb(var(--white));
+    grid-column: span 1;
+    grid-row: span 2;
+    padding: var(--padding);
+    width: calc((var(--padding) * 2) + 24px);
+    height: calc((var(--padding) * 2) + 24px);
+    stroke: rgb(var(--white));
+    border-radius: 50%;
+    border: 1px solid rgb(var(--white));
 }

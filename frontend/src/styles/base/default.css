@@ -1,45 +1,45 @@
 html {
-	font-family: var(--font-main);
-	font-size: var(--font-size);
+    font-family: var(--font-main);
+    font-size: var(--font-size);
 }
 
 body {
-	background-color: rgb(var(--black));
-	color: rgb(var(--white));
-	min-height: 100dvh;
-	min-width: 100dvw;
+    background-color: rgb(var(--black));
+    color: rgb(var(--white));
+    min-height: 100dvh;
+    min-width: 100dvw;
 }
 
 /* Container */
 
 .container {
-	--page-width: 1200px;
-	--page-padding: 20px;
-	--main-width: calc(
-		var(--page-width) +
-			(var(--page-padding) * 2)
-	);
+    --page-width: 1200px;
+    --page-padding: 20px;
+    --main-width: calc(
+        var(--page-width) +
+            (var(--page-padding) * 2)
+    );
 
-	max-width: var(--main-width);
-	padding: 0 var(--page-padding);
-	margin: 0 auto;
+    max-width: var(--main-width);
+    padding: 0 var(--page-padding);
+    margin: 0 auto;
 }
 
 /* Hidden */
 
 .hidden {
-	display: none !important;
+    display: none !important;
 }
 
 .visually-hidden {
-	position: absolute;
-	width: 1px;
-	height: 1px;
-	margin: -1px;
-	border: 0;
-	padding: 0;
-	white-space: nowrap;
-	clip-path: inset(100%);
-	clip: rect(0 0 0 0);
-	overflow: hidden;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    border: 0;
+    padding: 0;
+    white-space: nowrap;
+    clip-path: inset(100%);
+    clip: rect(0 0 0 0);
+    overflow: hidden;
 }

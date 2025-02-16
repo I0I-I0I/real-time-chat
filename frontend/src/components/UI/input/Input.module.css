@@ -1,61 +1,61 @@
 .input {
-	&:focus {
-		outline: none;
-	}
+    &:focus {
+        outline: none;
+    }
 
-	&::-webkit-outer-spin-button,
-	&::-webkit-inner-spin-button {
-		-webkit-appearance: none;
-		margin: 0;
-	}
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
 
-	color: inherit;
-	background-color: inherit;
-	font-size: inherit;
-	font-family: inherit;
-	border: none;
+    color: inherit;
+    background-color: inherit;
+    font-size: inherit;
+    font-family: inherit;
+    border: none;
 
-	transition: background-color .1s ease-in-out;
+    transition: background-color .1s ease-in-out;
 }
 
 .default {
-	padding: 5px;
-	border-radius: 10px;
-	border: 2px solid rgb(var(--black));
-	transition: border .2s ease-in-out;
+    padding: 5px;
+    border-radius: 10px;
+    border: 2px solid rgb(var(--black));
+    transition: border .2s ease-in-out;
 
-	&:focus-visible {
-		border: 2px solid rgb(var(--purple));
-	}
+    &:focus-visible {
+        border: 2px solid rgb(var(--purple));
+    }
 }
 
 .file {
-	opacity: 0;
-	width: 0;
-	height: 0;
+    opacity: 0;
+    width: 0;
+    height: 0;
 
-	label:has(&) {
-		transition: background-color .1s ease-in-out;
-	}
+    label:has(&) {
+        transition: background-color .1s ease-in-out;
+    }
 
-	&:hover, &:focus-visible {
-		label:has(&) {
-			background-color: rgb(var(--white) / 0.3);
-		}
-	}
+    &:hover, &:focus-visible {
+        label:has(&) {
+            background-color: rgb(var(--white) / 0.3);
+        }
+    }
 }
 
 .message_input {
-	padding-left: 5px;
-	padding-right: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .search {
-	padding: 5px;
-	min-width: 100%;
-	min-height: 100%;
+    padding: 5px;
+    min-width: 100%;
+    min-height: 100%;
 
-	&:hover, &:focus-visible {
-		background-color: rgb(var(--white) / 0.3);
-	}
+    &:hover, &:focus-visible {
+        background-color: rgb(var(--white) / 0.3);
+    }
 }

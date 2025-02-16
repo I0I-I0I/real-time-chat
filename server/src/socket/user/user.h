@@ -7,40 +7,40 @@
 
 class User {
 private:
-	int socket;
-	int id;
+    int socket;
+    int id;
 
-	void socket_logger(std::string msg, std::string type = "INFO");
+    void socket_logger(std::string msg, std::string type = "INFO");
 
 public:
     /**
      * @param socket_ (int)
      */
-	User(int socket_);
+    User(int socket_);
 
     /**
      * @brief Get the current socket
      * @return (int)
      */
-	int get_socket();
+    int get_socket();
 
     /**
      * @brief Get the current id
      * @return (int)
      */
-	int get_id();
+    int get_id();
 
     /**
      * @brief Set the id
      * @param id_
      */
-	void set_id(int id_);
+    void set_id(int id_);
 
     /**
      * @brief Remove the user
      */
-	void remove();
+    void remove();
 
-	bool operator==(const User& other) const;
+    bool operator==(const User& other) const;
 };
 

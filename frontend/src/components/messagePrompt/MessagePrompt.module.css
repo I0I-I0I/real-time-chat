@@ -1,46 +1,46 @@
 .message_prompt {
-	width: 100%;
-	padding: 0;
-	height: 50px;
+    width: 100%;
+    padding: 0;
+    height: 50px;
 
-	& > form {
-		display: grid;
-		grid-template-columns: max-content 1fr max-content;
-		align-items: center;
-		height: 100%;
+    & > form {
+        display: grid;
+        grid-template-columns: max-content 1fr max-content;
+        align-items: center;
+        height: 100%;
 
-		& > * {
-			min-height: 100%;
-		}
+        & > * {
+            min-height: 100%;
+        }
 
-		&  > label {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-		}
+        &  > label {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-		& > *:not(:last-child) {
-			border-right: 1px solid var(--bd-color);
-		}
+        & > *:not(:last-child) {
+            border-right: 1px solid var(--bd-color);
+        }
 
-		& > *:first-child {
-			padding-left: 12px;
-			padding-right: 12px;
-		}
+        & > *:first-child {
+            padding-left: 12px;
+            padding-right: 12px;
+        }
 
-		& > button {
-			padding-right: 30px;
-			padding-left: 30px;
-		}
-	}
+        & > button {
+            padding-right: 30px;
+            padding-left: 30px;
+        }
+    }
 }
 
 .prompt {
-	padding-left: 10px;
+    padding-left: 10px;
 }
 
 .icon {
-	width: 24px;
-	height: 24px;
-	fill: rgb(var(--white));
+    width: 24px;
+    height: 24px;
+    fill: rgb(var(--white));
 }
