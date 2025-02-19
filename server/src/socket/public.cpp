@@ -1,7 +1,9 @@
 #include <string>
 #include <cstring>
 #include <sys/socket.h>
+
 #include "./socket.h"
+#include "../logger/logger.h"
 
 Socket::Socket(const char* host_, const char* port_, const SocketOpts& opts) {
     this->host = host_;

@@ -8,7 +8,7 @@ HttpPathStruct Http::get_path(std::string path) {
     std::regex path_regex(R"((/[A-Za-z0-9.!$%&'*+=^_`{|}~-]*))");
     std::smatch path_matches;
 
-    for (int i = 0;; i++) {
+    for (;;) {
         if (path[0] == '?') break;
         if (std::regex_search(path, path_matches, path_regex)) {
             http_path.path.push_back(path_matches[1].str());

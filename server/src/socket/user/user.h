@@ -1,9 +1,6 @@
 #pragma once
 
-#include <functional>
-#include <unistd.h>
-#include <vector>
-#include "../../logger/logger.h"
+#include <string>
 
 class User {
 private:
