@@ -4,3 +4,5 @@ package-lock.json
 db.sqlite3
 dist/
 tsconfig.tsbuildinfo
+compile_commands.json
+.cache
