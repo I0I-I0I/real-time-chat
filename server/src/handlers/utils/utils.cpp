@@ -24,7 +24,7 @@ std::string create_resp_body(const DBResponseStruct& response) {
     return body.dump();
 }
 
-std::map<std::string, std::string> get_headers_of_extantion(const std::string& extantion) {
+std::map<std::string, std::string> get_headers_of_extantion(const std::string& path) {
     std::vector<std::string> image_types = {
         "png",
         "jpg",
@@ -37,44 +37,23 @@ std::map<std::string, std::string> get_headers_of_extantion(const std::string& e
     };
     std::map<std::string, std::string> headers;
 
-    if (extantion == "html") {
+    if (path.ends_with(".html")) {
         headers["content-type"] = "text/html";
         headers["x-content-type-options"] = "nosniff";
-    } else if (extantion == "js"){
+    } else if (path.ends_with(".js") || path.ends_with(".mjs") || path.ends_with(".cjs")){
         headers["content-type"] = "text/javascript";
         headers["x-content-type-options"] = "script";
-    } else if (extantion == "css") {
+    } else if (path.ends_with(".css")) {
         headers["content-type"] = "text/css";
         headers["x-content-type-options"] = "style";
-    } else if (includes(image_types, extantion)) {
-        headers["content-type"] = "image/" + extantion;
+    } else if (includes(image_types, path.substr(path.find_last_of(".") + 1))) {
+        headers["content-type"] = "image/" + path.substr(path.find_last_of(".") + 1);
     }
 
     return headers;
 }
 
-GetFileStruct get_file_form_frontend(std::string path) {
-    std::ifstream file(FRONTED_PATH + path);
-
-    if (!file.is_open()) {
-        if (SPA_MODE) {
-            path = "/index.html";
-            file = std::ifstream(std::string(FRONTED_PATH) + path);
-        } else {
-            return { "File not found", path, "ERROR" };
-        }
-    }
-
-    std::stringstream buffer;
-    buffer << file.rdbuf();
-    return {
-        buffer.str(),
-        path,
-        path.substr(path.find_last_of(".") + 1)
-    };
-}
-
-HttpResponseStruct get_resp_for_file(const HttpRequestStruct& http, HttpHeadersStruct& headers) {
+std::string get_file_path(const HttpRequestStruct& http) {
     std::string file_path;
     if (http.url.path.at(http.url.path.size() - 1).find('.') == std::string::npos) {
         file_path = "/index.html";
@@ -83,13 +62,26 @@ HttpResponseStruct get_resp_for_file(const HttpRequestStruct& http, HttpHeadersS
             file_path += item;
         }
     }
+    return file_path;
+}
 
-    GetFileStruct file = get_file_form_frontend(file_path);
+GetFileStruct get_file(const HttpRequestStruct& http) {
+    std::string path = get_file_path(http);
+    std::ifstream file(FRONTED_PATH + path);
 
-    std::map<std::string, std::string> headers_of_ext = get_headers_of_extantion(file.extantion);
-    for (const auto& [key, value] : headers_of_ext) {
-        headers[key] = value;
+    if (!file.is_open()) {
+        if (SPA_MODE) {
+            path = "/index.html";
+            file = std::ifstream(std::string(FRONTED_PATH) + path);
+        } else {
+            return { "File not found", path };
+        }
     }
 
-    return Http::response(200, file.body, headers);
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    return {
+        buffer.str(),
+        path
+    };
 }

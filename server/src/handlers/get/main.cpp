@@ -1,4 +1,3 @@
-#include <map>
 #include <string>
 #include "../../../lib/json.hpp"
 #include "../../http/http.h"
@@ -17,18 +16,17 @@ OnUrlFuncsList paths = {
 };
 
 HttpResponseStruct HandlerOn::get(const HttpRequestStruct& http) {
-    HttpHeadersStruct headers = {
-        { "connection", "close" }
-    };
-
-    if (http.url.path.at(0) != "/api") return on_file(http, headers);
-    if (http.url.path.size() < 3) return Http::response(400, "You missed table name or something", headers);
+    if (http.url.path.at(0) != "/api") return on_file(http);
+    if (http.url.path.size() < 3) return Http::response(400, "You missed table name or something");
 
     std::string table = http.url.path[2];
-    if (paths.find(table) == paths.end()) return Http::response(404, "No such table", headers);
+    if (paths.find(table) == paths.end()) return Http::response(404, "No such table");
+
+    HttpHeadersStruct headers = {
+        { "content-type", "application/json" }
+    };
 
     DB db(DB_PATH);
-    headers["content-type"] = "application/json";
 
     return paths.at(table)(http, db, headers);
 }

@@ -8,14 +8,9 @@
 using json = nlohmann::json;
 
 int main(int argc, char** argv) {
-    SocketOpts opts = {
-        .backlog = 5,
-        .timeout = 5,
-        .type = "server"
-    };
-
     std::string host = argc > 1 ? argv[1] : "localhost";
     std::string port = argc > 2 ? argv[2] : "8080";
+    SocketOpts opts = { .backlog = 5, .timeout = 5, .type = "server" };
 
     Socket server(host.c_str(), port.c_str(), opts);
 

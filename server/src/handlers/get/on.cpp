@@ -1,10 +1,10 @@
 #include <string>
 #include "../../http/http.h"
 #include "../../db/db.h"
-#include "./get.h"
 #include "../utils/utils.h"
+#include "./get.h"
 
-HttpResponseStruct on_file(const HttpRequestStruct& http, HttpHeadersStruct& headers) {
+HttpResponseStruct on_file(const HttpRequestStruct& http, HttpHeadersStruct headers) {
     if ((http.headers.find("connection") != http.headers.end())
             && (http.headers.at("connection") == "keep-alive")) {
         headers["connection"] = "keep-alive";
@@ -12,7 +12,16 @@ HttpResponseStruct on_file(const HttpRequestStruct& http, HttpHeadersStruct& hea
     } else {
         headers["connection"] = "close";
     }
-    return get_resp_for_file(http, headers);
+
+    GetFileStruct file = get_file(http);
+    if (file.body == "File not found") return Http::response(404, "File not found");
+
+    std::map<std::string, std::string> headers_of_ext = get_headers_of_extantion(file.path);
+    for (const auto& [key, value] : headers_of_ext) {
+        headers[key] = value;
+    }
+
+    return Http::response(200, file.body, headers);
 }
 
 HttpResponseStruct on_users(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
