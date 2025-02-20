@@ -34,6 +34,9 @@ DBResponseStruct DB::get_data_by(const std::string by, const std::string& table,
 
 DBResponseStruct DB::insert_data(const std::string& table, DBDataListStruct& data_list) {
     std::string sql;
+
+    // TODO: Add check for existing data
+
     for (const auto& row : data_list) {
         sql = "INSERT INTO " + table + " (";
 

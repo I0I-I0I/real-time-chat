@@ -29,12 +29,14 @@ int DB::execute_sql(std::string& sql, bool is_get) {
 
     if (rc != SQLITE_OK) {
         std::string error = "SQL: " + std::string(zErrMsg);
-        logger(error, "ERROR");
         sqlite3_free(zErrMsg);
+        logger(error, "ERROR");
         this->response.status = 400;
         this->response.body.data.clear();
         this->response.body.status = "Bad request";
         this->response.body.msg = error;
+        if (error.find("UNIQUE") != std::string::npos)
+            this->response.body.msg = "Not unique";
         return -1;
     }
 
