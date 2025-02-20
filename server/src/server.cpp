@@ -32,6 +32,11 @@ int main() {
         else
             response = Http::response(404, "Unknown method");
 
+        if (response.headers.find("content-length") == response.headers.end()) {
+            response = Http::response(500, "Server Missing Content-Length");
+            server.send_msg(socket, Http::to_send(response));
+        }
+
         if (std::stoi(response.headers.at("content-length")) > 1024)
             server.send_msg(socket, Http::to_send(response, 1024));
         else
