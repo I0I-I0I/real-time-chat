@@ -21,7 +21,12 @@ DBResponseStruct DB::get_data(const std::string& table, const std::vector<std::s
     return this->response;
 }
 
-DBResponseStruct DB::get_data_by(const std::string by, const std::string& table, const std::string& value, const std::vector<std::string>& fields) {
+DBResponseStruct DB::get_data_by(
+    const std::string by,
+    const std::string& table,
+    const std::string& value,
+    const std::vector<std::string>& fields
+) {
     std::string fls = join(fields, ", ");
     std::string sql = "SELECT " + fls + " FROM " + table + " WHERE " + by + " = '" + value + "'";
     if (this->execute_sql(sql, true) != 0) return this->response;
