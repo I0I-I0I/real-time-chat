@@ -15,7 +15,7 @@ HttpResponseStruct on_file(const HttpRequestStruct& http, HttpHeadersStruct& hea
     return get_resp_for_file(http, headers);
 }
 
-DBResponseStruct on_users(const HttpRequestStruct& http, DB& db) {
+HttpResponseStruct on_users(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
     std::string table = "users";
     DBResponseStruct response;
     if (http.url.params.find("login") != http.url.params.end()) {
@@ -25,10 +25,10 @@ DBResponseStruct on_users(const HttpRequestStruct& http, DB& db) {
     } else {
         response = db.get_data(table);
     }
-    return response;
+    return Http::response(response.status, create_resp_body(response), headers);
 }
 
-DBResponseStruct on_chats(const HttpRequestStruct& http, DB& db) {
+HttpResponseStruct on_chats(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
     std::string table = "chats";
     DBResponseStruct response;
     if (http.url.params.find("id") != http.url.params.end()) {
@@ -36,5 +36,15 @@ DBResponseStruct on_chats(const HttpRequestStruct& http, DB& db) {
     } else {
         response = db.get_data(table);
     }
-    return response;
+    return Http::response(response.status, create_resp_body(response), headers);
+}
+
+HttpResponseStruct on_messages(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
+    DBResponseStruct response;
+    std::string table = "messages";
+    if (http.url.params.find("chat-id") == http.url.params.end()) {
+        return Http::response(400, "Missing 'chat-id'", headers);
+    }
+    response = db.get_data_by("chat_id", table, http.url.params.at("chat-id"));
+    return Http::response(response.status, create_resp_body(response), headers);
 }

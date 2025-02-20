@@ -8,8 +8,8 @@ import { useUserStore } from "@/state/user"
 import { useState } from "react"
 
 export const Register = (): JSX.Element => {
-    const [invalidData, setInvalidData] = useState(false)
-    const [ununiqueLogin, setUnuniqueLogin] = useState(false)
+    const [isInvalidData, setIsInvalidData] = useState(false)
+    const [isUnuniqueLogin, setIsUnuniqueLogin] = useState(false)
     const [login_prop,] = useInput("")
     const [username_prop,] = useInput("")
     const [password_prop,] = useInput("")
@@ -19,19 +19,19 @@ export const Register = (): JSX.Element => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        setUnuniqueLogin(false)
-        setInvalidData(false)
+        setIsUnuniqueLogin(false)
+        setIsInvalidData(false)
         const status = await UserService.createOne({
             login: login_prop.value,
             username: username_prop.value,
             password: password_prop.value
         })
         if (!status) {
-            setInvalidData(true)
+            setIsInvalidData(true)
             return
         }
-        if (status.message === "SQL: UNIQUE constraint failed: users.login") {
-            setUnuniqueLogin(true)
+        if (status.message === "Not unique") {
+            setIsUnuniqueLogin(true)
             return
         }
         const data = await UserService.getByLogin(login_prop.value)
@@ -46,26 +46,26 @@ export const Register = (): JSX.Element => {
             <Typography tag="h1" variant="title-1">Sing in</Typography>
             <form action="POST" className="form sing-in" onSubmit={handleSubmit}>
                 <FormInput
-                    className={invalidData ? styles.invalid : ""}
+                    className={isInvalidData ? styles.invalid : ""}
                     type="text"
                     placeholder="Login..."
-                    invalidData={invalidData || ununiqueLogin}
-                    textOnInvalidData={ununiqueLogin ? "Login already exists" : "Invalid data"}
+                    invalidData={isInvalidData || isUnuniqueLogin}
+                    textOnInvalidData={isUnuniqueLogin ? "Login already exists" : "Invalid data"}
                     {...login_prop}
                 />
                 <FormInput
-                    className={invalidData ? styles.invalid : ""}
+                    className={isInvalidData ? styles.invalid : ""}
                     type="text"
                     placeholder="Username..."
-                    invalidData={invalidData}
+                    invalidData={isInvalidData}
                     textOnInvalidData="Invalid data"
                     {...username_prop}
                 />
                 <FormInput
-                    className={invalidData ? styles.invalid : ""}
+                    className={isInvalidData ? styles.invalid : ""}
                     type="password"
                     placeholder="Password..."
-                    invalidData={invalidData}
+                    invalidData={isInvalidData}
                     textOnInvalidData="Invalid data"
                     {...password_prop}
                 />

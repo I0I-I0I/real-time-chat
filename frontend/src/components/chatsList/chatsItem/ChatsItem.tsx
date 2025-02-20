@@ -5,49 +5,38 @@ import styles from "./ChatsItem.module.css"
 import cls from "@/utils/cls"
 import { ReactSVG } from "react-svg"
 
-import { IChat, IChatPost } from "@/types"
-
-type DataType = IChat | string
+import { IChat } from "@/types"
 
 interface ChatsItemProps {
-    index: number
+    index: number | null
     className?: string
-    data: DataType
-    onAddChat?: ((e: React.MouseEvent<HTMLButtonElement, MouseEvent>, data: IChatPost) => void) | null
+    data: IChat
+    onClick?: (chat: IChat) => void
 }
 
 export const ChatsItem = ({
     index,
     className = "",
     data,
-    onAddChat = null
-}: ChatsItemProps) => (
-    <li className={cls(styles.item, className)} aria-selected aria-label="Chat">
-        <Button
-            className={styles.button}
-            onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
-                if (onAddChat !== null) {
-                    onAddChat(e, { name: "Test", lastMessage: "Message" })
-                }
-            }
-        }>
-        <>
-            <ReactSVG
-                className={styles.icon}
-                src={ typeof data === "string" ? "/add_chat.svg" : "/account.svg"}
-            />
-            { typeof data === "string" ? (
-                <div className={styles.body} >
-                    <Typography tag="h2" variant="title-4">{data}</Typography>
-                </div>
-            ) : (
+    onClick = () => {}
+}: ChatsItemProps) => {
+    return (
+        <li className={cls(styles.item, className)} aria-selected aria-label="Chat">
+            <Button
+                className={styles.button}
+                onClick={() => onClick(data)}>
+            <>
+                <ReactSVG
+                    className={styles.icon}
+                    src={ data.img ? data.img : "/account.svg" }
+                />
                 <div className={styles.body}>
-                    <Typography tag="span" variant="text_tiny" className={styles.index}>{String(index)}</Typography>
+                    { index && <Typography tag="span" variant="text_tiny" className={styles.index}>{String(index)}</Typography> }
                     <Typography tag="h2" variant="title-4">{data.name}</Typography>
-                    <Typography tag="span" variant="text_tiny">{data?.lastMessage}</Typography>
+                    { data.lastMessage && <Typography tag="span" variant="text_tiny">{data.lastMessage}</Typography> }
                 </div>
-            )}
-        </>
-        </Button>
-    </li>
-)
+            </>
+            </Button>
+        </li>
+    )
+}

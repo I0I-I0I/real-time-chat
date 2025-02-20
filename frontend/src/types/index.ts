@@ -1,8 +1,3 @@
-export type MessageType = {
-    text: string
-    author: string
-}
-
 export interface IUser {
     createdAt: string
     id: number
@@ -31,11 +26,20 @@ export interface ICheckUser {
 export interface IChat {
     id: number
     name: string
-    lastMessage: string
     createdAt: string
+    lastMessage?: string
+    img?: string
 }
 
 export interface IChatPost {
     name: string
     lastMessage?: string
+}
+
+export interface IMessage {
+    id: number
+    chatId: number
+    text: string
+    author: string
+    createdAt: string
 }

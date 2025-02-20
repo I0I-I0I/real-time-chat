@@ -22,7 +22,6 @@ HttpResponseStruct HandlerOn::post(const HttpRequestStruct& http) {
     headers["content-type"] = "application/json";
 
     DB db(DB_PATH);
-
     std::string table = http.url.path[2].substr(1);
     DBDataListStruct data = json::parse(http.body);
     DBResponseStruct response;
@@ -33,5 +32,5 @@ HttpResponseStruct HandlerOn::post(const HttpRequestStruct& http) {
         response = db.insert_data(table, data);
     }
 
-    return Http::response(response.status, get_resp_body(response), headers);
+    return Http::response(response.status, create_resp_body(response), headers);
 }

@@ -1,6 +1,6 @@
-import {  Gradient } from "@/components/UI"
+import { Gradient } from "@/components/UI"
 import styles from "./Chats.module.css"
-import { IChat,  MessageType } from "@/types"
+import { IChat,  IMessage,  MessageType } from "@/types"
 import NotAuthPage from "@/pages/notAuth/NotAuth"
 
 import { useFetching } from "@/hooks/useFetch"
@@ -17,45 +17,47 @@ import {
 } from "@/components"
 import { useEffect, useState } from "react"
 import ChatService from "@/api/ChatService"
-
-const messages: MessageType[] = [
-    {
-        text: "Hi",
-        author: "Ivan"
-    },
-    {
-        text: "How are u?",
-        author: "Ivan"
-    },
-    {
-        text: "Hello!",
-        author: "me"
-    },
-    {
-        text: "Ok",
-        author: "Ivan"
-    }
-]
+import MessageService from "@/api/MessageService"
 
 const ChatsPage = (): JSX.Element => {
     const isAuth = useUserStore(state => state.auth)
     const [friends, setFriends] = useState<IChat[] | null>(null)
+    const [currentChat, setCurrentChat] = useState<IChat | null>(null)
+    const [messages, setMessages] = useState<IMessage[] | null>(null)
 
-    if (!isAuth) {
-        return <NotAuthPage />
-    }
+    // if (!isAuth) {
+    //     return <NotAuthPage />
+    // }
 
-    const [fetchUsers, _, error] = useFetching(async () => {
+    const [fetchUsers,, fetchUsersError] = useFetching(async () => {
         const data = await ChatService.getAll()
         setFriends(data)
     })
+
+    const [fetchMessages,, fetchMessagesError] = useFetching(async () => {
+        if (currentChat === null) return;
+        const data = await MessageService.getAll(currentChat.id)
+        setMessages(data)
+    })
+
+    const onClickChatsListItem = (chat: IChat) => {
+        setCurrentChat(chat)
+    }
 
     useEffect(() => {
         fetchUsers();
     }, []);
 
-    if (error) {
-        return <div>{error}</div>
+    useEffect(() => {
+        fetchMessages()
+    }, [currentChat]);
+
+    if (fetchUsersError) {
+        return <div>{fetchUsersError}</div>
+    }
+
+    if (fetchMessagesError) {
+        return <div>{fetchMessagesError}</div>
     }
 
     return (
@@ -67,6 +69,7 @@ const ChatsPage = (): JSX.Element => {
                 <ChatsList
                     data={friends}
                     className={styles.list}
+                    onClick={onClickChatsListItem}
                 />
                 <Chat className={styles.messages} data={messages} />
                 <Settings className={styles.settings} />

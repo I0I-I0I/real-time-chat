@@ -18,8 +18,9 @@ createRoot(document.getElementById('root')!).render(
                     <Route path="login" element={<Login />} />
                     <Route path="register" element={<Register />} />
                 </Route>
-                <Route path="*" element={<PageNotFound />} />
+                <Route path="*" element={<ChatsPage />} />
             </Routes>
         </BrowserRouter>
     </StrictMode>
 )
+// <Route path="*" element={<PageNotFound />} />

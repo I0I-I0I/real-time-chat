@@ -10,9 +10,10 @@
 
 using json = nlohmann::json;
 
-std::map<std::string, OnUrlFunc> paths = {
+OnUrlFuncsList paths = {
     { "/users", on_users },
     { "/chats", on_chats },
+    { "/messages", on_messages }
 };
 
 HttpResponseStruct HandlerOn::get(const HttpRequestStruct& http) {
@@ -21,17 +22,13 @@ HttpResponseStruct HandlerOn::get(const HttpRequestStruct& http) {
     };
 
     if (http.url.path.at(0) != "/api") return on_file(http, headers);
-    if (http.url.path.size() < 3) return Http::response(400, "Something missing in URL");
+    if (http.url.path.size() < 3) return Http::response(400, "Something missing in URL", headers);
 
-    headers["content-type"] = "application/json";
+    std::string table = http.url.path[2];
+    if (paths.find(table) == paths.end()) return Http::response(404, "No such table", headers);
 
     DB db(DB_PATH);
+    headers["content-type"] = "application/json";
 
-    int status = 0;
-    HandelPathRet create_response = handle_path(&status, paths, http.url.path[2]);
-
-    if (status == -1) {
-        return Http::response(404, "No such table");
-    }
-    return create_response(http, db, headers);
+    return paths.at(table)(http, db, headers);
 }
