@@ -1,6 +1,6 @@
 import { Gradient } from "@/components/UI"
 import styles from "./Chats.module.css"
-import { IChat,  IMessage,  MessageType } from "@/types"
+import { IChat,  IMessage } from "@/types"
 import NotAuthPage from "@/pages/notAuth/NotAuth"
 
 import { useFetching } from "@/hooks/useFetch"
@@ -25,9 +25,9 @@ const ChatsPage = (): JSX.Element => {
     const [currentChat, setCurrentChat] = useState<IChat | null>(null)
     const [messages, setMessages] = useState<IMessage[] | null>(null)
 
-    // if (!isAuth) {
-    //     return <NotAuthPage />
-    // }
+    if (!isAuth) {
+        return <NotAuthPage />
+    }
 
     const [fetchUsers,, fetchUsersError] = useFetching(async () => {
         const data = await ChatService.getAll()

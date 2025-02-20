@@ -42,9 +42,9 @@ HttpResponseStruct on_chats(const HttpRequestStruct& http, DB& db, HttpHeadersSt
 HttpResponseStruct on_messages(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
     DBResponseStruct response;
     std::string table = "messages";
-    if (http.url.params.find("chat-id") == http.url.params.end()) {
-        return Http::response(400, "Missing 'chat-id'", headers);
+    if (http.url.params.find("chat_id") == http.url.params.end()) {
+        return Http::response(400, "Missing 'chat_id'");
     }
-    response = db.get_data_by("chat_id", table, http.url.params.at("chat-id"));
+    response = db.get_data_by("chat_id", table, http.url.params.at("chat_id"));
     return Http::response(response.status, create_resp_body(response), headers);
 }

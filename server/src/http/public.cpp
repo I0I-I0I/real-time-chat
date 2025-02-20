@@ -11,7 +11,7 @@ using json = nlohmann::json;
 HttpRequestStruct Http::parse(const std::string& request) {
     HttpRequestStruct http;
 
-    std::regex request_line_pattern(R"((\w+) ([^ ]+) HTTP/(\d.\d))");
+    std::regex request_line_pattern(R"((\w+) ([^\s]+) HTTP/(\d.\d))");
     std::regex header_pattern(R"(([^:]+):\s?(.+))");
     std::smatch matches;
 
@@ -19,12 +19,13 @@ HttpRequestStruct Http::parse(const std::string& request) {
     std::string line;
 
     std::getline(stream, line);
-    if (std::regex_search(line, matches, request_line_pattern))
+    if (std::regex_search(line, matches, request_line_pattern)) {
         if (matches.size() == 4) {
             http.method = matches[1].str();
             http.url = get_path(matches[2].str());
             http.version = matches[3].str();
         }
+    }
 
     HttpHeadersStruct headers;
     while (std::getline(stream, line) && (line != "\r")) {

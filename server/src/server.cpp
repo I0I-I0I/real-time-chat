@@ -35,6 +35,7 @@ int main() {
         if (response.headers.find("content-length") == response.headers.end()) {
             response = Http::response(500, "Server Missing Content-Length");
             server.send_msg(socket, Http::to_send(response));
+            return -1;
         }
 
         if (std::stoi(response.headers.at("content-length")) > 1024)
