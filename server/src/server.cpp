@@ -7,13 +7,17 @@
 
 using json = nlohmann::json;
 
-int main() {
+int main(int argc, char** argv) {
     SocketOpts opts = {
         .backlog = 5,
         .timeout = 5,
         .type = "server"
     };
-    Socket server("localhost", "8080", opts);
+
+    std::string host = argv[1] ? argv[1] : "localhost";
+    std::string port = argv[2] ? argv[2] : "8080";
+
+    Socket server(host.c_str(), port.c_str(), opts);
 
     std::map<std::string, HandlerOnFunc> method_handlers = {
         { "GET", HandlerOn::get },

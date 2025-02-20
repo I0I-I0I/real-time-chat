@@ -22,7 +22,7 @@ HttpResponseStruct HandlerOn::get(const HttpRequestStruct& http) {
     };
 
     if (http.url.path.at(0) != "/api") return on_file(http, headers);
-    if (http.url.path.size() < 3) return Http::response(400, "Something missing in URL", headers);
+    if (http.url.path.size() < 3) return Http::response(400, "You missed table name or something", headers);
 
     std::string table = http.url.path[2];
     if (paths.find(table) == paths.end()) return Http::response(404, "No such table", headers);
