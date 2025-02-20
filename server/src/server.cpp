@@ -14,8 +14,8 @@ int main(int argc, char** argv) {
         .type = "server"
     };
 
-    std::string host = argv[1] ? argv[1] : "localhost";
-    std::string port = argv[2] ? argv[2] : "8080";
+    std::string host = argc > 1 ? argv[1] : "localhost";
+    std::string port = argc > 2 ? argv[2] : "8080";
 
     Socket server(host.c_str(), port.c_str(), opts);
 

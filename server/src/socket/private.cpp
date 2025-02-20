@@ -80,7 +80,7 @@ void Socket::try_to_connect() {
 void Socket::start_listening() {
     if (listen(this->main_socket, this->backlog) == -1)
         error_handler(ERROR_LISTEN);
-    logger("Server waiting on port " + std::string(this->port));
+    logger("Server was started http://" + std::string(this->host) + ":" + std::string(this->port));
 }
 
 void Socket::establish_connection() {
