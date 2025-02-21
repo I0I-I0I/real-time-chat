@@ -5,9 +5,10 @@
 class User {
 private:
     int socket;
-    int id;
+    std::string id;
 
     void socket_logger(std::string msg, std::string type = "INFO");
+    void generate_uuid();
 
 public:
     /**
@@ -23,9 +24,9 @@ public:
 
     /**
      * @brief Get the current id
-     * @return (int)
+     * @return (string)
      */
-    int get_id();
+    std::string get_id();
 
     /**
      * @brief Set the id
