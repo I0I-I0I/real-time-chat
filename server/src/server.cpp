@@ -10,9 +10,9 @@ using json = nlohmann::json;
 int main(int argc, char** argv) {
     std::string host = argc > 1 ? argv[1] : "localhost";
     std::string port = argc > 2 ? argv[2] : "8080";
-    SocketOpts opts = { .backlog = 5, .timeout = 5, .type = "server" };
+    TCPSocketOpts opts = { .backlog = 9999, .timeout = 5, .type = "server" };
 
-    Socket server(host.c_str(), port.c_str(), opts);
+    TSPSocket server(host.c_str(), port.c_str(), opts);
 
     std::map<std::string, HandlerOnFunc> method_handlers = {
         { "GET", HandlerOn::get },
@@ -30,12 +30,6 @@ int main(int argc, char** argv) {
             response = method_handlers.at(http.method)(http);
         else
             response = Http::response(404, "Unknown method");
-
-        if (response.headers.find("content-length") == response.headers.end()) {
-            response = Http::response(500, "Server Missing Content-Length");
-            server.send_msg(socket, Http::to_send(response));
-            return -1;
-        }
 
         if (std::stoi(response.headers.at("content-length")) > 1024)
             server.send_msg(socket, Http::to_send(response, 1024));

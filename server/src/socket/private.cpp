@@ -10,13 +10,15 @@
 #include "./user/user.h"
 #include "./socket.h"
 
-void* Socket::get_in_addr(struct sockaddr *sa) {
+std::mutex vector_mutex;
+
+void* TSPSocket::get_in_addr(struct sockaddr *sa) {
     if (sa->sa_family == AF_INET)
         return &(((struct sockaddr_in*)sa)->sin_addr);
     return  &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
-struct addrinfo* Socket::get_addr() {
+struct addrinfo* TSPSocket::get_addr() {
     struct addrinfo hints, *servinfo;
     int rv;
 
@@ -31,14 +33,14 @@ struct addrinfo* Socket::get_addr() {
     return servinfo;
 }
 
-void Socket::create(std::string type_) {
+void TSPSocket::create(std::string type_) {
     this->socket_type = type_;
     this->addr = this->get_addr();
     this->main_socket = this->setup_socket();
     logger("Socket was created");
 }
 
-int Socket::setup_socket() {
+int TSPSocket::setup_socket() {
     struct addrinfo *p;
     int yes = 1;
     int sock;
@@ -65,7 +67,7 @@ int Socket::setup_socket() {
     return sock;
 }
 
-void Socket::try_to_connect() {
+void TSPSocket::try_to_connect() {
     char s[INET6_ADDRSTRLEN];
 
     if (connect(this->main_socket, this->addr->ai_addr, this->addr->ai_addrlen) == -1) {
@@ -77,33 +79,36 @@ void Socket::try_to_connect() {
     logger("client: connected to " + (std::string)s + ":" + this->port, "CONN");
 }
 
-void Socket::start_listening() {
+void TSPSocket::start_listening() {
     if (listen(this->main_socket, this->backlog) == -1)
         error_handler(ERROR_LISTEN);
     logger("Server was started http://" + std::string(this->host) + ":" + std::string(this->port));
 }
 
-void Socket::establish_connection() {
-    this->callback_on["open"](this->main_socket, this->buffer);
-    this->callback_on["close"](this->main_socket, this->buffer);
+void TSPSocket::establish_connection() {
+    std::string buf;
+    this->callback_on["open"](this->main_socket, buf);
+    this->callback_on["close"](this->main_socket, buf);
     this->close_socket();
     logger("Connection closed", "CONN");
 }
 
-void Socket::establish_connection(User user) {
-    int user_socket = user.get_socket();
-    this->callback_on["connection"](user_socket, this->buffer);
+void TSPSocket::establish_connection(User user) {
+    int fd = user.get_socket();
+    std::string buf;
+    this->callback_on["connection"](fd, buf);
     while (true) {
-        this->buffer = this->receive_msg(user_socket);
-        if (this->buffer == "") break;
-        if (this->callback_on["chatting"](user_socket, this->buffer) != 0) break;
+        buf = this->recv_msg(fd);
+        if (buf == "") break;
+        if (this->callback_on["chatting"](fd, buf) != 0) break;
     }
-    this->callback_on["close"](user_socket, this->buffer);
-    this->remove_user(user);
+    this->callback_on["close"](fd, buf);
     logger("Connection closed", "CONN");
+    this->remove_user(user);
+    user.remove();
 }
 
-int Socket::accept_connection() {
+int TSPSocket::accept_connection() {
     char s[INET_ADDRSTRLEN];
     int socket;
     socklen_t sin_size;
@@ -129,34 +134,32 @@ int Socket::accept_connection() {
     return socket;
 }
 
-User Socket::get_connection() {
+User TSPSocket::get_connection() {
     User user(this->accept_connection());
-    this->users.push_back(user);
-    logger("User " + std::to_string(user.get_id()) + " connected", "CONN");
+    this->safe_add_user(user);
+    logger("User " + this->safe_get_id(user) + " connected", "CONN");
     return user;
 }
 
-void Socket::wait_for_connection() {
+void TSPSocket::wait_for_connection() {
     User user = this->get_connection();
+    logger("Count of users: " + std::to_string(this->safe_users_size()), "CONN");
     std::thread ([this, user]() {
         this->establish_connection(user);
-        logger("Count of users: " + std::to_string(this->users.size()));
+        logger("Count of users: " + std::to_string(this->safe_users_size()), "CONN");
     }).detach();
-    logger("Count of users: " + std::to_string(this->users.size()));
 }
 
-std::string Socket::receive_msg(int socket) {
-    char* buffer_char = new char[BUFFER_SIZE];
-    memset(buffer_char, 0, BUFFER_SIZE);
+std::string TSPSocket::recv_msg(int socket) {
+    char buffer_char[BUFFER_SIZE];
     recv(socket, buffer_char, BUFFER_SIZE, 0);
 
-    this->buffer = std::string(buffer_char);
-
-    this->log_date(socket, "RECV", this->buffer);
-    return this->buffer;
+    this->log_date(socket, "RECV", buffer_char);
+    return std::string(buffer_char);
 }
 
-User Socket::get_current_user(int& socket) {
+User TSPSocket::get_current_user(int& socket) {
+    std::lock_guard<std::mutex> lock(vector_mutex);
     for (auto& user : this->users)
         if (user.get_socket() == socket)
             return user;
@@ -164,36 +167,51 @@ User Socket::get_current_user(int& socket) {
     return User(-1);
 }
 
-void Socket::remove_user(User& user) {
-    user.remove();
+void TSPSocket::safe_add_user(User& user) {
+    std::lock_guard<std::mutex> lock(vector_mutex);
+    this->users.push_back(user);
+}
+
+std::string TSPSocket::safe_get_id(User &user) {
+    std::lock_guard<std::mutex> lock(vector_mutex);
+    return user.get_id();
+}
+
+int TSPSocket::safe_users_size() {
+    std::lock_guard<std::mutex> lock(vector_mutex);
+    return this->users.size();
+}
+
+void TSPSocket::remove_user(User& user) {
+    std::lock_guard<std::mutex> lock(vector_mutex);
     this->users.erase(
         std::remove(this->users.begin(), this->users.end(), user),
         this->users.end()
     );
 }
 
-void Socket::close_users() {
+void TSPSocket::close_users() {
     for (auto& user : this->users)
         user.remove();
 }
 
-void Socket::close_socket() {
+void TSPSocket::close_socket() {
     close(this->main_socket);
 }
 
-void Socket::log_date(int& socket, std::string log_type, std::string msg) {
+void TSPSocket::log_date(int& socket, std::string log_type, std::string msg) {
     std::string log_msg = log_type;
     if (this->socket_type == "server") {
         User current_user = this->get_current_user(socket);
-        log_msg += "(" + std::to_string(current_user.get_id()) + ")"
-            ": "+ msg;
+        std::string id = this->safe_get_id(current_user);
+        log_msg += "(" + id + "): "+ msg;
     } else {
         log_msg += ": " + msg;
     }
     logger(log_msg, "ALL");
 }
 
-void Socket::error_handler(int error_type, std::string extra_msg, bool flag) {
+void TSPSocket::error_handler(int error_type, std::string extra_msg, bool flag) {
     std::string msg;
     switch (error_type) {
         case -1:

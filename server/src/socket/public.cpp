@@ -5,7 +5,7 @@
 #include "./socket.h"
 #include "../logger/logger.h"
 
-Socket::Socket(const char* host_, const char* port_, const SocketOpts& opts) {
+TSPSocket::TSPSocket(const char* host_, const char* port_, const TCPSocketOpts& opts) {
     this->host = host_;
     this->port = port_;
     this->timeout = opts.timeout ? opts.timeout : 0;
@@ -16,7 +16,7 @@ Socket::Socket(const char* host_, const char* port_, const SocketOpts& opts) {
         this->callback_on[type_] = [](int, std::string) -> int {return 0;};
 }
 
-void Socket::start() {
+void TSPSocket::start() {
     if (this->socket_type == "server") {
         this->start_listening();
         while (true) this->wait_for_connection();
@@ -28,19 +28,19 @@ void Socket::start() {
     }
 }
 
-void Socket::send_msg(int socket, const std::string& msg) {
+void TSPSocket::send_msg(int socket, const std::string& msg) {
     send(socket, msg.c_str(), msg.size(), 0);
     this->log_date(socket, "SEND", msg);
 }
 
-void Socket::send_msg(int socket, const std::vector<std::string>& msgs) {
+void TSPSocket::send_msg(int socket, const std::vector<std::string>& msgs) {
     for (std::string msg : msgs) {
         send(socket, msg.c_str(), msg.size(), 0);
         this->log_date(socket, "SEND", msg);
     }
 }
 
-void Socket::on(const std::string& type, const OnCallbackStruct& callback) {
+void TSPSocket::on(const std::string& type, const OnCallbackStruct& callback) {
     if (type == "connection" || this->socket_type == "server")
         this->create("server");
     else if (type == "open" || this->socket_type == "client")
@@ -50,7 +50,7 @@ void Socket::on(const std::string& type, const OnCallbackStruct& callback) {
         this->callback_on[type] = callback;
 }
 
-void Socket::send_all(int socket, const std::string& msg) {
+void TSPSocket::send_all(int socket, const std::string& msg) {
     for (auto& user : this->users) {
         if (user.get_socket() == socket)
             this->send_msg(socket, msg);
@@ -58,7 +58,7 @@ void Socket::send_all(int socket, const std::string& msg) {
     }
 }
 
-void Socket::shutdown_server() {
+void TSPSocket::shutdown_server() {
     this->close_users();
     this->close_socket();
 }

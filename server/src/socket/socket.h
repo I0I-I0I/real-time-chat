@@ -16,22 +16,13 @@ using OnCallbackStruct = std::function<int(const int&, const std::string&)>;
  * @param backlog (unsigned int)
  * @param timeout (unsigned int)
  */
-struct SocketOpts {
+struct TCPSocketOpts {
     unsigned int backlog;
     unsigned int timeout;
     std::string type;
 };
 
-/**
- * @param type (string)
- * @param msg (string)
- */
-struct DataStruct {
-    std::string type;
-    std::string msg;
-};
-
-class Socket {
+class TSPSocket {
 private:
     const char* host;
     const char* port;
@@ -40,7 +31,6 @@ private:
     int main_socket;
     struct addrinfo* addr;
     std::string socket_type;
-    std::string buffer;
 
     std::vector<User> users;
     const std::vector<std::string> callback_types = { "connection", "chatting", "open", "close" };
@@ -61,8 +51,13 @@ private:
     User get_current_user(int &socket);
     void remove_user(User& user);
 
+    std::string safe_get_id(User &user);
+
     void establish_connection();
     void establish_connection(User user);
+
+    void safe_add_user(User& user);
+    int safe_users_size();
 
     void close_users();
     void close_socket();
@@ -72,7 +67,7 @@ private:
      * @param socket (int)
      * @return (string)
      */
-    std::string receive_msg(int socket);
+    std::string recv_msg(int socket);
 
     void log_date(int &socket, std::string log_type, std::string msg);
     void error_handler(int error_type, std::string extra_msg = "", bool flag = true);
@@ -84,7 +79,7 @@ public:
      * @param port (const char*)
      * @param opts (SocketOpts) = { backlog = 5, timeout = 3000 }
      */
-    Socket(const char* host, const char* port, const SocketOpts& opts = {});
+    TSPSocket(const char* host, const char* port, const TCPSocketOpts& opts = {});
 
     /**
      * @brief Run socket

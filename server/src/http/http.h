@@ -90,8 +90,8 @@ public:
 
 private:
     static HttpPathStruct get_path(std::string path);
-    static std::string get_status(int code);
+    static std::string get_status(const int& code);
 
-    static void log(HttpRequestStruct http);
-    static void log(HttpResponseStruct http);
+    static void log(HttpRequestStruct& http);
+    static void log(HttpResponseStruct& http);
 };
