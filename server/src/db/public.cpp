@@ -15,7 +15,7 @@ DBResponseStruct DB::get_data(const std::string& table, const std::vector<std::s
     std::string sql = "SELECT " + fls + " FROM " + table;
     if (this->execute_sql(sql, true) != 0) return this->response;
 
-    this->response.status = 200;
+    this->response.status = StatusCode::ok;
     this->response.body.status = "OK";
     this->response.body.msg = "SQL: OK";
     return this->response;
@@ -33,7 +33,7 @@ DBResponseStruct DB::get_data_by(
 
     this->response.body.status = "OK";
     this->response.body.msg = "SQL: OK";
-    this->response.status = 200;
+    this->response.status = StatusCode::ok;
     return this->response;
 }
 
@@ -58,7 +58,7 @@ DBResponseStruct DB::insert_data(const std::string& table, DBDataListStruct& dat
 
     this->response.body.data.clear();
     return {
-        .status = 200,
+        .status = StatusCode::ok,
         .body = {
             .status = "OK",
             .msg = "SQL: Inserted successfully",
@@ -80,7 +80,7 @@ DBResponseStruct DB::update_data(const std::string& table, std::string& id, DBDa
 
     this->response.body.data.clear();
     return {
-        .status = 200,
+        .status = StatusCode::ok,
         .body = {
             .status = "OK",
             .msg = "SQL: Updated successfully",
@@ -95,7 +95,7 @@ DBResponseStruct DB::delete_data(const std::string& table, std::string& id) {
 
     this->response.body.data.clear();
     return {
-        .status = 200,
+        .status = StatusCode::ok,
         .body = {
             .status = "OK",
             .msg = "SQL: Deleted successfully",
@@ -111,7 +111,7 @@ DBResponseStruct DB::check_password(const std::string& table, const std::string&
 
     if (this->response.body.data.at(0)["password"] != password) {
         return {
-            .status = 404,
+            .status = StatusCode::bad_request,
             .body = {
                 .status = "ERROR",
                 .msg = "Wrong password",
@@ -127,7 +127,7 @@ DBResponseStruct DB::check_password(const std::string& table, const std::string&
     }
 
     return {
-        .status = 200,
+        .status = StatusCode::ok,
         .body = {
             .status = "OK",
             .msg = "Password correct",

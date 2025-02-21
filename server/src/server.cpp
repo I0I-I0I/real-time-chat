@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
         if (method_handlers.find(http.method) != method_handlers.end())
             response = method_handlers.at(http.method)(http);
         else
-            response = Http::response(404, "Unknown method");
+            response = Http::response(StatusCode::method_not_allowed, "Unknown method");
 
         if (std::stoi(response.headers.at("content-length")) > 1024)
             server.send_msg(socket, Http::to_send(response, 1024));

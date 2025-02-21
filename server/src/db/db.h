@@ -4,6 +4,7 @@
 #include <sqlite3.h>
 #include <vector>
 #include "../../lib/json.hpp"
+#include "../http/http.h"
 
 using DBDataStruct = nlohmann::json;
 using DBDataListStruct = std::vector<DBDataStruct>;
@@ -26,7 +27,7 @@ struct DBResponseBodyStruct {
  * @param body (DBResponseBodyStruct)
  */
 struct DBResponseStruct {
-    int status;
+    StatusCode status;
     DBResponseBodyStruct body;
 };
 

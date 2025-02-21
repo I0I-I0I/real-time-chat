@@ -8,12 +8,12 @@
 using json = nlohmann::json;
 
 HttpResponseStruct HandlerOn::put(const HttpRequestStruct& http) {
-    if (http.url.path.at(0) != "/api") return Http::response(400, "You missed '/api'");
-    if (http.url.path.size() < 3) return Http::response(400, "You missed table name or something");
-    if (http.headers.find("content-type") == http.url.params.end()) return Http::response(400, "Missing Content-Type");
-    if (http.headers.at("content-type") != "application/json") return Http::response(400, "Unknown Content-Type, you can only pass 'application/json'");
-    if (http.url.params.find("id") == http.url.params.end()) return Http::response(400, "Missing 'id'");
-    if (!json::accept(http.body)) return Http::response(400, "Not valid json");
+    if (http.url.path.at(0) != "/api") return Http::response(StatusCode::bad_request, "You missed '/api'");
+    if (http.url.path.size() < 3) return Http::response(StatusCode::bad_request, "You missed table name or something");
+    if (http.headers.find("content-type") == http.url.params.end()) return Http::response(StatusCode::bad_request, "Missing Content-Type");
+    if (http.headers.at("content-type") != "application/json") return Http::response(StatusCode::bad_request, "Unknown Content-Type, you can only pass 'application/json'");
+    if (http.url.params.find("id") == http.url.params.end()) return Http::response(StatusCode::bad_request, "Missing 'id'");
+    if (!json::accept(http.body)) return Http::response(StatusCode::bad_request, "Not valid json");
 
     HttpHeadersStruct headers = {
         { "content-type", "application/json" }

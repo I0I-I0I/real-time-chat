@@ -31,7 +31,7 @@ int DB::execute_sql(std::string& sql, bool is_get) {
         std::string error = "SQL: " + std::string(zErrMsg);
         sqlite3_free(zErrMsg);
         logger(error, "ERROR");
-        this->response.status = 400;
+        this->response.status = StatusCode::bad_request;
         this->response.body.data.clear();
         this->response.body.status = "Bad request";
         this->response.body.msg = error;
@@ -41,7 +41,7 @@ int DB::execute_sql(std::string& sql, bool is_get) {
     }
 
     if (is_get && this->response.body.data.empty()) {
-        this->response.status = 200;
+        this->response.status = StatusCode::ok;
         this->response.body.data.clear();
         this->response.body.status = "No data";
         this->response.body.msg = "SQL: No data";

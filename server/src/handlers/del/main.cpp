@@ -8,9 +8,9 @@
 using json = nlohmann::json;
 
 HttpResponseStruct HandlerOn::del(const HttpRequestStruct& http) {
-    if (http.url.path.at(0) != "/api") return Http::response(400, "You missed '/api'");
-    if (http.url.path.size() < 3) return Http::response(400, "You missed table name or something");
-    if (http.url.params.find("id") == http.url.params.end()) return Http::response(400, "Missing 'id'");
+    if (http.url.path.at(0) != "/api") return Http::response(StatusCode::bad_request, "You missed '/api'");
+    if (http.url.path.size() < 3) return Http::response(StatusCode::bad_request, "You missed table name or something");
+    if (http.url.params.find("id") == http.url.params.end()) return Http::response(StatusCode::bad_request, "Missing 'id'");
 
     HttpHeadersStruct headers = {
         { "content-type", "application/json" }

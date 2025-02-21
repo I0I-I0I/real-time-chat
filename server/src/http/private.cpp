@@ -31,20 +31,6 @@ HttpPathStruct Http::get_path(std::string path) {
     return http_path;
 }
 
-std::string Http::get_status(const int& code) {
-    std::map<int, std::string> status_codes = {
-        { 200, "OK" },
-        { 400, "Bad request" },
-        { 404, "Not found" },
-        { 405, "Method not allowed" },
-        { 500, "Internal server error" }
-    };
-
-    if (status_codes.find(code) != status_codes.end())
-        return status_codes.at(code);
-    return "Unknown";
-}
-
 void Http::log(HttpRequestStruct& http) {
     logger("Request:", "INFO");
     logger(" \tMethod: " + http.method, "INFO");

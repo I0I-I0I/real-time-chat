@@ -17,10 +17,10 @@ OnUrlFuncsList paths = {
 
 HttpResponseStruct HandlerOn::get(const HttpRequestStruct& http) {
     if (http.url.path.at(0) != "/api") return on_file(http);
-    if (http.url.path.size() < 3) return Http::response(400, "You missed table name or something");
+    if (http.url.path.size() < 3) return Http::response(StatusCode::bad_request, "You missed table name or something");
 
     std::string table = http.url.path[2];
-    if (paths.find(table) == paths.end()) return Http::response(404, "No such table");
+    if (paths.find(table) == paths.end()) return Http::response(StatusCode::not_found, "No such table");
 
     HttpHeadersStruct headers = {
         { "content-type", "application/json" }

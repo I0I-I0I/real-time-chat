@@ -9,6 +9,14 @@ using json = nlohmann::json;
 
 using HttpHeadersStruct = std::map<std::string, std::string>;
 
+enum StatusCode {
+    ok = 200,
+    bad_request = 400,
+    not_found = 404,
+    method_not_allowed = 405,
+    internal_server_error = 500
+};
+
 /**
  * @param path (string)
  * @param params (map<string, string>)
@@ -71,7 +79,7 @@ public:
      * @param headers = {} (map<string, string>)
      * @return (HttpResponseStruct)
      */
-    static HttpResponseStruct response(const int& code, const std::string& body, HttpHeadersStruct headers = {});
+    static HttpResponseStruct response(StatusCode code, const std::string& body, HttpHeadersStruct headers = {});
 
     /**
      * @brief Transform HttpResponseStruct to string
@@ -90,7 +98,6 @@ public:
 
 private:
     static HttpPathStruct get_path(std::string path);
-    static std::string get_status(const int& code);
 
     static void log(HttpRequestStruct& http);
     static void log(HttpResponseStruct& http);

@@ -54,9 +54,9 @@ HttpRequestStruct Http::parse(const std::string& request) {
     return http;
 }
 
-HttpResponseStruct Http::response(const int& code, const std::string& body, HttpHeadersStruct headers) {
+HttpResponseStruct Http::response(StatusCode code, const std::string& body, HttpHeadersStruct headers) {
     HttpResponseStruct http;
-    http.status = std::to_string(code) + " " + Http::get_status(code);
+    http.status = std::to_string(code) + " " + std::to_string(code);
 
     if (headers.find("content-type") == headers.end()) headers["content-type"] = "plain/text";
     if (headers.find("connection") == headers.end()) headers["connection"] = "close";

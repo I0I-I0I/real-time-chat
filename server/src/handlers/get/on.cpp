@@ -14,14 +14,14 @@ HttpResponseStruct on_file(const HttpRequestStruct& http, HttpHeadersStruct head
     }
 
     GetFileStruct file = get_file(http);
-    if (file.body == "File not found") return Http::response(404, "File not found");
+    if (file.body == "File not found") return Http::response(StatusCode::not_found, "File not found");
 
     std::map<std::string, std::string> headers_of_ext = get_headers_of_extantion(file.path);
     for (const auto& [key, value] : headers_of_ext) {
         headers[key] = value;
     }
 
-    return Http::response(200, file.body, headers);
+    return Http::response(StatusCode::ok, file.body, headers);
 }
 
 HttpResponseStruct on_users(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
@@ -52,7 +52,7 @@ HttpResponseStruct on_messages(const HttpRequestStruct& http, DB& db, HttpHeader
     DBResponseStruct response;
     std::string table = "messages";
     if (http.url.params.find("chat_id") == http.url.params.end()) {
-        return Http::response(400, "Missing 'chat_id'");
+        return Http::response(StatusCode::bad_request, "Missing 'chat_id'");
     }
     response = db.get_data_by("chat_id", table, http.url.params.at("chat_id"));
     return Http::response(response.status, create_resp_body(response), headers);
