@@ -61,7 +61,8 @@ DBResponseStruct DB::insert_data(const std::string& table, DBDataListStruct& dat
         .status = 200,
         .body = {
             .status = "OK",
-            .msg = "SQL: Inserted successfully"
+            .msg = "SQL: Inserted successfully",
+            .data = {}
         }
     };
 }
@@ -82,7 +83,8 @@ DBResponseStruct DB::update_data(const std::string& table, std::string& id, DBDa
         .status = 200,
         .body = {
             .status = "OK",
-            .msg = "SQL: Updated successfully"
+            .msg = "SQL: Updated successfully",
+            .data = {}
         }
     };
 }
@@ -96,7 +98,8 @@ DBResponseStruct DB::delete_data(const std::string& table, std::string& id) {
         .status = 200,
         .body = {
             .status = "OK",
-            .msg = "SQL: Deleted successfully"
+            .msg = "SQL: Deleted successfully",
+            .data = {}
         }
     };
 }
@@ -111,7 +114,8 @@ DBResponseStruct DB::check_password(const std::string& table, const std::string&
             .status = 404,
             .body = {
                 .status = "ERROR",
-                .msg = "Wrong password"
+                .msg = "Wrong password",
+                .data = {}
             }
         };
     }

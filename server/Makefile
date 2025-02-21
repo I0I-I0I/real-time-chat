@@ -1,5 +1,5 @@
-CXX = g++
-CXXFLAGS = -pthread -std=c++2a -Wall
+CXX = clang++
+CXXFLAGS = -pthread -std=c++2a -Wall -Wextra -Wpedantic -Werror
 CXXFLAGSEND = -lsqlite3
 
 SRCS_HANDLERS = src/handlers/options/*.cpp \
