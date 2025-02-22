@@ -40,8 +40,6 @@ DBResponseStruct DB::get_data_by(
 DBResponseStruct DB::insert_data(const std::string& table, DBDataListStruct& data_list) {
     std::string sql;
 
-    // TODO: Add check for existing data
-
     for (const auto& row : data_list) {
         sql = "INSERT INTO " + table + " (";
 
@@ -122,9 +120,8 @@ DBResponseStruct DB::check_password(const std::string& table, const std::string&
 
     std::vector<json> data;
     data.push_back({});
-    for (const auto& field : fields) {
+    for (const auto& field : fields)
         data[0][field] = this->response.body.data.at(0)[field];
-    }
 
     return {
         .status = StatusCode::ok,

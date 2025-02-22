@@ -20,7 +20,6 @@ void TSPSocket::start() {
     if (this->socket_type == "server") {
         this->start_listening();
         while (true) this->wait_for_connection();
-
     } else if (this->socket_type == "client") {
         this->try_to_connect();
         logger("Connection was established");
@@ -28,16 +27,23 @@ void TSPSocket::start() {
     }
 }
 
-void TSPSocket::send_msg(int socket, const std::string& msg) {
-    send(socket, msg.c_str(), msg.size(), 0);
-    this->log_date(socket, "SEND", msg);
+void TSPSocket::send_msg(int fd, const std::string& msg) {
+    send(fd, msg.c_str(), msg.size(), 0);
+    this->log_date(fd, "SEND", msg);
 }
 
-void TSPSocket::send_msg(int socket, const std::vector<std::string>& msgs) {
+void TSPSocket::send_msg(int fd, const std::vector<std::string>& msgs) {
     for (std::string msg : msgs) {
-        send(socket, msg.c_str(), msg.size(), 0);
-        this->log_date(socket, "SEND", msg);
+        send(fd, msg.c_str(), msg.size(), 0);
+        this->log_date(fd, "SEND", msg);
     }
+}
+
+std::string TSPSocket::recv_msg(int fd) {
+    char buffer_char[BUFFER_SIZE];
+    recv(fd, buffer_char, BUFFER_SIZE, 0);
+    this->log_date(fd, "RECV", buffer_char);
+    return std::string(buffer_char);
 }
 
 void TSPSocket::on(const std::string& type, const OnCallbackStruct& callback) {
@@ -50,10 +56,10 @@ void TSPSocket::on(const std::string& type, const OnCallbackStruct& callback) {
         this->callback_on[type] = callback;
 }
 
-void TSPSocket::send_all(int socket, const std::string& msg) {
+void TSPSocket::send_all(int fd, const std::string& msg) {
     for (auto& user : this->users) {
-        if (user.get_socket() == socket)
-            this->send_msg(socket, msg);
+        if (user.get_socket() == fd)
+            this->send_msg(fd, msg);
         this->send_msg(user.get_socket(), (char *)msg.c_str());
     }
 }

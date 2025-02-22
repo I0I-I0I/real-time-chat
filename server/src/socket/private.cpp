@@ -86,8 +86,11 @@ void TSPSocket::start_listening() {
 }
 
 void TSPSocket::establish_connection() {
-    std::string buf;
+    std::string buf = "";
     this->callback_on["open"](this->main_socket, buf);
+    while (true) {
+        if (this->callback_on["chatting"](this->main_socket, buf) != 0) break;
+    }
     this->callback_on["close"](this->main_socket, buf);
     this->close_socket();
     logger("Connection closed", "CONN");
@@ -95,7 +98,7 @@ void TSPSocket::establish_connection() {
 
 void TSPSocket::establish_connection(User user) {
     int fd = user.get_socket();
-    std::string buf;
+    std::string buf = "";
     this->callback_on["connection"](fd, buf);
     while (true) {
         buf = this->recv_msg(fd);
@@ -110,12 +113,12 @@ void TSPSocket::establish_connection(User user) {
 
 int TSPSocket::accept_connection() {
     char s[INET_ADDRSTRLEN];
-    int socket;
+    int fd;
     socklen_t sin_size;
     struct sockaddr_storage their_addr;
 
     sin_size = sizeof their_addr;
-    if ((socket = accept(this->main_socket, (struct sockaddr *)&their_addr, &sin_size)) == -1)
+    if ((fd = accept(this->main_socket, (struct sockaddr *)&their_addr, &sin_size)) == -1)
         error_handler(ERROR_ACCEPT);
 
     if (this->timeout > 0) {
@@ -123,7 +126,7 @@ int TSPSocket::accept_connection() {
             .tv_sec = this->timeout,
             .tv_usec = 0
         };
-        int info = setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout));
+        int info = setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout));
         if (info < 0) {
             error_handler(ERROR_SETSOCKOPT, "On setup timeout", false);
         }
@@ -131,7 +134,7 @@ int TSPSocket::accept_connection() {
 
     inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *)&their_addr), s, sizeof s);
     logger("server: got connection from " + (std::string)s + ":" + this->port, "CONN");
-    return socket;
+    return fd;
 }
 
 User TSPSocket::get_connection() {
@@ -150,18 +153,10 @@ void TSPSocket::wait_for_connection() {
     }).detach();
 }
 
-std::string TSPSocket::recv_msg(int socket) {
-    char buffer_char[BUFFER_SIZE];
-    recv(socket, buffer_char, BUFFER_SIZE, 0);
-
-    this->log_date(socket, "RECV", buffer_char);
-    return std::string(buffer_char);
-}
-
-User TSPSocket::get_current_user(int& socket) {
+User TSPSocket::get_current_user(int& fd) {
     std::lock_guard<std::mutex> lock(vector_mutex);
     for (auto& user : this->users)
-        if (user.get_socket() == socket)
+        if (user.get_socket() == fd)
             return user;
     logger("User not found", "ERROR");
     return User(-1);
@@ -199,10 +194,10 @@ void TSPSocket::close_socket() {
     close(this->main_socket);
 }
 
-void TSPSocket::log_date(int& socket, std::string log_type, std::string msg) {
+void TSPSocket::log_date(int& fd, std::string log_type, std::string msg) {
     std::string log_msg = log_type;
     if (this->socket_type == "server") {
-        User current_user = this->get_current_user(socket);
+        User current_user = this->get_current_user(fd);
         std::string id = this->safe_get_id(current_user);
         log_msg += "(" + id + "): "+ msg;
     } else {

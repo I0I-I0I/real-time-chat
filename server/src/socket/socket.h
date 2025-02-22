@@ -48,7 +48,7 @@ private:
     void try_to_connect();
 
     User get_connection();
-    User get_current_user(int &socket);
+    User get_current_user(int &fd);
     void remove_user(User& user);
 
     std::string safe_get_id(User &user);
@@ -62,14 +62,7 @@ private:
     void close_users();
     void close_socket();
 
-    /**
-     * @brief Receive message
-     * @param socket (int)
-     * @return (string)
-     */
-    std::string recv_msg(int socket);
-
-    void log_date(int &socket, std::string log_type, std::string msg);
+    void log_date(int &fd, std::string log_type, std::string msg);
     void error_handler(int error_type, std::string extra_msg = "", bool flag = true);
 
 public:
@@ -98,21 +91,28 @@ public:
      * @param socket (int)
      * @param msg (const string)
      */
-    void send_msg(int socket, const std::string& msg);
+    void send_msg(int fd, const std::string& msg);
 
     /**
      * @brief Send many messages
      * @param socket (int)
      * @param msgs (const vector<string>)
      */
-    void send_msg(int socket, const std::vector<std::string>& msgs);
+    void send_msg(int fd, const std::vector<std::string>& msgs);
+
+    /**
+     * @brief Receive message
+     * @param socket (int)
+     * @return (string)
+     */
+    std::string recv_msg(int fd);
 
     /**
      * @brief Send message to all users
      * @param socket (int)
      * @param msg (const string)
      */
-    void send_all(int socket, const std::string& msg);
+    void send_all(int fd, const std::string& msg);
 
     /**
      * @brief Close all connections and stop server
