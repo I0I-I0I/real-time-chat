@@ -3,7 +3,7 @@
 #include <vector>
 #include <regex>
 #include "../config.h"
-#include "../../lib/json.hpp"
+#include "json.hpp"
 #include "./http.h"
 
 using json = nlohmann::json;

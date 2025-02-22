@@ -3,7 +3,7 @@
 #include <string>
 #include <sqlite3.h>
 #include <vector>
-#include "../../lib/json.hpp"
+#include "json.hpp"
 #include "../http/http.h"
 
 using DBDataStruct = nlohmann::json;

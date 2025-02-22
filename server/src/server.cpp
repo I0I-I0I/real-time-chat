@@ -1,5 +1,5 @@
 #include <string>
-#include "../lib/json.hpp"
+#include "json.hpp"
 #include "./config.h"
 #include "./socket/socket.h"
 #include "./handlers/handlers.h"
@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
     std::string port = argc > 2 ? argv[2] : "8080";
     TCPSocketOpts opts = { .backlog = 9999, .timeout = 5, .type = "server" };
 
-    TSPSocket server(host.c_str(), port.c_str(), opts);
+    TCPSocket server(host.c_str(), port.c_str(), opts);
 
     std::map<std::string, HandlerOnFunc> method_handlers = {
         { "GET", HandlerOn::get },

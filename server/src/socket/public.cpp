@@ -5,7 +5,7 @@
 #include "./socket.h"
 #include "../logger/logger.h"
 
-TSPSocket::TSPSocket(const char* host_, const char* port_, const TCPSocketOpts& opts) {
+TCPSocket::TCPSocket(const char* host_, const char* port_, const TCPSocketOpts& opts) {
     this->host = host_;
     this->port = port_;
     this->timeout = opts.timeout ? opts.timeout : 0;
@@ -16,7 +16,7 @@ TSPSocket::TSPSocket(const char* host_, const char* port_, const TCPSocketOpts& 
         this->callback_on[type_] = [](int, std::string) -> int {return 0;};
 }
 
-void TSPSocket::start() {
+void TCPSocket::start() {
     if (this->socket_type == "server") {
         this->start_listening();
         while (true) this->wait_for_connection();
@@ -27,26 +27,26 @@ void TSPSocket::start() {
     }
 }
 
-void TSPSocket::send_msg(int fd, const std::string& msg) {
+void TCPSocket::send_msg(int fd, const std::string& msg) {
     send(fd, msg.c_str(), msg.size(), 0);
     this->log_date(fd, "SEND", msg);
 }
 
-void TSPSocket::send_msg(int fd, const std::vector<std::string>& msgs) {
+void TCPSocket::send_msg(int fd, const std::vector<std::string>& msgs) {
     for (std::string msg : msgs) {
         send(fd, msg.c_str(), msg.size(), 0);
         this->log_date(fd, "SEND", msg);
     }
 }
 
-std::string TSPSocket::recv_msg(int fd) {
+std::string TCPSocket::recv_msg(int fd) {
     char buffer_char[BUFFER_SIZE];
     recv(fd, buffer_char, BUFFER_SIZE, 0);
     this->log_date(fd, "RECV", buffer_char);
     return std::string(buffer_char);
 }
 
-void TSPSocket::on(const std::string& type, const OnCallbackStruct& callback) {
+void TCPSocket::on(const std::string& type, const OnCallbackStruct& callback) {
     if (type == "connection" || this->socket_type == "server")
         this->create("server");
     else if (type == "open" || this->socket_type == "client")
@@ -56,7 +56,7 @@ void TSPSocket::on(const std::string& type, const OnCallbackStruct& callback) {
         this->callback_on[type] = callback;
 }
 
-void TSPSocket::send_all(int fd, const std::string& msg) {
+void TCPSocket::send_all(int fd, const std::string& msg) {
     for (auto& user : this->users) {
         if (user.get_socket() == fd)
             this->send_msg(fd, msg);
@@ -64,7 +64,7 @@ void TSPSocket::send_all(int fd, const std::string& msg) {
     }
 }
 
-void TSPSocket::shutdown_server() {
+void TCPSocket::shutdown_server() {
     this->close_users();
     this->close_socket();
 }

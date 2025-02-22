@@ -1,5 +1,5 @@
 #include <string>
-#include "../../../lib/json.hpp"
+#include "json.hpp"
 #include "../../http/http.h"
 #include "../../db/db.h"
 #include "../../config.h"

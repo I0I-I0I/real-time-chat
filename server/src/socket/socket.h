@@ -22,7 +22,7 @@ struct TCPSocketOpts {
     std::string type;
 };
 
-class TSPSocket {
+class TCPSocket {
 private:
     const char* host;
     const char* port;
@@ -72,7 +72,7 @@ public:
      * @param port (const char*)
      * @param opts (SocketOpts) = { backlog = 5, timeout = 3000 }
      */
-    TSPSocket(const char* host, const char* port, const TCPSocketOpts& opts = {});
+    TCPSocket(const char* host, const char* port, const TCPSocketOpts& opts = {});
 
     /**
      * @brief Run socket
