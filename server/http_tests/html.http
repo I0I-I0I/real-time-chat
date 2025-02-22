@@ -1,10 +1,6 @@
 # @name Get HTML
 
 GET {{URL}} HTTP/1.1
-cache-control: no-cache
-user-agent: ATAC/v0.18.1
 accept: */*
-accept-encoding: gzip, deflate, br
 connection: keep-alive
-content-type: text/plain
 host: localhost:8080

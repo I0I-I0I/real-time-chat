@@ -10,11 +10,24 @@ using json = nlohmann::json;
 using HttpHeadersStruct = std::map<std::string, std::string>;
 
 enum StatusCode {
-    ok = 200,
-    bad_request = 400,
-    not_found = 404,
-    method_not_allowed = 405,
-    internal_server_error = 500
+    ok,
+    bad_request,
+    not_found,
+    method_not_allowed,
+    internal_server_error
+};
+
+struct StatucCodeArray {
+    int code;
+    std::string msg;
+};
+
+const std::unordered_map<StatusCode, StatucCodeArray> statusCodeMap = {
+    {StatusCode::ok, {200, "OK"}},
+    {StatusCode::bad_request, {400, "Bad Request"}},
+    {StatusCode::not_found, {404, "Not Found"}},
+    {StatusCode::method_not_allowed, {405, "Method Not Allowed"}},
+    {StatusCode::internal_server_error, {500, "Internal Server Error"}}
 };
 
 /**

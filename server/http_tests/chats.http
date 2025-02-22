@@ -1,27 +1,15 @@
 # @name Create one chat
 
 POST {{URL_CHAT}} HTTP/1.1
-authorization: Basic Og==
-cache-control: no-cache
-user-agent: ATAC/v0.18.1
-accept: */*
-accept-encoding: gzip, deflate, br
 connection: keep-alive
 content-type: application/json
-host: localhost:8080
 
-[{
-    "name": "test_name"
-}]
+[{"name": "test_name"}]
 
 ###
 # @name Get chat by id
 
 GET {{URL_CHAT}}?id=1 HTTP/1.1
-cache-control: no-cache
-user-agent: ATAC/v0.18.1
-accept: */*
-accept-encoding: gzip, deflate, br
 connection: keep-alive
 host: localhost:8080
 
@@ -29,9 +17,5 @@ host: localhost:8080
 # @name Get all chats
 
 GET {{URL_CHAT}} HTTP/1.1
-cache-control: no-cache
-user-agent: ATAC/v0.18.1
-accept: */*
-accept-encoding: gzip, deflate, br
 connection: keep-alive
 host: localhost:8080

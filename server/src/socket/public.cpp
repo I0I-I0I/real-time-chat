@@ -39,6 +39,14 @@ void TCPSocket::send_msg(int fd, const std::vector<std::string>& msgs) {
     }
 }
 
+void TCPSocket::send_all(int fd, const std::string& msg) {
+    for (auto& user : this->users) {
+        if (user.get_socket() == fd)
+            this->send_msg(fd, msg);
+        this->send_msg(user.get_socket(), (char *)msg.c_str());
+    }
+}
+
 std::string TCPSocket::recv_msg(int fd) {
     char buffer_char[BUFFER_SIZE];
     recv(fd, buffer_char, BUFFER_SIZE, 0);
@@ -54,14 +62,6 @@ void TCPSocket::on(const std::string& type, const OnCallbackStruct& callback) {
 
     if (this->callback_on.find(type) != this->callback_on.end())
         this->callback_on[type] = callback;
-}
-
-void TCPSocket::send_all(int fd, const std::string& msg) {
-    for (auto& user : this->users) {
-        if (user.get_socket() == fd)
-            this->send_msg(fd, msg);
-        this->send_msg(user.get_socket(), (char *)msg.c_str());
-    }
 }
 
 void TCPSocket::shutdown_server() {
