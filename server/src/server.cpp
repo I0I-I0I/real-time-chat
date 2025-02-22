@@ -23,8 +23,10 @@ int main(int argc, char** argv) {
     };
 
     server.on("chatting", [&server, &method_handlers](const int& socket, const std::string& info) -> int {
-        HttpRequestStruct http = Http::parse(info);
         HttpResponseStruct response;
+        HttpRequestStruct http = Http::parse(info);
+
+        if (http.method == "") return -1;
 
         if (method_handlers.find(http.method) != method_handlers.end())
             response = method_handlers.at(http.method)(http);

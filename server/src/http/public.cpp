@@ -2,8 +2,9 @@
 #include <string>
 #include <vector>
 #include <regex>
-#include "../config.h"
 #include "json.hpp"
+#include "../logger/logger.h"
+#include "../config.h"
 #include "./http.h"
 
 using json = nlohmann::json;
@@ -43,20 +44,33 @@ HttpRequestStruct Http::parse(const std::string& request) {
     }
     http.headers = headers;
 
-    std::string body;
-    while (std::getline(stream, line)) {
-        body += line + "\r\n";
+    const auto content_length_iter = headers.find("content-length");
+    if (content_length_iter == headers.end()) {
+        http.body = "";
+        Http::log(http);
+        return http;
     }
-    http.body = body;
 
-    Http::log(http);
+    int length;
+    try {
+        length = std::stoi(content_length_iter->second);
+    } catch (const std::invalid_argument&) {
+        logger("Invalid Content-Length value", "ERROR");
+    }
+
+    std::string body(length, '\0');
+    if (stream.read(&body[0], length)) {
+        http.body = body;
+    } else {
+        logger("Error reading from stream while reading body", "ERROR");
+    }
 
     return http;
 }
 
 HttpResponseStruct Http::response(StatusCode code, const std::string& body, HttpHeadersStruct headers) {
     HttpResponseStruct http;
-    http.status = std::to_string(code) + " " + std::to_string(code);
+    http.status = std::to_string(statusCodeMap.at(code).code) + " " + statusCodeMap.at(code).msg;
 
     if (headers.find("content-type") == headers.end()) headers["content-type"] = "plain/text";
     if (headers.find("connection") == headers.end()) headers["connection"] = "close";
