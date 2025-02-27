@@ -39,7 +39,7 @@ export interface IChatPost {
 export interface IMessage {
     id: number
     chatId: number
+    authorId: number
     text: string
-    author: string
     createdAt: string
 }

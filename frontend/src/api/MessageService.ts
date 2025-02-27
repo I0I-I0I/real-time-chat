@@ -26,15 +26,15 @@ export default class MessageService {
         return data.data
     }
 
-    static async createOne(chatId: number, post_data: IMessage): Promise<string | null>  {
-        const resp = await fetch(URL + "?chat_id=" + chatId, {
+    static async createOne(post_data: IMessage): Promise<string | null>  {
+        const resp = await fetch(URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify([{
                 chatId: post_data.id,
-                author: post_data.author,
+                authorId: post_data.authorId,
                 text: post_data.text,
             }])
         })

@@ -36,7 +36,7 @@ export const Register = (): JSX.Element => {
         }
         const data = await UserService.getByLogin(login_prop.value)
         if (!data) return
-        setUserState(data.login, data.username)
+        setUserState(data)
         setUserAuthState(true)
         navigate("/")
     }

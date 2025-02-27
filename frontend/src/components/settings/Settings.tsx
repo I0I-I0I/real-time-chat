@@ -39,15 +39,14 @@ export const Settings = ({
     const [dropdownSettingsState, setDropdownSettingsState] = useState<boolean>(false)
     const [themeState, setThemeState] = useState<ThemeType>("light")
     const [popupState, setPopupState] = useState<boolean>(false)
-    const username = useUserStore((state) => state.username)
-    const login = useUserStore((state) => state.login)
+    const userData = useUserStore((state) => state.data)
 
     const onAccountClick = () => {
         setDropdownState((prev: boolean): boolean => !prev)
     }
 
     const onLoginClick = () => {
-        navigator.clipboard.writeText(`@${login}`)
+        navigator.clipboard.writeText(`@${userData?.login}`)
         setPopupState(true)
         setTimeout(() => {
             setPopupState(false)
@@ -90,8 +89,8 @@ export const Settings = ({
                     src="/account.svg"
                 />
             </Button>
-            <Typography tag="h2" variant="title-4">{username}</Typography>
-            <Button onClick={onLoginClick} variant="link" className={styles.login}><>@{login}</></Button>
+            { userData !== null && <Typography tag="h2" variant="title-4">{userData.username}</Typography> }
+            { userData !== null && <Button onClick={onLoginClick} variant="link" className={styles.login}><>@{userData.login}</></Button> }
             { popupState && <Popup className={styles.popup} direction="down_top">Copied!</Popup> }
 
             <Dropdown dropdownState={dropdownSettingsState} className={cls(styles.dropdown, styles.dropdown_settings)}>

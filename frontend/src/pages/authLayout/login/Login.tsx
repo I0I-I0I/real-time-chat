@@ -34,7 +34,7 @@ export const Login = (): JSX.Element => {
             return
         }
         const data = response.data[0] as IUser
-        setUserState(data.login, data.username)
+        setUserState(data)
         setUserAuthState(true)
         navigate("/")
     }

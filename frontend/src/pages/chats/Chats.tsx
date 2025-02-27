@@ -5,7 +5,7 @@ import NotAuthPage from "@/pages/notAuth/NotAuth"
 
 import { useFetching } from "@/hooks/useFetch"
 import { useUserStore } from "@/state/user"
-// import { useUserStore } from "@/state/user"
+import { useChatStore } from "@/state/chat"
 
 import {
     ChatInfo,
@@ -22,7 +22,8 @@ import MessageService from "@/api/MessageService"
 const ChatsPage = (): JSX.Element => {
     const isAuth = useUserStore(state => state.auth)
     const [friends, setFriends] = useState<IChat[] | null>(null)
-    const [currentChat, setCurrentChat] = useState<IChat | null>(null)
+    const currentChat = useChatStore(state => state.data)
+    const setCurrentChat = useChatStore(state => state.setCurrentChat)
     const [messages, setMessages] = useState<IMessage[] | null>(null)
 
     if (!isAuth) {
