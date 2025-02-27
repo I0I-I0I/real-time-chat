@@ -1,6 +1,6 @@
 # @name Get HTML
 
-GET {{URL}} HTTP/1.1
+GET http://localhost:8080 HTTP/1.1
 accept: */*
 connection: keep-alive
 host: localhost:8080
