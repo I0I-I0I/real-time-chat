@@ -62,7 +62,7 @@ public:
      * @param data (DBDataListStruct)
      * @return (DBResponseStruct)
      */
-    DBResponseStruct insert_data(const std::string& table, DBDataListStruct& data);
+    DBResponseStruct insert_data(const std::string& table, DBDataListStruct& data, bool is_get = false);
 
     /**
      * @brief Update particular data in a table

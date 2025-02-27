@@ -70,7 +70,7 @@ HttpRequestStruct Http::parse(const std::string& request) {
 
 HttpResponseStruct Http::response(StatusCode code, const std::string& body, HttpHeadersStruct headers) {
     HttpResponseStruct http;
-    http.status = std::to_string(statusCodeMap.at(code).code) + " " + statusCodeMap.at(code).msg;
+    http.status = std::to_string(StatusCodeMap.at(code).code) + " " + StatusCodeMap.at(code).msg;
 
     if (headers.find("content-type") == headers.end()) headers["content-type"] = "plain/text";
     if (headers.find("connection") == headers.end()) headers["connection"] = "close";

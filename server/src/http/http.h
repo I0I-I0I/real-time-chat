@@ -22,7 +22,7 @@ struct StatucCodeArray {
     std::string msg;
 };
 
-const std::unordered_map<StatusCode, StatucCodeArray> statusCodeMap = {
+const std::unordered_map<StatusCode, StatucCodeArray> StatusCodeMap = {
     {StatusCode::ok, {200, "OK"}},
     {StatusCode::bad_request, {400, "Bad Request"}},
     {StatusCode::not_found, {404, "Not Found"}},

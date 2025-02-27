@@ -9,18 +9,21 @@
 
 using json = nlohmann::json;
 
-OnUrlFuncsList paths = {
-    { "/users", on_users },
-    { "/chats", on_chats },
-    { "/messages", on_messages }
+OnUrlFuncsList paths_get = {
+    { "/users", on_users_get },
+    { "/chats", on_chats_get },
+    { "/messages", on_messages_get }
 };
 
 HttpResponseStruct HandlerOn::get(const HttpRequestStruct& http) {
-    if (http.url.path.at(0) != "/api") return on_file(http);
-    if (http.url.path.size() < 3) return Http::response(StatusCode::bad_request, "You missed table name or something");
+    if (http.url.path.at(0) != "/api") return on_file_get(http);
+
+    HttpResponseStruct resp = validate_get(http);
+    if (resp.status != "OK")
+        return resp;
 
     std::string table = http.url.path[2];
-    if (paths.find(table) == paths.end()) return Http::response(StatusCode::not_found, "No such table");
+    if (paths_get.find(table) == paths_get.end()) return Http::response(StatusCode::not_found, "No such table");
 
     HttpHeadersStruct headers = {
         { "content-type", "application/json" }
@@ -28,5 +31,5 @@ HttpResponseStruct HandlerOn::get(const HttpRequestStruct& http) {
 
     DB db(DB_PATH);
 
-    return paths.at(table)(http, db, headers);
+    return paths_get.at(table)(http, db, headers);
 }

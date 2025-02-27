@@ -37,7 +37,7 @@ DBResponseStruct DB::get_data_by(
     return this->response;
 }
 
-DBResponseStruct DB::insert_data(const std::string& table, DBDataListStruct& data_list) {
+DBResponseStruct DB::insert_data(const std::string& table, DBDataListStruct& data_list, bool is_get) {
     std::string sql;
 
     for (const auto& row : data_list) {
@@ -50,17 +50,19 @@ DBResponseStruct DB::insert_data(const std::string& table, DBDataListStruct& dat
             sql += "'" + std::string(it.value()) + "', ";
         sql = sql.substr(0, sql.size() - 2) + ")";
 
-        if (this->execute_sql(sql) != 0)
+        if (this->execute_sql(sql, is_get) != 0)
             return this->response;
     }
 
-    this->response.body.data.clear();
+    if (!is_get)
+        this->response.body.data.clear();
+
     return {
         .status = StatusCode::ok,
         .body = {
             .status = "OK",
             .msg = "SQL: Inserted successfully",
-            .data = {}
+            .data = this->response.body.data
         }
     };
 }

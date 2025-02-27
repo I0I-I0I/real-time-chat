@@ -4,7 +4,7 @@
 #include "../utils/utils.h"
 #include "./get.h"
 
-HttpResponseStruct on_file(const HttpRequestStruct& http, HttpHeadersStruct headers) {
+HttpResponseStruct on_file_get(const HttpRequestStruct& http, HttpHeadersStruct headers) {
     if ((http.headers.find("connection") != http.headers.end())
             && (http.headers.at("connection") == "keep-alive")) {
         headers["connection"] = "keep-alive";
@@ -24,11 +24,16 @@ HttpResponseStruct on_file(const HttpRequestStruct& http, HttpHeadersStruct head
     return Http::response(StatusCode::ok, file.body, headers);
 }
 
-HttpResponseStruct on_users(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
+HttpResponseStruct on_users_get(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
     std::string table = "users";
     DBResponseStruct response;
     if (http.url.params.find("login") != http.url.params.end()) {
-        response = db.get_data_by("login", table, http.url.params.at("login"), { "id", "login", "username", "created_at" });
+        response = db.get_data_by(
+            "login",
+            table,
+            http.url.params.at("login"),
+            { "id", "login", "username", "created_at" }
+        );
     } else if (http.url.params.find("id") != http.url.params.end()) {
         response = db.get_data_by("id", table, http.url.params.at("id"));
     } else {
@@ -37,7 +42,7 @@ HttpResponseStruct on_users(const HttpRequestStruct& http, DB& db, HttpHeadersSt
     return Http::response(response.status, create_resp_body(response), headers);
 }
 
-HttpResponseStruct on_chats(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
+HttpResponseStruct on_chats_get(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
     std::string table = "chats";
     DBResponseStruct response;
     if (http.url.params.find("id") != http.url.params.end()) {
@@ -48,7 +53,7 @@ HttpResponseStruct on_chats(const HttpRequestStruct& http, DB& db, HttpHeadersSt
     return Http::response(response.status, create_resp_body(response), headers);
 }
 
-HttpResponseStruct on_messages(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
+HttpResponseStruct on_messages_get(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
     DBResponseStruct response;
     std::string table = "messages";
     if (http.url.params.find("chat_id") == http.url.params.end()) {

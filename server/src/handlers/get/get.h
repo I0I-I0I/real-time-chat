@@ -3,7 +3,8 @@
 #include "../../http/http.h"
 #include "../../db/db.h"
 
-HttpResponseStruct on_messages(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers);
-HttpResponseStruct on_users(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers);
-HttpResponseStruct on_chats(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers);
-HttpResponseStruct on_file(const HttpRequestStruct& http, HttpHeadersStruct headers = {});
+HttpResponseStruct on_messages_get(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers);
+HttpResponseStruct on_users_get(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers);
+HttpResponseStruct on_chats_get(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers);
+HttpResponseStruct on_file_get(const HttpRequestStruct& http, HttpHeadersStruct headers = {});
+HttpResponseStruct validate_get(const HttpRequestStruct& http);
