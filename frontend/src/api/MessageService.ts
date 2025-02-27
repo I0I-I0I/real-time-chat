@@ -1,5 +1,5 @@
 import { DB_URL } from "@/consts"
-import { IFetchData, IMessage } from "@/types"
+import { IFetchData, IMessage, IMessagePost } from "@/types"
 
 const URL = DB_URL + "/messages"
 
@@ -26,21 +26,21 @@ export default class MessageService {
         return data.data
     }
 
-    static async createOne(post_data: IMessage): Promise<string | null>  {
+    static async createOne(post_data: IMessagePost): Promise<IMessage | null>  {
         const resp = await fetch(URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify([{
-                chatId: post_data.id,
-                authorId: post_data.authorId,
-                text: post_data.text,
+                chat_id: "" + post_data.chatId,
+                author_id: "" + post_data.authorId,
+                body: post_data.body,
             }])
         })
         const data = await resp.json() as IFetchData<IMessage>
         if (data.status === "OK") {
-            return data.status
+            return data.data[0]
         }
         return null
     }

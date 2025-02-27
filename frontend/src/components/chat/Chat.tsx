@@ -23,7 +23,7 @@ export const Chat = ({
             { data ? (
                 <ul className={cls(styles.messages, className)}>
                     { data.map((item: IMessage, index: number): JSX.Element => (
-                        <Message key={index} variant={item.authorId === currentUser?.id ? "right" : "left"}>{item.text}</Message>
+                        <Message key={index} variant={item.authorId === currentUser?.id ? "right" : "left"}>{item.body}</Message>
                     )) }
                 </ul>
             ) : (

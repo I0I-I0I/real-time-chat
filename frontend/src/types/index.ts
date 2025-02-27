@@ -40,6 +40,12 @@ export interface IMessage {
     id: number
     chatId: number
     authorId: number
-    text: string
+    body: string
     createdAt: string
+}
+
+export interface IMessagePost {
+    chatId: number
+    authorId: number
+    body: string
 }
