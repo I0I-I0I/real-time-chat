@@ -40,6 +40,13 @@ DBResponseStruct DB::get_data_by(
 DBResponseStruct DB::insert_data(const std::string& table, DBDataListStruct& data_list, bool is_get) {
     std::string sql;
 
+
+    if (is_get) {
+        sql = "BEGIN TRANSACTION;";
+        if (this->execute_sql(sql) != 0)
+            return this->response;
+    }
+
     for (const auto& row : data_list) {
         sql = "INSERT INTO " + table + " (";
 
@@ -50,21 +57,31 @@ DBResponseStruct DB::insert_data(const std::string& table, DBDataListStruct& dat
             sql += "'" + std::string(it.value()) + "', ";
         sql = sql.substr(0, sql.size() - 2) + ")";
 
-        if (this->execute_sql(sql, is_get) != 0)
+        if (this->execute_sql(sql) != 0)
             return this->response;
     }
 
-    if (!is_get)
+    if (!is_get) {
         this->response.body.data.clear();
+        return {
+            .status = StatusCode::ok,
+            .body = {
+                .status = "OK",
+                .msg = "SQL: Inserted successfully",
+                .data = {}
+            }
+        };
+    }
 
-    return {
-        .status = StatusCode::ok,
-        .body = {
-            .status = "OK",
-            .msg = "SQL: Inserted successfully",
-            .data = this->response.body.data
-        }
-    };
+    std::string last_id = std::to_string(sqlite3_last_insert_rowid(this->db));
+
+    sql = "COMMIT;";
+    if (this->execute_sql(sql) != 0) {
+        sql = "ROLLBACK;";
+        this->execute_sql(sql);
+        return this->response;
+    }
+    return this->get_data_by("id", table, last_id);
 }
 
 DBResponseStruct DB::update_data(const std::string& table, std::string& id, DBDataStruct& data_list) {

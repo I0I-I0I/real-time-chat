@@ -24,7 +24,7 @@ const ChatsPage = (): JSX.Element => {
     const [friends, setFriends] = useState<IChat[] | null>(null)
     const currentChat = useChatStore(state => state.data)
     const setCurrentChat = useChatStore(state => state.setCurrentChat)
-    const [messages, setMessages] = useState<IMessage[] | null>(null)
+    const setMessages = useChatStore(state => state.setMessages)
 
     if (!isAuth) {
         return <NotAuthPage />
@@ -38,6 +38,7 @@ const ChatsPage = (): JSX.Element => {
     const [fetchMessages,, fetchMessagesError] = useFetching(async () => {
         if (currentChat === null) return;
         const data = await MessageService.getAll(currentChat.id)
+        if (data == null) return
         setMessages(data)
     })
 
@@ -72,7 +73,7 @@ const ChatsPage = (): JSX.Element => {
                     className={styles.list}
                     onClick={onClickChatsListItem}
                 />
-                <Chat className={styles.messages} data={messages} />
+                <Chat className={styles.messages} />
                 <Settings className={styles.settings} />
                 <MessagePrompt className={styles.prompt} />
             </div>

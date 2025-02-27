@@ -5,7 +5,7 @@
 HttpResponseStruct on_messages_post(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
     std::string table = "messages";
     DBDataListStruct data = json::parse(http.body);
-    DBResponseStruct response = db.insert_data(table, data);
+    DBResponseStruct response = db.insert_data(table, data, true);
 
     return Http::response(response.status, create_resp_body(response), headers);
 }

@@ -28,7 +28,6 @@ export const MessagePrompt = ({
     }
 
     const onSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
-        console.log(chat)
         e.preventDefault()
         if (chat === null) return
         if (user === null) return
@@ -56,7 +55,7 @@ export const MessagePrompt = ({
                     <Input id={id} type="file" variant="file" />
                 </Label>
                 <Input type="text" variant="message_input" placeholder="Message..." className={styles.prompt} {...message} />
-                <Button type="submit" variant="send">Send</Button>
+                <Button type="submit" variant="send" disabled={message.value === ""}>Send</Button>
             </form>
         </div>
     )
