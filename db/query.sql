@@ -10,7 +10,7 @@ create table if not exists messages (
 	id integer primary key autoincrement,
 	chat_id integer,
 	author_id integer,
-	content text not null,
+	body text not null,
 	created_at timestamp default current_timestamp,
 	foreign key(author_id) references users(id),
 	foreign key(chat_id) references chats(id)
