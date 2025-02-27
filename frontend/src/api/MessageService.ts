@@ -5,7 +5,7 @@ const URL = DB_URL + "/messages"
 
 export default class MessageService {
     static async getById(id: number, chatId: number): Promise<IMessage | null> {
-        const resp = await fetch(URL + "?chat_id=" + chatId + "?id=" + id, {
+        const resp = await fetch(URL + "?chatId=" + chatId + "?id=" + id, {
             method: "GET"
         })
         const data = await resp.json() as IFetchData<IMessage>
@@ -16,7 +16,7 @@ export default class MessageService {
     }
 
     static async getAll(chatId: number): Promise<IMessage[] | null> {
-        const resp = await fetch(URL + "?chat_id=" + chatId, {
+        const resp = await fetch(URL + "?chatId=" + chatId, {
             method: "GET",
         })
         const data = await resp.json() as IFetchData<IMessage>
@@ -33,8 +33,8 @@ export default class MessageService {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify([{
-                chat_id: "" + post_data.chatId,
-                author_id: "" + post_data.authorId,
+                chatId: "" + post_data.chatId,
+                authorId: "" + post_data.authorId,
                 body: post_data.body,
             }])
         })

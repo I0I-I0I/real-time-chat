@@ -6,6 +6,7 @@ import cls from "@/utils/cls"
 import { ReactSVG } from "react-svg"
 
 import { useChatStore } from "@/state/chat"
+import { useUserStore } from "@/state/user"
 import MessageService from "@/api/MessageService"
 import useInput from "@/hooks/useInput"
 
@@ -19,8 +20,8 @@ export const MessagePrompt = ({
     const id = useId()
     const chat = useChatStore(state => state.data)
     const addMessages = useChatStore(state => state.addMessage)
-    const user = useChatStore(state => state.data)
-    const [message,] = useInput("")
+    const user = useUserStore(state => state.data)
+    const [message, setMessage] = useInput("")
 
     const OnChooseFileClick = (e: React.MouseEvent) => {
         e.preventDefault()
@@ -29,13 +30,20 @@ export const MessagePrompt = ({
 
     const onSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        if (chat === null) return
-        if (user === null) return
+        if (chat === null) {
+            console.log("chat == null")
+            return
+        }
+        if (user === null) {
+            console.log("user == null")
+            return
+        }
         let create_message = {
             chatId: chat.id,
             authorId: user.id,
             body: message.value,
         }
+        setMessage("")
         const data = await MessageService.createOne(create_message)
         if (data === null) {
             alert("Error")

@@ -32,7 +32,7 @@ HttpResponseStruct on_users_get(const HttpRequestStruct& http, DB& db, HttpHeade
             "login",
             table,
             http.url.params.at("login"),
-            { "id", "login", "username", "created_at" }
+            { "id", "login", "username", "createdAt" }
         );
     } else if (http.url.params.find("id") != http.url.params.end()) {
         response = db.get_data_by("id", table, http.url.params.at("id"));
@@ -56,9 +56,9 @@ HttpResponseStruct on_chats_get(const HttpRequestStruct& http, DB& db, HttpHeade
 HttpResponseStruct on_messages_get(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
     DBResponseStruct response;
     std::string table = "messages";
-    if (http.url.params.find("chat_id") == http.url.params.end()) {
-        return Http::response(StatusCode::bad_request, "Missing 'chat_id'");
+    if (http.url.params.find("chatId") == http.url.params.end()) {
+        return Http::response(StatusCode::bad_request, "Missing 'chatId'");
     }
-    response = db.get_data_by("chat_id", table, http.url.params.at("chat_id"));
+    response = db.get_data_by("chatId", table, http.url.params.at("chatId"));
     return Http::response(response.status, create_resp_body(response), headers);
 }

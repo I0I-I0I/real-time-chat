@@ -33,7 +33,9 @@ export const Login = (): JSX.Element => {
             setInvalidPassword(true)
             return
         }
+        console.log(response)
         const data = response.data[0] as IUser
+        if (!data) return
         setUserState(data)
         setUserAuthState(true)
         navigate("/")

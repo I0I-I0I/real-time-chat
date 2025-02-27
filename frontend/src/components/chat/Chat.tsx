@@ -22,9 +22,11 @@ export const Chat = ({
         <>
             { messages.length > 0 ? (
                 <ul className={cls(styles.messages, className)}>
-                    { messages.map((item: IMessage, index: number): JSX.Element => (
-                        <Message key={index} variant={item.authorId === currentUser?.id ? "right" : "left"}>{item.body}</Message>
-                    )) }
+                    { [...messages].reverse().map((item: IMessage, index: number): JSX.Element => (
+                        <Message key={index} variant={item.authorId === currentUser?.id ? "right" : "left"}>
+                            {item.body}
+                        </Message>
+                    ))}
                 </ul>
             ) : (
                     <div>It's empty</div>

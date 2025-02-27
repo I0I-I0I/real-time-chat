@@ -3,32 +3,32 @@ create table if not exists users (
 	login text not null unique,
 	username text not null,
 	password text not null,
-	created_at timestamp default current_timestamp
+	createdAt timestamp default current_timestamp
 );
 
 create table if not exists messages (
 	id integer primary key autoincrement,
-	chat_id integer,
-	author_id integer,
+	chatId integer,
+	authorId integer,
 	body text not null,
-	created_at timestamp default current_timestamp,
-	foreign key(author_id) references users(id),
-	foreign key(chat_id) references chats(id)
+	createdAt timestamp default current_timestamp,
+	foreign key(authorId) references users(id),
+	foreign key(chatId) references chats(id)
 );
 
 create table if not exists chats (
 	id integer primary key autoincrement,
 	name text not null,
-	last_message_id integer,
-	created_at timestamp default current_timestamp,
-	foreign key(last_message_id) references messages(id)
+	lastMessageId integer,
+	createdAt timestamp default current_timestamp,
+	foreign key(lastMessageId) references messages(id)
 );
 
-create table if not exists chat_participants (
+create table if not exists chatParticipants (
 	id integer primary key autoincrement,
-	chat_id integer not null,
-	user_id integer not null,
-	joined_at timestamp default current_timestamp,
-	foreign key(chat_id) references chats(id),
-	foreign key(user_id) references users(id)
+	chatId integer not null,
+	userId integer not null,
+	joinedAt timestamp default current_timestamp,
+	foreign key(chatId) references chats(id),
+	foreign key(userId) references users(id)
 );

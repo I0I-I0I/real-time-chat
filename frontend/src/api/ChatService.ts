@@ -34,7 +34,7 @@ export default class ChatService {
             },
             body: JSON.stringify([{
                 name: post_data.name,
-                last_message: post_data?.lastMessage,
+                lastMessageId: post_data?.lastMessage,
             }])
         })
         const data = await resp.json() as IFetchData<IChat>

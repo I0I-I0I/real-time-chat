@@ -8,8 +8,27 @@ int callback(void *data, int length, char **args, char **col_name) {
     DBDataStruct row;
     for (int i = 0; i < length; i++) {
         std::string col = col_name[i];
-        std::string arg = args[i] ? args[i] : "NULL";
-        row[col] = arg;
+        if (!args[i]) {
+            row[col] = nullptr;
+            continue;
+        }
+
+        try {
+            size_t pos;
+            std::stoll(args[i], &pos);
+            if (pos == strlen(args[i])) {
+                row[col] = std::stoll(args[i]);
+                continue;
+            }
+
+            std::stod(args[i], &pos);
+            if (pos == strlen(args[i])) {
+                row[col] = std::stod(args[i]);
+                continue;
+            }
+        } catch (...) {}
+
+        row[col] = args[i];
     }
     ((std::vector<DBDataStruct>*)data)->push_back(row);
     return 0;

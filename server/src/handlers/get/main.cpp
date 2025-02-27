@@ -23,7 +23,8 @@ HttpResponseStruct HandlerOn::get(const HttpRequestStruct& http) {
         return resp;
 
     std::string table = http.url.path[2];
-    if (paths_get.find(table) == paths_get.end()) return Http::response(StatusCode::not_found, "No such table");
+    if (paths_get.find(table) == paths_get.end())
+        return Http::response(StatusCode::not_found, "No such table");
 
     HttpHeadersStruct headers = {
         { "content-type", "application/json" }

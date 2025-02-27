@@ -1,6 +1,6 @@
 import { Gradient } from "@/components/UI"
 import styles from "./Chats.module.css"
-import { IChat,  IMessage } from "@/types"
+import { IChat } from "@/types"
 import NotAuthPage from "@/pages/notAuth/NotAuth"
 
 import { useFetching } from "@/hooks/useFetch"
@@ -42,6 +42,14 @@ const ChatsPage = (): JSX.Element => {
         setMessages(data)
     })
 
+    const onClickAddChat = () => {
+        const data = {
+            name: "New Chat",
+            lastMessage: "Hello"
+        }
+        ChatService.createOne(data)
+    }
+
     const onClickChatsListItem = (chat: IChat) => {
         setCurrentChat(chat)
     }
@@ -72,6 +80,7 @@ const ChatsPage = (): JSX.Element => {
                     data={friends}
                     className={styles.list}
                     onClick={onClickChatsListItem}
+                    onClickAdd={onClickAddChat}
                 />
                 <Chat className={styles.messages} />
                 <Settings className={styles.settings} />
