@@ -46,7 +46,7 @@ export const MessagePrompt = ({
         setMessage("")
         const data = await MessageService.createOne(create_message)
         if (data === null) {
-            alert("Error")
+            alert("Error on create message")
             return
         }
         addMessages(data)

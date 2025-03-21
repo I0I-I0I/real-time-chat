@@ -44,8 +44,8 @@ HttpRequestStruct Http::parse(const std::string& request) {
     }
     http.headers = headers;
 
-    const auto content_length_iter = headers.find("content-length");
-    if (content_length_iter == headers.end()) {
+    const auto content_length = headers.find("content-length");
+    if (content_length == headers.end()) {
         http.body = "";
         Http::log(http);
         return http;
@@ -53,7 +53,7 @@ HttpRequestStruct Http::parse(const std::string& request) {
 
     int length;
     try {
-        length = std::stoi(content_length_iter->second);
+        length = std::stoi(content_length->second);
     } catch (const std::invalid_argument&) {
         logger("Invalid Content-Length value", "ERROR");
     }
@@ -64,6 +64,8 @@ HttpRequestStruct Http::parse(const std::string& request) {
     } else {
         logger("Error reading from stream while reading body", "ERROR");
     }
+
+    Http::log(http);
 
     return http;
 }

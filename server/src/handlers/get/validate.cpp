@@ -1,7 +1,5 @@
 #include <string>
 #include "../../http/http.h"
-#include "../utils/utils.h"
-#include "../handlers.h"
 #include "./get.h"
 
 HttpResponseStruct validate_get(const HttpRequestStruct& http) {

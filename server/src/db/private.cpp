@@ -4,7 +4,7 @@
 #include "../logger/logger.h"
 #include "./db.h"
 
-int callback(void *data, int length, char **args, char **col_name) {
+int sql_callback(void *data, int length, char **args, char **col_name) {
     DBDataStruct row;
     for (int i = 0; i < length; i++) {
         std::string col = col_name[i];
@@ -41,7 +41,7 @@ int DB::execute_sql(std::string& sql, bool is_get) {
     int rc = sqlite3_exec(
         this->db,
         sql.c_str(),
-        is_get ? callback : 0,
+        is_get ? sql_callback : 0,
         is_get ? &this->response.body.data : 0,
         &zErrMsg
     );

@@ -2,10 +2,10 @@
 POST http://localhost:8080/api/db/messages HTTP/1.1
 content-type: application/json
 
-[{
-    id: 0,
-    chatId: chat.id,
-    authorId: user.id,
-    text: "Hello",
-    createdAt: ""
-}]
+[
+  {
+    "chatId": 0,
+    "authorId": 0,
+    "text": "Hello"
+  }
+]

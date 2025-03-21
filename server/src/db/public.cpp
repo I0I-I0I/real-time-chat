@@ -1,5 +1,4 @@
 #include <sqlite3.h>
-#include <iostream>
 #include "../logger/logger.h"
 #include "./utils/utils.h"
 #include "./db.h"
@@ -40,7 +39,6 @@ DBResponseStruct DB::get_data_by(
 
 DBResponseStruct DB::insert_data(const std::string& table, DBDataListStruct& data_list, bool is_get) {
     std::string sql;
-
 
     if (is_get) {
         sql = "BEGIN TRANSACTION;";
