@@ -25,6 +25,7 @@ const ChatsPage = (): JSX.Element => {
     const currentChat = useChatStore(state => state.data)
     const setCurrentChat = useChatStore(state => state.setCurrentChat)
     const setMessages = useChatStore(state => state.setMessages)
+    const currentUserId = useUserStore(state => state.data?.id)
 
     if (!isAuth) {
         return <NotAuthPage />
@@ -42,12 +43,16 @@ const ChatsPage = (): JSX.Element => {
         setMessages(data)
     })
 
-    const onClickAddChat = () => {
+    const createNewChat = (name: string) => {
         const data = {
-            name: "New Chat",
-            lastMessage: "Hello"
+            name: name,
+            lastMessage: "0"
         }
-        ChatService.createOne(data)
+        if (!currentUserId) {
+            console.log("currentUserId is null")
+            return
+        }
+        ChatService.createOne(data, currentUserId)
     }
 
     const onClickChatsListItem = (chat: IChat) => {
@@ -80,7 +85,7 @@ const ChatsPage = (): JSX.Element => {
                     data={friends}
                     className={styles.list}
                     onClick={onClickChatsListItem}
-                    onClickAdd={onClickAddChat}
+                    createNewChat={createNewChat}
                 />
                 <Chat className={styles.messages} />
                 <Settings className={styles.settings} />

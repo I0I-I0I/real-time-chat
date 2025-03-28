@@ -105,8 +105,8 @@ DBResponseStruct DB::update_data(const std::string& table, std::string& id, DBDa
     };
 }
 
-DBResponseStruct DB::delete_data(const std::string& table, std::string& id) {
-    std::string sql = "DELETE FROM " + table + " WHERE id = " + id;
+DBResponseStruct DB::delete_data_by(std::string by,const std::string& table, std::string value) {
+    std::string sql = "DELETE FROM " + table + " WHERE " + by + " = " + value;
     if (this->execute_sql(sql) != 0) return this->response;
 
     this->response.body.data.clear();

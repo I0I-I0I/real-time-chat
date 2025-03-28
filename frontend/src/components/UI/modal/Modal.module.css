@@ -1,11 +1,34 @@
 .modal {
+    --padding: 20px;
+
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
     background-color: white;
+    color: black;
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+
+    &.exit {
+        padding-top: 30px;
+    }
+}
+
+.exit_button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+    stroke: rgb(var(--black));
+    fill: none;
+    transition: stroke .1s ease-in-out;
+    background-image: url("/close-x.svg");
+    background-size: 100% 100%;
+    background-color: transparent;
+    border: none;
+    width: 20px;
+    height: 20px;
 }

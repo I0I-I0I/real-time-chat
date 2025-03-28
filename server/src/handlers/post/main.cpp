@@ -24,9 +24,8 @@ HttpResponseStruct HandlerOn::post(const HttpRequestStruct& http) {
     if (paths_post.find(table) == paths_post.end())
         return Http::response(StatusCode::not_found, "No such table");
 
-    HttpHeadersStruct headers = {
-        { "content-type", "application/json" }
-    };
+    HttpHeadersStruct headers = {};
+    headers["content-type"] = "application/json";
 
     DB db(DB_PATH);
 

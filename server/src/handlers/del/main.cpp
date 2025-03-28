@@ -19,7 +19,7 @@ HttpResponseStruct HandlerOn::del(const HttpRequestStruct& http) {
     DB db(DB_PATH);
     std::string id = http.url.params.at("id");
     std::string table = http.url.path[2];
-    DBResponseStruct response = db.delete_data(table, id);
+    DBResponseStruct response = db.delete_data_by("id", table, id);
 
     json body = {
         { "status", response.body.status },

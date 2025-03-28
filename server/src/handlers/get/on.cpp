@@ -27,18 +27,25 @@ HttpResponseStruct on_file_get(const HttpRequestStruct& http, HttpHeadersStruct 
 HttpResponseStruct on_users_get(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
     std::string table = "users";
     DBResponseStruct response;
+
+    std::string by = "";
     if (http.url.params.find("login") != http.url.params.end()) {
+        by = "login";
+    } else if (http.url.params.find("id") != http.url.params.end()) {
+        by = "id";
+    }
+
+    if (by == "") {
+        response = db.get_data(table);
+    } else {
         response = db.get_data_by(
-            "login",
+            by,
             table,
-            http.url.params.at("login"),
+            http.url.params.at(by),
             { "id", "login", "username", "createdAt" }
         );
-    } else if (http.url.params.find("id") != http.url.params.end()) {
-        response = db.get_data_by("id", table, http.url.params.at("id"));
-    } else {
-        response = db.get_data(table);
     }
+
     return Http::response(response.status, create_resp_body(response), headers);
 }
 

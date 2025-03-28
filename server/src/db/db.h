@@ -79,7 +79,7 @@ public:
      * @param id (string)
      * @return (DBResponseStruct)
      */
-    DBResponseStruct delete_data(const std::string& table, std::string& id);
+    DBResponseStruct delete_data_by(std::string by,const std::string& table, std::string value);
 
     /**
      * @brief Check on exists

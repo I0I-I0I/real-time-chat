@@ -7,3 +7,10 @@
     overflow-y: auto;
 }
 
+.shadow {
+    z-index: 100;
+}
+
+.create_chat_modal {
+    z-index: 101;
+}

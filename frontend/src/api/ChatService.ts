@@ -26,8 +26,8 @@ export default class ChatService {
         return data.data
     }
 
-    static async createOne(post_data: IChatPost): Promise<string | null>  {
-        const resp = await fetch(URL, {
+    static async createOne(post_data: IChatPost, user_id: number): Promise<string | null>  {
+        const resp = await fetch(URL + "?userId=" + user_id, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
