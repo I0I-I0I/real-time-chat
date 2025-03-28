@@ -13,7 +13,7 @@ DB::DB(const std::string path) {
 DBResponseStruct DB::get_data(const std::string& table, const std::vector<std::string>& fields) {
     std::string fls = join(fields, ", ");
     std::string sql = "SELECT " + fls + " FROM " + table;
-    if (this->execute_sql(sql, true) != 0) return this->response;
+    if (this->execute_sql(sql, ExecuteType::get) != 0) return this->response;
 
     this->response.status = StatusCode::ok;
     this->response.body.status = "OK";
@@ -29,7 +29,7 @@ DBResponseStruct DB::get_data_by(
 ) {
     std::string fls = join(fields, ", ");
     std::string sql = "SELECT " + fls + " FROM " + table + " WHERE " + by + " = '" + value + "'";
-    if (this->execute_sql(sql, true) != 0) return this->response;
+    if (this->execute_sql(sql, ExecuteType::get) != 0) return this->response;
 
     this->response.body.status = "OK";
     this->response.body.msg = "SQL: OK";
@@ -37,17 +37,17 @@ DBResponseStruct DB::get_data_by(
     return this->response;
 }
 
-DBResponseStruct DB::insert_data(const std::string& table, DBDataListStruct& data_list, bool is_get) {
+DBResponseStruct DB::insert_data(const std::string& table, DBDataListStruct& data_list, ExecuteType type) {
     std::string sql;
 
-    if (is_get) {
+    if (type == ExecuteType::get) {
         sql = "BEGIN TRANSACTION;";
         if (this->execute_sql(sql) != 0)
             return this->response;
     }
 
     for (const auto& row : data_list) {
-        sql = "INSERT INTO " + table + " (";
+        sql += "INSERT INTO " + table + " (";
 
         for (auto it = row.begin(); it != row.end(); ++it)
             sql += it.key() + ", ";
@@ -60,7 +60,7 @@ DBResponseStruct DB::insert_data(const std::string& table, DBDataListStruct& dat
             return this->response;
     }
 
-    if (!is_get) {
+    if (type != ExecuteType::get) {
         this->response.body.data.clear();
         return {
             .status = StatusCode::ok,
@@ -122,7 +122,7 @@ DBResponseStruct DB::delete_data_by(std::string by,const std::string& table, std
 
 DBResponseStruct DB::check_password(const std::string& table, const std::string& login, const std::string& password, const std::vector<std::string>& fields) {
     std::string sql = "SELECT * FROM " + table + " WHERE login = '" + login + "'";
-    if (this->execute_sql(sql, true) != 0)
+    if (this->execute_sql(sql, ExecuteType::get) != 0)
         return this->response;
 
     if (this->response.body.data.at(0)["password"] != password) {

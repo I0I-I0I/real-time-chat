@@ -34,15 +34,15 @@ int sql_callback(void *data, int length, char **args, char **col_name) {
     return 0;
 }
 
-int DB::execute_sql(std::string& sql, bool is_get) {
+int DB::execute_sql(std::string& sql, ExecuteType type) {
     this->response.body.data.clear();
     char* zErrMsg = 0;
 
     int rc = sqlite3_exec(
         this->db,
         sql.c_str(),
-        is_get ? sql_callback : 0,
-        is_get ? &this->response.body.data : 0,
+        type == ExecuteType::get ? sql_callback : 0,
+        type == ExecuteType::get ? &this->response.body.data : 0,
         &zErrMsg
     );
 
@@ -59,10 +59,10 @@ int DB::execute_sql(std::string& sql, bool is_get) {
         return -1;
     }
 
-    if (is_get && this->response.body.data.empty()) {
-        this->response.status = StatusCode::ok;
+    if (type == ExecuteType::get && this->response.body.data.empty()) {
+        this->response.status = StatusCode::not_found;
         this->response.body.data.clear();
-        this->response.body.status = "OK";
+        this->response.body.status = "ERROR";
         this->response.body.msg = "SQL: No data";
         return -2;
     }

@@ -9,6 +9,11 @@
 using DBDataStruct = nlohmann::json;
 using DBDataListStruct = std::vector<DBDataStruct>;
 
+enum ExecuteType {
+    default_,
+    get
+};
+
 /**
  * @brief Database response body
  * @param status (string)
@@ -62,7 +67,7 @@ public:
      * @param data (DBDataListStruct)
      * @return (DBResponseStruct)
      */
-    DBResponseStruct insert_data(const std::string& table, DBDataListStruct& data, bool is_get = false);
+    DBResponseStruct insert_data(const std::string& table, DBDataListStruct& data, ExecuteType type = ExecuteType::default_);
 
     /**
      * @brief Update particular data in a table
@@ -95,5 +100,5 @@ private:
     sqlite3 *db;
     DBResponseStruct response;
 
-    int execute_sql(std::string& sql, bool is_get = false);
+    int execute_sql(std::string& sql, ExecuteType type = ExecuteType::default_);
 };
