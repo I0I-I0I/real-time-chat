@@ -38,8 +38,8 @@ const ChatsPage = (): JSX.Element => {
 
     const [fetchMessages,, fetchMessagesError] = useFetching(async () => {
         if (currentChat === null) return;
-        const data = await MessageService.getAll(currentChat.id)
-        if (data == null) return
+        let data = await MessageService.getAll(currentChat.id)
+        if (data == null) data = []
         setMessages(data)
     })
 

@@ -11,6 +11,7 @@ using HttpHeadersStruct = std::map<std::string, std::string>;
 
 enum StatusCode {
     ok,
+    no_data,
     bad_request,
     not_found,
     method_not_allowed,
@@ -26,6 +27,7 @@ const std::unordered_map<StatusCode, StatucCodeArray> StatusCodeMap = {
     {StatusCode::ok, {200, "OK"}},
     {StatusCode::bad_request, {400, "Bad Request"}},
     {StatusCode::not_found, {404, "Not Found"}},
+    {StatusCode::no_data, {401, "No Data"}},
     {StatusCode::method_not_allowed, {405, "Method Not Allowed"}},
     {StatusCode::internal_server_error, {500, "Internal Server Error"}}
 };

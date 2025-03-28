@@ -47,7 +47,7 @@ DBResponseStruct DB::insert_data(const std::string& table, DBDataListStruct& dat
     }
 
     for (const auto& row : data_list) {
-        sql += "INSERT INTO " + table + " (";
+        sql = "INSERT INTO " + table + " (";
 
         for (auto it = row.begin(); it != row.end(); ++it)
             sql += it.key() + ", ";

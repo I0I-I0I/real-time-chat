@@ -41,8 +41,8 @@ int DB::execute_sql(std::string& sql, ExecuteType type) {
     int rc = sqlite3_exec(
         this->db,
         sql.c_str(),
-        type == ExecuteType::get ? sql_callback : 0,
-        type == ExecuteType::get ? &this->response.body.data : 0,
+        type != ExecuteType::default_ ? sql_callback : 0,
+        type != ExecuteType::default_ ? &this->response.body.data : 0,
         &zErrMsg
     );
 
@@ -60,9 +60,9 @@ int DB::execute_sql(std::string& sql, ExecuteType type) {
     }
 
     if (type == ExecuteType::get && this->response.body.data.empty()) {
-        this->response.status = StatusCode::not_found;
+        this->response.status = StatusCode::no_data;
         this->response.body.data.clear();
-        this->response.body.status = "ERROR";
+        this->response.body.status = "No data";
         this->response.body.msg = "SQL: No data";
         return -2;
     }
