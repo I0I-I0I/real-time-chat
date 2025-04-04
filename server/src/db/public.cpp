@@ -37,6 +37,22 @@ DBResponseStruct DB::get_data_by(
     return this->response;
 }
 
+DBResponseStruct DB::search_data(
+        const std::string by,
+        const std::string& table,
+        const std::string& value,
+        const std::vector<std::string>& fields
+) {
+    std::string fls = join(fields, ", ");
+    std::string sql = "SELECT " + fls + " FROM " + table + " WHERE (lower(" + by + ") LIKE '%" + value + "%'";
+    if (this->execute_sql(sql, ExecuteType::get) != 0) return this->response;
+
+    this->response.body.status = "OK";
+    this->response.body.msg = "SQL: OK";
+    this->response.status = StatusCode::ok;
+    return this->response;
+}
+
 DBResponseStruct DB::insert_data(const std::string& table, DBDataListStruct& data_list, ExecuteType type) {
     std::string sql;
 

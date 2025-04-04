@@ -62,6 +62,21 @@ public:
     DBResponseStruct get_data_by(const std::string by, const std::string& table, const std::string& id, const std::vector<std::string>& fields = { "*" });
 
     /**
+     * @brief Search specific data by value
+     * @param by (string)
+     * @param table (string&)
+     * @param value (string&)
+     * @param fields (vector<string>&)
+     * @return (DBResponseStruct)
+    */
+    DBResponseStruct search_data(
+        const std::string by,
+        const std::string& table,
+        const std::string& value,
+        const std::vector<std::string>& fields
+    );
+
+    /**
      * @brief Push data to a table
      * @param table (string)
      * @param data (DBDataListStruct)
