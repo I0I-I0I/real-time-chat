@@ -8,7 +8,7 @@ interface DropdownProps {
     className?: string
 }
 
-interface DropdownItemProps {
+interface DropdownItemProps extends React.HTMLAttributes<HTMLLIElement> {
     children: React.ReactNode,
     className?: string
 }
@@ -25,9 +25,10 @@ export const Dropdown = ({
 
 export const DropdownItem = ({
     children,
-    className = ""
+    className = "",
+    ...props
 }: DropdownItemProps): JSX.Element => (
-    <li className={cls(styles.dropdown_item, className)}>
+    <li className={cls(styles.dropdown_item, className)} {...props}>
         {children}
     </li>
 )

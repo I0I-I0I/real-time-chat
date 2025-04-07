@@ -7,13 +7,20 @@ import SearchService from "@/api/SearchService"
 
 interface AddChatProps {
     className?: string
+    createNewChat: (name: string) => void
 }
 
 export const AddChat = ({
-    className = ""
+    className = "",
+    createNewChat
 }: AddChatProps) => {
     const [search, setSearch] = useState("")
     const [friends, setFriends] = useState<DropdownData[]>([])
+
+    const onClickDropdownItem = (data: DropdownData) => {
+        if (data.login == null) return
+        createNewChat(data.login)
+    }
 
     const getUsers = async (login: string) => {
         const data = await SearchService.search<IUser>("login", "users", login)
@@ -39,7 +46,7 @@ export const AddChat = ({
 
     return (
         <div className={cls(styles.add_chat, className)}>
-            <SearchWithDropdown setPrompt={setSearch} data={friends} />
+            <SearchWithDropdown setPrompt={setSearch} data={friends} onClickDropdownItem={onClickDropdownItem} />
         </div>
     )
 }

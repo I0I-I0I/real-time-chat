@@ -52,6 +52,7 @@ const ChatsPage = (): JSX.Element => {
             console.log("currentUserId is null")
             return
         }
+        console.log("HI")
         ChatService.createOne(data, currentUserId)
     }
 
@@ -79,7 +80,7 @@ const ChatsPage = (): JSX.Element => {
         <div className={styles.wrapper}>
             <Gradient />
             <div className={styles.container}>
-                <AddChat className={styles.add_friends} />
+                <AddChat className={styles.add_friends} createNewChat={createNewChat} />
                 <ChatInfo className={styles.info} />
                 <ChatsList
                     data={friends}
