@@ -1,0 +1,36 @@
+.dropdown {
+    min-width: 320px;
+    border-bottom-right-radius: 16px;
+    border-bottom-left-radius: 16px;
+    overflow: hidden;
+
+    .dropdown_item {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .name {
+        height: 100%;
+        font-size: 16px;
+    }
+
+    .login {
+        height: 100%;
+        font-size: 12px;
+        color: gray;
+        align-self: flex-end;
+    }
+
+    & > li {
+        color: rgb(var(--white));
+        background-color: rgb(var(--black) / 0.9);
+        padding: 12px 0;
+        transition: all .15s ease-in-out;
+        cursor: pointer;
+
+        &:hover {
+            background-color: rgb(var(--white) / 0.8);
+            color: black;
+        }
+    }
+}

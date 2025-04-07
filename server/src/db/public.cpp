@@ -44,7 +44,7 @@ DBResponseStruct DB::search_data(
         const std::vector<std::string>& fields
 ) {
     std::string fls = join(fields, ", ");
-    std::string sql = "SELECT " + fls + " FROM " + table + " WHERE (lower(" + by + ") LIKE '%" + value + "%'";
+    std::string sql = "SELECT " + fls + " FROM " + table + " WHERE (lower(" + by + ") LIKE '%" + value + "%')";
     if (this->execute_sql(sql, ExecuteType::get) != 0) return this->response;
 
     this->response.body.status = "OK";

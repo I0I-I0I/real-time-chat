@@ -81,6 +81,7 @@ HttpResponseStruct on_search_get(const HttpRequestStruct& http, DB& db, HttpHead
     std::string table = http.url.params.at("table");
     std::string by = http.url.params.at("by");
     std::string value = http.url.params.at("value");
+
     DBResponseStruct db_response = db.search_data(by, table, value, { "id", "login", "username", "createdAt" });
     return Http::response(db_response.status, create_resp_body(db_response), headers);
 }

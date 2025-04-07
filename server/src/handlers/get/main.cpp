@@ -12,7 +12,8 @@ using json = nlohmann::json;
 OnUrlFuncsList paths_get = {
     { "/users", on_users_get },
     { "/chats", on_chats_get },
-    { "/messages", on_messages_get }
+    { "/messages", on_messages_get },
+    { "/search", on_search_get }
 };
 
 HttpResponseStruct HandlerOn::get(const HttpRequestStruct& http) {

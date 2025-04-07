@@ -3,7 +3,7 @@ import styles from "./ChatsList.module.css"
 import { ChatsItem } from "./chatsItem/ChatsItem"
 import { IChat } from "@/types"
 import { Button, Modal, Shadow, Input } from "@/components/UI"
-import { useRef, useState } from "react"
+import { useState } from "react"
 import useInput from "@/hooks/useInput"
 // import ChatService from "@/api/ChatService"
 

@@ -5,7 +5,7 @@ const URL = DB_URL + "/messages"
 
 export default class MessageService {
     static async getById(id: number, chatId: number): Promise<IMessage | null> {
-        const resp = await fetch(URL + "?chatId=" + chatId + "?id=" + id, {
+        const resp = await fetch(URL + "?chatId=" + chatId + "&id=" + id, {
             method: "GET"
         })
         const data = await resp.json() as IFetchData<IMessage>
