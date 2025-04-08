@@ -15,13 +15,6 @@ interface ChatsListProps {
     data: IChat[] | null
 }
 
-const addChatData: IChat = {
-    id: 0,
-    name: "Add Chat",
-    createdAt: "",
-    img: "/add_chat.svg"
-}
-
 export const ChatsList = ({
     className = "",
     onClick = () => {},
@@ -52,7 +45,6 @@ export const ChatsList = ({
                 </Modal>
             </> }
             <ul className={cls(styles.list, className)}>
-                <ChatsItem onClick={() => setAddChat((prev: boolean) => !prev)} data={addChatData} index={null} key={0} />
                 { data && data.map((item: IChat, index: number): JSX.Element => (
                     <ChatsItem data={item} index={index+1} key={index} onClick={onClick} onClickRemove={removeChat} />
                 ))}

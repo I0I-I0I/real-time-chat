@@ -3,24 +3,21 @@ import { Button, Input, Label } from "@/components/UI"
 import styles from "./Search.module.css"
 import { ReactSVG } from "react-svg"
 import useInput from "@/hooks/useInput"
-import { useEffect, useRef } from "react"
+import { useEffect } from "react"
 import cls from "@/utils/cls"
 
-interface SearchProps {
+interface SearchProps extends React.InputHTMLAttributes<HTMLInputElement> {
     setPrompt: (value: string) => void
     className?: string
     children?: React.ReactNode
     getRef?: (ref: React.RefObject<HTMLInputElement>) => void
-    onFocus?: () => void
-    onBlur?: () => void
 }
 
 export const Search = ({
     setPrompt,
     className = "",
-    onFocus,
-    onBlur,
-    children
+    children,
+    ...props
 }: SearchProps): JSX.Element => {
     const [value,] = useInput("")
 
@@ -40,9 +37,8 @@ export const Search = ({
                         type="search"
                         variant="search"
                         placeholder="Find a friend..."
-                        onFocus={onFocus}
-                        onBlur={onBlur}
                         {...value}
+                        {...props}
                     />
                 </Label>
                 <Button className={styles.button} variant="icon">

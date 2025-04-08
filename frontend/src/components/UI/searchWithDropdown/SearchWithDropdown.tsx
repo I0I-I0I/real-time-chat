@@ -23,6 +23,7 @@ export const SearchWithDropdown = ({
 }: SearchWithDropdownProps): JSX.Element => {
     const [input, setInput] = useState("")
     const [dropdownState, setDropdownState] = useState(false)
+    const [currentUser, setCurrentUser] = useState<DropdownData | null>(null)
     const currentUserId = useUserStore((state) => state.data?.id)
 
     const setPromptValue = (value: string) => {
@@ -31,10 +32,21 @@ export const SearchWithDropdown = ({
     }
 
     useEffect(() => {
-        if (input === "") {
-            setDropdownState(false)
+        console.log("currentUser: " + currentUser)
+        if (currentUser === null) {
             return
-        } else if (data.length === 0) {
+        }
+        onClickDropdownItem({
+            id: currentUser.id,
+            name: currentUser.name,
+            login: currentUser.login
+        })
+        setDropdownState(false)
+    }, [currentUser])
+
+    useEffect(() => {
+        console.log("input: " + input)
+        if (input === "" || data.length === 0) {
             setDropdownState(false)
             return
         }
@@ -46,25 +58,16 @@ export const SearchWithDropdown = ({
             setPrompt={setPromptValue}
             className={styles.search}
             onFocus={() => setDropdownState(true)}
-            onBlur={() => setDropdownState(false)}
+            onBlur={() => setTimeout(() => setDropdownState(false), 300)}
         >
             <Dropdown dropdownState={dropdownState} className={styles.dropdown}>
                 {data.map((user) => {
                     if (user.id == currentUserId) return
-
                     return (
                         <DropdownItem
                             key={user.id}
                             className={styles.dropdown_item}
-                            onClick={async () => {
-                                console.log("HI")
-                                setDropdownState(false)
-                                await onClickDropdownItem({
-                                    id: user.id,
-                                    name: user.name,
-                                    login: user.login
-                                }
-                            )}}
+                            onClick={() => {console.log("HI"); setCurrentUser(user)}}
                         >
                             <Typography tag="span" variant="text_tiny" className={styles.name}><>
                                 {user.name}
