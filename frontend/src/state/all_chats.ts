@@ -16,8 +16,11 @@ export const useChatsListStore = create<ChatsListStore>()((set, get) => ({
     setLastMessage: (chat: IChat, message: IMessage) => {
         const { data } = get()
         const current_chat = data.find(c => c.id === chat.id)
-        chat.lastMessage = message
-        set({ data: { ...data, ...current_chat} })
+        if (!current_chat) return
+        current_chat.lastMessage = message
+        if (!current_chat) return
+        const new_chats = data.filter(c => c.id !== chat.id)
+        set({ data: [ ...new_chats, current_chat ] })
     },
     getLastMessage: (chat: IChat) => {
         const { data } = get()

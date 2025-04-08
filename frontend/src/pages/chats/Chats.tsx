@@ -15,13 +15,15 @@ import {
     MessagePrompt,
     Chat
 } from "@/components"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import ChatService from "@/api/ChatService"
 import MessageService from "@/api/MessageService"
+import { useChatsListStore } from "@/state/all_chats"
 
 const ChatsPage = (): JSX.Element => {
     const isAuth = useUserStore(state => state.auth)
-    const [chats, setChats] = useState<IChat[] | null>(null)
+    const chats = useChatsListStore(state => state.data)
+    const setChats = useChatsListStore(state => state.setChatsList)
     const currentChat = useChatStore(state => state.data)
     const setCurrentChat = useChatStore(state => state.setCurrentChat)
     const setMessages = useChatStore(state => state.setMessages)
@@ -33,6 +35,10 @@ const ChatsPage = (): JSX.Element => {
 
     const [fetchUsers,, fetchUsersError] = useFetching(async () => {
         const data = await ChatService.getAll()
+        if (data === null) {
+            setChats([])
+            return
+        }
         setChats(data)
     })
 
@@ -65,7 +71,7 @@ const ChatsPage = (): JSX.Element => {
         if (status !== "OK") return
         if (!chats) return
         const newChats = chats.filter(chat => chat.id !== chatId)
-        setChats(newChats)
+        newChats === null ? setChats([]) : setChats(newChats)
         setMessages([])
     }
 

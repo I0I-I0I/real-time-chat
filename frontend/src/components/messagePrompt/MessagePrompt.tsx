@@ -9,7 +9,7 @@ import { useChatStore } from "@/state/chat"
 import { useUserStore } from "@/state/user"
 import MessageService from "@/api/MessageService"
 import useInput from "@/hooks/useInput"
-import { IChat } from "@/types"
+import { useChatsListStore } from "@/state/all_chats"
 
 interface MessagePromptProps {
     className?: string
@@ -21,7 +21,8 @@ export const MessagePrompt = ({
     const id = useId()
     const chat = useChatStore(state => state.data)
     const addMessages = useChatStore(state => state.addMessage)
-    const setCurrentChats = useChatStore(state => state.setCurrentChat)
+    const setCurrentChat = useChatStore(state => state.setCurrentChat)
+    const setLastMessage = useChatsListStore(state => state.setLastMessage)
     const currentChat = useChatStore(state => state.data)
     const user = useUserStore(state => state.data)
     const [message, setMessage] = useInput("")
@@ -48,10 +49,13 @@ export const MessagePrompt = ({
         }
         setMessage("")
         const data = await MessageService.createOne(create_message)
-        setCurrentChats({ ...currentChat, lastMessage: data } as IChat)
         if (data === null) {
             alert("Error on create message")
             return
+        }
+        if (currentChat !== null) {
+            setCurrentChat({ ...currentChat, lastMessage: data })
+            setLastMessage(currentChat, data)
         }
         addMessages(data)
     }

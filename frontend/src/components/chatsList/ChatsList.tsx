@@ -12,7 +12,7 @@ interface ChatsListProps {
     onClick?: (chat: IChat) => void
     createNewChat: (name: string) => void
     removeChat: (chatId: number) => void
-    data: IChat[] | null
+    data: IChat[]
 }
 
 export const ChatsList = ({
@@ -20,7 +20,7 @@ export const ChatsList = ({
     onClick = () => {},
     createNewChat,
     removeChat,
-    data
+    data = []
 }: ChatsListProps): JSX.Element => {
     const [addChat, setAddChat] = useState(false)
     const [value, _] = useInput("")
@@ -45,7 +45,7 @@ export const ChatsList = ({
                 </Modal>
             </> }
             <ul className={cls(styles.list, className)}>
-                { data && data.map((item: IChat, index: number): JSX.Element => (
+                { data.slice().reverse().map((item: IChat, index: number): JSX.Element => (
                     <ChatsItem data={item} index={index+1} key={index} onClick={onClick} onClickRemove={removeChat} />
                 ))}
             </ul>
