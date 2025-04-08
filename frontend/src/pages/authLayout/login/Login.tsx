@@ -66,8 +66,8 @@ export const Login = (): JSX.Element => {
                     type="submit"
                     disabled={login_prop.value === "" || password_prop.value === ""}
                 >Sing in</Button>
-                <Link href="/register" className={cls(styles.link, styles.or_link)}>or sing up</Link>
             </form>
+            <Link href="/register" className={cls(styles.link, styles.or_link)}>or sing up</Link>
         </div>
     )
 }

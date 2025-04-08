@@ -15,10 +15,11 @@ export default class ChatService {
         return data.data[0]
     }
 
-    static async getAll(): Promise<IChat[] | null> {
-        const resp = await fetch(URL, {
+    static async getAll(id: number): Promise<IChat[] | null> {
+        const resp = await fetch(URL + "?userId=" + id, {
             method: "GET",
         })
+        if (resp.status !== 200) return null
         const data = await resp.json() as IFetchData<IChat>
         if (data.status !== "OK") {
             return null
@@ -26,7 +27,7 @@ export default class ChatService {
         return data.data
     }
 
-    static async createOne(post_data: IChatPost, user_id: number): Promise<string | null>  {
+    static async createOne(post_data: IChatPost, user_id: number): Promise<IChat | null>  {
         const resp = await fetch(URL + "?userId=" + user_id, {
             method: "POST",
             headers: {
@@ -38,6 +39,25 @@ export default class ChatService {
             }])
         })
         const data = await resp.json() as IFetchData<IChat>
+        if (data.status === "OK") {
+            return data.data[0]
+        }
+        return null
+    }
+
+    static async addUserToChat(chat_id: number, user_id: number): Promise<string | null>  {
+        const resp = await fetch(URL + "?type=addParticipants", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify([{
+                userId: "" + user_id,
+                chatId: "" + chat_id
+            }])
+        })
+        const data = await resp.json() as IFetchData<IChat>
+        console.log(data)
         if (data.status === "OK") {
             return data.status
         }

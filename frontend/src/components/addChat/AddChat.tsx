@@ -5,9 +5,15 @@ import { useEffect, useState } from "react"
 import { IUser } from "@/types"
 import SearchService from "@/api/SearchService"
 
+export interface createNewChatData {
+    id: number
+    name: string
+    login?: string
+}
+
 interface AddChatProps {
     className?: string
-    createNewChat: (name: string) => void
+    createNewChat: (data: createNewChatData) => void
 }
 
 export const AddChat = ({
@@ -19,7 +25,7 @@ export const AddChat = ({
 
     const onClickDropdownItem = (data: DropdownData) => {
         if (data.login == null) return
-        createNewChat(data.login)
+        createNewChat(data)
     }
 
     const getUsers = async (login: string) => {

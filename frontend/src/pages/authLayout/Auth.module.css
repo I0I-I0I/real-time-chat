@@ -12,6 +12,9 @@
 }
 
 .login {
+    --padding-lr: 20px;
+    --padding-tp: 30px;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -19,11 +22,12 @@
     max-width: 400px;
     height: 100dvh;
     width: 100%;
-    padding: 30px 20px;
+    padding: var(--padding-tp) var(--padding-lr);
     border-radius: 0;
     background-color: rgb(var(--white));
     color: rgb(var(--black));
     font-size: 1.2rem;
+    position: relative;
 
     & > h1 {
         margin-bottom: 30px;
@@ -43,17 +47,21 @@
             text-align: center;
         }
 
-        & > .link {
-            font-size: 0.9rem;
-            text-decoration: underline;
-
-            &.or_link {
-                align-self: flex-end;
-            }
-        }
-
         & > .button {
             align-self: center;
         }
     }
+
+    & > .link {
+        font-size: 0.9rem;
+        text-decoration: underline;
+
+        &.or_link {
+            position: absolute;
+            bottom: var(--padding-tp);
+            right: var(--padding-lr);
+            display: block;
+        }
+    }
+
 }

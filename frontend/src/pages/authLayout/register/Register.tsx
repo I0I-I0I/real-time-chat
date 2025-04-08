@@ -6,6 +6,7 @@ import UserService from "@/api/UserService"
 import { useNavigate } from "react-router"
 import { useUserStore } from "@/state/user"
 import { useState } from "react"
+import cls from "@/utils/cls"
 
 export const Register = (): JSX.Element => {
     const [isInvalidData, setIsInvalidData] = useState(false)
@@ -74,8 +75,8 @@ export const Register = (): JSX.Element => {
                     type="submit"
                     disabled={login_prop.value === "" || username_prop.value === "" || password_prop.value === ""}
                 >Sing up</Button>
-                <Link href="/login" className={styles.link}>or sing in</Link>
             </form>
+            <Link href="/login" className={cls(styles.link, styles.or_link)}>or sing in</Link>
         </div>
     )
 }

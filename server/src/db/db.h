@@ -52,14 +52,34 @@ public:
     DBResponseStruct get_data(const std::string& table, const std::vector<std::string>& fields = { "*" });
 
     /**
-     * @brief Get specific data from a table
+     * @brief Get specific data from a table by value
      * @param by (string)
      * @param table (string)
-     * @param id (string)
+     * @param value (string)
      * @param fields (string) = "*"
      * @return (DBResponseStruct)
      */
-    DBResponseStruct get_data_by(const std::string by, const std::string& table, const std::string& id, const std::vector<std::string>& fields = { "*" });
+    DBResponseStruct get_data_by(
+        const std::string by,
+        const std::string& table,
+        const std::string& value,
+        const std::vector<std::string>& fields = { "*" }
+    );
+
+    /**
+     * @brief Get specific data from a table by many values
+     * @param by (string)
+     * @param table (string)
+     * @param values (vector<string>)
+     * @param fields (string) = "*"
+     * @return (DBResponseStruct)
+     */
+    DBResponseStruct get_data_by(
+        const std::string by,
+        const std::string& table,
+        std::vector<std::string> values,
+        const std::vector<std::string>& fields = { "*" }
+    );
 
     /**
      * @brief Search specific data by value

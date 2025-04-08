@@ -56,24 +56,38 @@ HttpResponseStruct on_users_get(const HttpRequestStruct& http, DB& db, HttpHeade
 }
 
 HttpResponseStruct on_chats_get(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
-    std::string table = "chats";
     DBResponseStruct db_response;
+    std::string table = "chats";
+    std::string table_participants = "chatParticipants";
+
     if (http.url.params.find("id") != http.url.params.end()) {
         db_response = db.get_data_by("id", table, http.url.params.at("id"));
         DBDataStruct* data = &db_response.body.data[0];
         std::string lastMessageId = data->at("lastMessageId");
         json lastMessage = db.get_data_by("id", "messages", lastMessageId).body.data[0];
         data->at("lastMessage") = lastMessage;
-    } else {
-        db_response = db.get_data(table);
+    } else if (http.url.params.find("userId") != http.url.params.end())  {
+        db_response = db.get_data_by("userId", table_participants, http.url.params.at("userId"), { "chatId" });
+        if (db_response.status != StatusCode::ok)
+            return Http::response(StatusCode::not_found, "Not found chats for this user");
+
+        DBDataListStruct chats_ids = db_response.body.data;
+        std::vector<std::string> ids;
+        for (DBDataStruct& item : chats_ids) {
+            ids.push_back(std::to_string((int)item["chatId"]));
+        }
+
+        db_response = db.get_data_by("id", table, ids);
         DBDataListStruct* data = &db_response.body.data;
         for (DBDataStruct& item : *data) {
-            int lastMessageId = item["lastMessageId"];
-            DBResponseStruct d = db.get_data_by("id", "messages", std::to_string(lastMessageId));
-            if (d.status != StatusCode::ok) continue;
-            item["lastMessage"] = d.body.data[0];
+            std::string last_message_id = std::to_string((int)item["lastMessageId"]);
+            DBResponseStruct last_message = db.get_data_by("id", "messages", last_message_id);
+            if (last_message.status != StatusCode::ok) continue;
+            item["lastMessage"] = last_message.body.data[0];
             item.erase("lastMessageId");
         }
+    } else {
+        return Http::response(StatusCode::bad_request, "Missing 'id' or 'userId'");
     }
     return Http::response(db_response.status, create_resp_body(db_response), headers);
 }

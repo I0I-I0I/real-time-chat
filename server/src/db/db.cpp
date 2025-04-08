@@ -31,6 +31,30 @@ DBResponseStruct DB::get_data(const std::string& table, const std::vector<std::s
 DBResponseStruct DB::get_data_by(
     const std::string by,
     const std::string& table,
+    std::vector<std::string> values,
+    const std::vector<std::string>& fields
+) {
+    std::string fls = join(fields, ", ");
+
+    std::ostringstream oss;
+    for (size_t i = 0; i < values.size(); ++i) {
+        if (i > 0) oss << ", ";
+        oss << "'" << values[i] << "'";
+    }
+    std::string valuesList = oss.str();
+
+    std::string sql = "SELECT " + fls + " FROM " + table + " WHERE " + by + " IN (" + valuesList + ")";
+    if (this->execute_sql(sql, ExecuteType::get) != 0) return this->response;
+
+    this->response.body.status = "OK";
+    this->response.body.msg = "SQL: OK";
+    this->response.status = StatusCode::ok;
+    return this->response;
+}
+
+DBResponseStruct DB::get_data_by(
+    const std::string by,
+    const std::string& table,
     const std::string& value,
     const std::vector<std::string>& fields
 ) {

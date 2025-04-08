@@ -13,7 +13,8 @@ import {
     ChatsList,
     Settings,
     MessagePrompt,
-    Chat
+    Chat,
+    createNewChatData
 } from "@/components"
 import { useEffect } from "react"
 import ChatService from "@/api/ChatService"
@@ -34,7 +35,8 @@ const ChatsPage = (): JSX.Element => {
     }
 
     const [fetchUsers,, fetchUsersError] = useFetching(async () => {
-        const data = await ChatService.getAll()
+        if (!currentUserId) return
+        const data = await ChatService.getAll(currentUserId)
         if (data === null) {
             setChats([])
             return
@@ -49,18 +51,25 @@ const ChatsPage = (): JSX.Element => {
         setMessages(data)
     })
 
-    const createNewChat = async (name: string) => {
-        const data = {
-            name: name,
-            lastMessage: "0"
-        }
+    const createNewChat = async (user: createNewChatData) => {
         if (!currentUserId) {
             console.error("currentUserId is null")
             return
         }
-        const status = await ChatService.createOne(data, currentUserId)
-        if (status !== "OK") return
-        const newChats = await ChatService.getAll()
+        const newChat = await ChatService.createOne(
+            { name: user.name, lastMessage: "0" },
+            currentUserId
+        )
+        if (!newChat) return
+
+        const status = await ChatService.addUserToChat(newChat.id, user.id)
+        if (status !== "OK") {
+            ChatService.removeOne(newChat.id)
+            console.error("Can't add user to chat")
+            return
+        }
+
+        const newChats = await ChatService.getAll(currentUserId)
         if (!newChats) return
         setChats(newChats)
     }
