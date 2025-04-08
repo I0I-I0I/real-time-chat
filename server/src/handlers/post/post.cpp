@@ -22,8 +22,17 @@ HttpResponseStruct validate_post(const HttpRequestStruct& http) {
 
 HttpResponseStruct on_messages_post(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
     std::string table = "messages";
+    std::string chat_table = "chats";
+
     DBDataListStruct data = json::parse(http.body);
     DBResponseStruct response = db.insert_data(table, data, ExecuteType::get);
+    if (response.status == StatusCode::ok) {
+        DBDataStruct data = response.body.data[0];
+        DBDataStruct inserted_data = {
+            {"lastMessageId", std::to_string((int)data["id"])},
+        };
+        db.update_data(chat_table, std::to_string((int)data["chatId"]), inserted_data);
+    }
 
     return Http::response(response.status, create_resp_body(response), headers);
 }

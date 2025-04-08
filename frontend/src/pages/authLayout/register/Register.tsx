@@ -1,4 +1,4 @@
-import { Modal, Button, Link, Typography, FormInput } from "@/components/UI"
+import { Button, Link, Typography, FormInput } from "@/components/UI"
 
 import styles from "../Auth.module.css"
 import useInput from "@/hooks/useInput"

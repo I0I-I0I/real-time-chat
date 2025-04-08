@@ -42,7 +42,6 @@ export default class MessageService {
             }])
         })
         const data = await resp.json() as IFetchData<IMessage>
-        console.log("FULL: " + data.data)
         if (data.status === "OK") {
             return data.data[0]
         }

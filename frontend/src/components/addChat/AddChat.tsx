@@ -17,10 +17,9 @@ export const AddChat = ({
     const [search, setSearch] = useState("")
     const [friends, setFriends] = useState<DropdownData[]>([])
 
-    const onClickDropdownItem = async (data: DropdownData) => {
-        console.log("From onClickDropdownItem: " + data)
+    const onClickDropdownItem = (data: DropdownData) => {
         if (data.login == null) return
-        await createNewChat(data.login)
+        createNewChat(data.login)
     }
 
     const getUsers = async (login: string) => {

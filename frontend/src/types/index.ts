@@ -27,7 +27,7 @@ export interface IChat {
     id: number
     name: string
     createdAt: string
-    lastMessage?: string
+    lastMessage?: IMessage
     img?: string
 }
 

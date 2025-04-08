@@ -39,19 +39,17 @@ const ChatsPage = (): JSX.Element => {
     const [fetchMessages,, fetchMessagesError] = useFetching(async () => {
         if (currentChat === null) return;
         let data = await MessageService.getAll(currentChat.id)
-        console.log(data)
         if (data == null) data = []
         setMessages(data)
     })
 
     const createNewChat = async (name: string) => {
-        console.log(name)
         const data = {
             name: name,
             lastMessage: "0"
         }
         if (!currentUserId) {
-            console.log("currentUserId is null")
+            console.error("currentUserId is null")
             return
         }
         const status = await ChatService.createOne(data, currentUserId)

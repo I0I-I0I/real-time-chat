@@ -35,7 +35,7 @@ export const ChatsItem = ({
                 <div className={styles.body}>
                     { index && <Typography tag="span" variant="text_tiny" className={styles.index}>{String(index)}</Typography> }
                     <Typography tag="h2" variant="title-4">{data.name}</Typography>
-                    { data.lastMessage && <Typography tag="span" variant="text_tiny">{data.lastMessage}</Typography> }
+                    { data.lastMessage?.body && <Typography tag="span" variant="text_tiny">{data.lastMessage.body}</Typography> }
                 </div>
             </>
             </Button>

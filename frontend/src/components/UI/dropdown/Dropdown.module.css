@@ -18,7 +18,6 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: 10px;
         width: 100%;
 
         & svg {
@@ -29,7 +28,7 @@
 
         &:hover, &:focus-visible {
             & svg {
-                stroke: rgb(var(--purple));
+                stroke: rgb(var(--black));
             }
         }
     }

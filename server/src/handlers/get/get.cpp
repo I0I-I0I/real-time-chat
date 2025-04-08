@@ -60,19 +60,41 @@ HttpResponseStruct on_chats_get(const HttpRequestStruct& http, DB& db, HttpHeade
     DBResponseStruct db_response;
     if (http.url.params.find("id") != http.url.params.end()) {
         db_response = db.get_data_by("id", table, http.url.params.at("id"));
+        DBDataStruct* data = &db_response.body.data[0];
+        std::string lastMessageId = data->at("lastMessageId");
+        json lastMessage = db.get_data_by("id", "messages", lastMessageId).body.data[0];
+        data->at("lastMessage") = lastMessage;
     } else {
         db_response = db.get_data(table);
+        DBDataListStruct* data = &db_response.body.data;
+        for (DBDataStruct& item : *data) {
+            int lastMessageId = item["lastMessageId"];
+            DBResponseStruct d = db.get_data_by("id", "messages", std::to_string(lastMessageId));
+            if (d.status != StatusCode::ok) continue;
+            item["lastMessage"] = d.body.data[0];
+            item.erase("lastMessageId");
+        }
     }
     return Http::response(db_response.status, create_resp_body(db_response), headers);
 }
 
 HttpResponseStruct on_messages_get(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
-    if (http.url.params.find("chatId") == http.url.params.end())
-        return Http::response(StatusCode::bad_request, "Missing 'chatId'");
-
     DBResponseStruct db_response;
     std::string table = "messages";
-    db_response = db.get_data_by("chatId", table, http.url.params.at("chatId"));
+    std::string by = "";
+    std::string id = "";
+
+    if (http.url.params.find("chatId") != http.url.params.end()) {
+        by = "chatId";
+        id = http.url.params.at("chatId");
+    } else if (http.url.params.find("id") != http.url.params.end()) {
+        by = "id";
+        id = http.url.params.at("id");
+    } else {
+        return Http::response(StatusCode::bad_request, "Missing 'chatId' or 'id'");
+    }
+
+    db_response = db.get_data_by(by, table, id);
     return Http::response(db_response.status, create_resp_body(db_response), headers);
 }
 

@@ -11,7 +11,7 @@
     }
 
     &:hover, &:focus-visible {
-        color: rgb(var(--purple));
+        color: rgb(var(--black));
     }
 }
 

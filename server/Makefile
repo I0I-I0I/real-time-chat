@@ -44,7 +44,7 @@ server: $(SERVER_SRCS)
 
 debug: $(SERVER_SRCS)
 	@echo "Compiling server (for debug)..."
-	@$(CXX) $(CXXFLAGS) $^ -o $(SERVER_EXEC) $(CXXFLAGSEND) -g3
+	@$(CXX) $(CXXFLAGS) $^ -o $(SERVER_EXEC) $(CXXFLAGSEND) -g
 
 clean:
 	@echo "Cleaning..."

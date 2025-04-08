@@ -91,7 +91,7 @@ public:
      * @param data_list (DBDataListStruct)
      * @return (DBResponseStruct)
      */
-    DBResponseStruct update_data(const std::string& table, std::string& id, DBDataStruct& data_list);
+    DBResponseStruct update_data(const std::string& table, std::string id, DBDataStruct& data_list);
 
     /**
      * @brief Delete data from a table

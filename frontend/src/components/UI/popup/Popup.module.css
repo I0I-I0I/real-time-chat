@@ -1,7 +1,6 @@
 .popup {
     position: fixed;
     padding: 10px 20px;
-    border-radius: 30px;
     background-color: rgb(var(--black) / 0.4);
     z-index: 1000;
 

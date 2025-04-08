@@ -32,7 +32,6 @@ export const SearchWithDropdown = ({
     }
 
     useEffect(() => {
-        console.log("currentUser: " + currentUser)
         if (currentUser === null) {
             return
         }
@@ -45,7 +44,6 @@ export const SearchWithDropdown = ({
     }, [currentUser])
 
     useEffect(() => {
-        console.log("input: " + input)
         if (input === "" || data.length === 0) {
             setDropdownState(false)
             return
@@ -67,7 +65,7 @@ export const SearchWithDropdown = ({
                         <DropdownItem
                             key={user.id}
                             className={styles.dropdown_item}
-                            onClick={() => {console.log("HI"); setCurrentUser(user)}}
+                            onClick={() => setCurrentUser(user)}
                         >
                             <Typography tag="span" variant="text_tiny" className={styles.name}><>
                                 {user.name}

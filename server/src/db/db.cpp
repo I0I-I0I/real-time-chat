@@ -106,7 +106,7 @@ DBResponseStruct DB::insert_data(const std::string& table, DBDataListStruct& dat
     return this->get_data_by("id", table, last_id);
 }
 
-DBResponseStruct DB::update_data(const std::string& table, std::string& id, DBDataStruct& data_list) {
+DBResponseStruct DB::update_data(const std::string& table, std::string id, DBDataStruct& data_list) {
     std::string sql = "UPDATE " + table + " SET ";
 
     for (auto it = data_list.begin(); it != data_list.end(); ++it) {
