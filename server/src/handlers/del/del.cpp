@@ -1,0 +1,36 @@
+#include "../../http/http.h"
+#include "../../db/db.h"
+#include "../utils/utils.h"
+#include <string>
+
+HttpResponseStruct validate_del(const HttpRequestStruct& http) {
+    if (http.url.path.at(0) != "/api")
+        return Http::response(StatusCode::bad_request, "You missed '/api'");
+    if (http.url.path.size() < 3)
+        return Http::response(StatusCode::bad_request, "You missed table name or something");
+    if (http.url.params.find("id") == http.url.params.end())
+        return Http::response(StatusCode::bad_request, "Missing 'id'");
+    return { .status = "OK", .headers = {}, .body = "" };
+}
+
+HttpResponseStruct on_del(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
+    std::string table = http.url.path[2];
+    table.erase(0, 1);
+    std::string id = http.url.params.at("id");
+    DBResponseStruct response = db.delete_data_by("id", table, id);
+
+    return Http::response(response.status, create_resp_body(response), headers);
+}
+
+HttpResponseStruct on_del_chats(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
+    std::string table = "chats";
+    std::string table_participants = "chatParticipants";
+    std::string id = http.url.params.at("id");
+
+    DBResponseStruct response = db.delete_data_by("id", table, id);
+    if (response.status == StatusCode::ok) {
+        db.delete_data_by("chatId", table_participants, id);
+    }
+
+    return Http::response(response.status, create_resp_body(response), headers);
+}

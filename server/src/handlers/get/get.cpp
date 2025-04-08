@@ -4,6 +4,12 @@
 #include "../utils/utils.h"
 #include "./get.h"
 
+HttpResponseStruct validate_get(const HttpRequestStruct& http) {
+    if (http.url.path.size() < 3)
+        return Http::response(StatusCode::bad_request, "You missed table name or something");
+    return { .status = "OK", .headers = {}, .body = "" };
+}
+
 HttpResponseStruct on_file_get(const HttpRequestStruct& http, HttpHeadersStruct headers) {
     if ((http.headers.find("connection") != http.headers.end())
             && (http.headers.at("connection") == "keep-alive")) {

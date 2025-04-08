@@ -3,29 +3,31 @@
 #include "../../http/http.h"
 #include "../../db/db.h"
 #include "../../config.h"
+#include "../utils/utils.h"
 #include "../handlers.h"
+#include "./del.h"
 
 using json = nlohmann::json;
 
-HttpResponseStruct HandlerOn::del(const HttpRequestStruct& http) {
-    if (http.url.path.at(0) != "/api") return Http::response(StatusCode::bad_request, "You missed '/api'");
-    if (http.url.path.size() < 3) return Http::response(StatusCode::bad_request, "You missed table name or something");
-    if (http.url.params.find("id") == http.url.params.end()) return Http::response(StatusCode::bad_request, "Missing 'id'");
+OnUrlFuncsList paths_del = {
+    { "/users", on_del },
+    { "/chats", on_del_chats },
+    { "/messages", on_del },
+};
 
-    HttpHeadersStruct headers = {
-        { "content-type", "application/json" }
-    };
+HttpResponseStruct HandlerOn::del(const HttpRequestStruct& http) {
+    HttpResponseStruct resp = validate_del(http);
+    if (resp.status != "OK")
+        return resp;
+
+    std::string table = http.url.path[2];
+    if (paths_del.find(table) == paths_del.end())
+        return Http::response(StatusCode::not_found, "No such table");
+
+    HttpHeadersStruct headers = {};
+    headers["content-type"] = "application/json";
 
     DB db(DB_PATH);
-    std::string id = http.url.params.at("id");
-    std::string table = http.url.path[2];
-    DBResponseStruct response = db.delete_data_by("id", table, id);
 
-    json body = {
-        { "status", response.body.status },
-        { "data", response.body.data },
-        { "message", response.body.msg },
-    };
-
-    return Http::response(response.status, body.dump(), headers);
+    return paths_del.at(table)(http, db, headers);
 }
