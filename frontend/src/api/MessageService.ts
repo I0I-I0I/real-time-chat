@@ -19,6 +19,9 @@ export default class MessageService {
         const resp = await fetch(URL + "?chatId=" + chatId, {
             method: "GET",
         })
+
+        if (resp.status === 205) return []
+
         const data = await resp.json() as IFetchData<IMessage>
         if (data.status !== "OK") {
             return null

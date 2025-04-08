@@ -227,18 +227,18 @@ int DB::execute_sql(std::string& sql, ExecuteType type) {
         logger(error, "ERROR");
         this->response.status = StatusCode::bad_request;
         this->response.body.data.clear();
-        this->response.body.status = "Bad request";
+        this->response.body.status = "Bad Request";
         this->response.body.msg = error;
         if (error.find("UNIQUE") != std::string::npos)
-            this->response.body.msg = "Not unique";
+            this->response.body.msg = "Not Unique";
         return -1;
     }
 
     if (type == ExecuteType::get && this->response.body.data.empty()) {
         this->response.status = StatusCode::no_data;
         this->response.body.data.clear();
-        this->response.body.status = "No data";
-        this->response.body.msg = "SQL: No data";
+        this->response.body.status = "No Data";
+        this->response.body.msg = "SQL: No Data";
         return -2;
     }
 
