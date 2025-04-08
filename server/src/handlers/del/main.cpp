@@ -1,13 +1,10 @@
 #include <string>
-#include "json.hpp"
 #include "../../http/http.h"
 #include "../../db/db.h"
 #include "../../config.h"
 #include "../utils/utils.h"
 #include "../handlers.h"
 #include "./del.h"
-
-using json = nlohmann::json;
 
 OnUrlFuncsList paths_del = {
     { "/users", on_del_users },

@@ -25,9 +25,9 @@ struct StatucCodeArray {
 
 const std::unordered_map<StatusCode, StatucCodeArray> StatusCodeMap = {
     {StatusCode::ok, {200, "OK"}},
+    {StatusCode::no_data, {205, "No Data"}},
     {StatusCode::bad_request, {400, "Bad Request"}},
     {StatusCode::not_found, {404, "Not Found"}},
-    {StatusCode::no_data, {401, "No Data"}},
     {StatusCode::method_not_allowed, {405, "Method Not Allowed"}},
     {StatusCode::internal_server_error, {500, "Internal Server Error"}}
 };

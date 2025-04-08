@@ -4,11 +4,11 @@ CXXFLAGSEND = -lsqlite3 -pthread -I./libs
 
 SRCS_HTTP = src/http/*.cpp
 SRCS_PACKET = src/packet/*.cpp
-SRCS_DB = src/db/*.cpp src/db/utils/*.cpp
+SRCS_DB = src/db/*.cpp \
+		  src/db/utils/*.cpp
 SRCS_LOGGER = src/logger/*.cpp
-SRCS_SOCKET = src/socket/public.cpp \
-			  src/socket/private.cpp \
-			  src/socket/user/user.cpp
+SRCS_SOCKET = src/socket/*.cpp \
+			  src/socket/user/*.cpp
 SRCS_HANDLERS = src/handlers/options/*.cpp \
 				src/handlers/get/*.cpp \
 				src/handlers/post/*.cpp \
@@ -23,10 +23,7 @@ SRCS = $(SRCS_SOCKET) \
 	   $(SRCS_LOGGER) \
 	   $(SRCS_DB)
 
-SERVER_SRCS = src/server.cpp \
-			  $(SRCS)
-
-CLIENT_SRCS = src/client.cpp \
+SERVER_SRCS = src/main.cpp \
 			  $(SRCS)
 
 BUILD_DIR = build
@@ -53,4 +50,4 @@ clean:
 	@echo "Cleaning..."
 	@rm -f $(BUILD_DIR)/*
 
-.PHONY: all create server client clean
+.PHONY: all create server clean
