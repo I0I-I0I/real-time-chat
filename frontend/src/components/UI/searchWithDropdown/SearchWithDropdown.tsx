@@ -56,11 +56,15 @@ export const SearchWithDropdown = ({
                         <DropdownItem
                             key={user.id}
                             className={styles.dropdown_item}
-                            onClick={() => onClickDropdownItem({
-                                id: user.id,
-                                name: user.name,
-                                login: user.login
-                            })}
+                            onClick={async () => {
+                                console.log("HI")
+                                setDropdownState(false)
+                                await onClickDropdownItem({
+                                    id: user.id,
+                                    name: user.name,
+                                    login: user.login
+                                }
+                            )}}
                         >
                             <Typography tag="span" variant="text_tiny" className={styles.name}><>
                                 {user.name}

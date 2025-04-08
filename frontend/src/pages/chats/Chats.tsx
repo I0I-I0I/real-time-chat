@@ -44,6 +44,7 @@ const ChatsPage = (): JSX.Element => {
     })
 
     const createNewChat = async (name: string) => {
+        console.log(name)
         const data = {
             name: name,
             lastMessage: "0"

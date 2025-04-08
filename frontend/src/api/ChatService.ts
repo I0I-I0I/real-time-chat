@@ -44,8 +44,8 @@ export default class ChatService {
         return null
     }
 
-    static async removeOne(chatId: number): Promise<string | null>  {
-        const resp = await fetch(URL + "?id=" + chatId, {
+    static async removeOne(id: number): Promise<string | null>  {
+        const resp = await fetch(URL + "?id=" + id, {
             method: "DELETE",
         })
         const data = await resp.json() as IFetchData<IChat>
@@ -54,5 +54,4 @@ export default class ChatService {
         }
         return null
     }
-
 }

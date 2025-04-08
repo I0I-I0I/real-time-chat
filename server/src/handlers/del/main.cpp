@@ -10,9 +10,9 @@
 using json = nlohmann::json;
 
 OnUrlFuncsList paths_del = {
-    { "/users", on_del },
+    { "/users", on_del_users },
     { "/chats", on_del_chats },
-    { "/messages", on_del },
+    { "/messages", on_del_messages },
 };
 
 HttpResponseStruct HandlerOn::del(const HttpRequestStruct& http) {

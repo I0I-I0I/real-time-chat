@@ -45,4 +45,15 @@ export default class MessageService {
         }
         return null
     }
+
+    static async removeOne(id: number): Promise<string | null>  {
+        const resp = await fetch(URL + "?id=" + id, {
+            method: "DELETE",
+        })
+        const data = await resp.json() as IFetchData<IMessage>
+        if (data.status === "OK") {
+            return data.status
+        }
+        return null
+    }
 }
