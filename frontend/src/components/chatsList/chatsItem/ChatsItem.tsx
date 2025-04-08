@@ -12,13 +12,15 @@ interface ChatsItemProps {
     className?: string
     data: IChat
     onClick?: (chat: IChat) => void
+    onClickRemove?: (chatId: number) => void
 }
 
 export const ChatsItem = ({
     index,
     className = "",
     data,
-    onClick = () => {}
+    onClick = () => {},
+    onClickRemove
 }: ChatsItemProps) => {
     return (
         <li className={cls(styles.item, className)} aria-selected aria-label="Chat">
@@ -37,6 +39,11 @@ export const ChatsItem = ({
                 </div>
             </>
             </Button>
+            { onClickRemove &&
+                <Button className={styles.remove_button} onClick={() => onClickRemove(data.id)}>
+                    X
+                </Button>
+            }
         </li>
     )
 }

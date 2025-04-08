@@ -1,17 +1,13 @@
 .item {
     position: relative;
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    flex-direction: row;
+    justify-content: space-between;
     border-bottom: 1px solid var(--bd-color);
     padding: 0;
 }
 
 .button {
-    background-color: transparent;
-    border: none;
-    border-radius: 0;
-    cursor: pointer;
     padding: var(--item-padding) calc(var(--item-padding) / 2);
     color: inherit;
     font-size: inherit;
@@ -20,6 +16,20 @@
     display: flex;
     align-items: center;
     gap: 20px;
+    width: 100%;
+
+}
+
+.remove_button {
+    aspect-ratio: 1/1;
+}
+
+.button,
+.remove_button {
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
 
     transition: background-color .1s ease-in-out;
 

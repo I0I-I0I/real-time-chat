@@ -11,6 +11,7 @@ interface ChatsListProps {
     className?: string
     onClick?: (chat: IChat) => void
     createNewChat: (name: string) => void
+    removeChat: (chatId: number) => void
     data: IChat[] | null
 }
 
@@ -25,6 +26,7 @@ export const ChatsList = ({
     className = "",
     onClick = () => {},
     createNewChat,
+    removeChat,
     data
 }: ChatsListProps): JSX.Element => {
     const [addChat, setAddChat] = useState(false)
@@ -52,7 +54,7 @@ export const ChatsList = ({
             <ul className={cls(styles.list, className)}>
                 <ChatsItem onClick={() => setAddChat((prev: boolean) => !prev)} data={addChatData} index={null} key={0} />
                 { data && data.map((item: IChat, index: number): JSX.Element => (
-                    <ChatsItem data={item} index={index+1} key={index} onClick={onClick} />
+                    <ChatsItem data={item} index={index+1} key={index} onClick={onClick} onClickRemove={removeChat} />
                 ))}
             </ul>
         </>

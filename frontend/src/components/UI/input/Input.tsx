@@ -15,14 +15,14 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     variant?: VariantsType
 }
 
-export const Input: React.FC<InputProps> = ({
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
     className = "",
     variant = "default",
     ...props
-}) => {
+}, ref) => {
     const id = useId()
 
     return (
-        <input className={cls(styles.input , styles[variant], className)} id={id} {...props} />
+        <input className={cls(styles.input , styles[variant], className)} id={id} {...props} ref={ref} />
     )
-}
+})

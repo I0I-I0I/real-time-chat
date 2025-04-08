@@ -21,7 +21,7 @@ import MessageService from "@/api/MessageService"
 
 const ChatsPage = (): JSX.Element => {
     const isAuth = useUserStore(state => state.auth)
-    const [friends, setFriends] = useState<IChat[] | null>(null)
+    const [chats, setChats] = useState<IChat[] | null>(null)
     const currentChat = useChatStore(state => state.data)
     const setCurrentChat = useChatStore(state => state.setCurrentChat)
     const setMessages = useChatStore(state => state.setMessages)
@@ -33,7 +33,7 @@ const ChatsPage = (): JSX.Element => {
 
     const [fetchUsers,, fetchUsersError] = useFetching(async () => {
         const data = await ChatService.getAll()
-        setFriends(data)
+        setChats(data)
     })
 
     const [fetchMessages,, fetchMessagesError] = useFetching(async () => {
@@ -43,7 +43,7 @@ const ChatsPage = (): JSX.Element => {
         setMessages(data)
     })
 
-    const createNewChat = (name: string) => {
+    const createNewChat = async (name: string) => {
         const data = {
             name: name,
             lastMessage: "0"
@@ -52,8 +52,20 @@ const ChatsPage = (): JSX.Element => {
             console.log("currentUserId is null")
             return
         }
-        console.log("HI")
-        ChatService.createOne(data, currentUserId)
+        const status = await ChatService.createOne(data, currentUserId)
+        if (status !== "OK") return
+        const newChats = await ChatService.getAll()
+        if (!newChats) return
+        setChats(newChats)
+    }
+
+    const removeChat = async (chatId: number) => {
+        if (!chatId) return
+        const status = await ChatService.removeOne(chatId)
+        if (status !== "OK") return
+        if (!chats) return
+        const newChats = chats.filter(chat => chat.id !== chatId)
+        setChats(newChats)
     }
 
     const onClickChatsListItem = (chat: IChat) => {
@@ -83,10 +95,11 @@ const ChatsPage = (): JSX.Element => {
                 <AddChat className={styles.add_friends} createNewChat={createNewChat} />
                 <ChatInfo className={styles.info} />
                 <ChatsList
-                    data={friends}
+                    data={chats}
                     className={styles.list}
                     onClick={onClickChatsListItem}
                     createNewChat={createNewChat}
+                    removeChat={removeChat}
                 />
                 <Chat className={styles.messages} />
                 <Settings className={styles.settings} />

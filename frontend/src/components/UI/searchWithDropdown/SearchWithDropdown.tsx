@@ -42,7 +42,12 @@ export const SearchWithDropdown = ({
     }, [data, input])
 
     return (
-        <Search setPrompt={setPromptValue} className={styles.search}>
+        <Search
+            setPrompt={setPromptValue}
+            className={styles.search}
+            onFocus={() => setDropdownState(true)}
+            onBlur={() => setDropdownState(false)}
+        >
             <Dropdown dropdownState={dropdownState} className={styles.dropdown}>
                 {data.map((user) => {
                     if (user.id == currentUserId) return
