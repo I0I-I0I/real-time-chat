@@ -42,8 +42,8 @@ export const Register = (): JSX.Element => {
     }
 
     return (
-        <Modal className={styles.modal_login}>
-            <Typography tag="h1" variant="title-1">Sing in</Typography>
+        <div className={styles.login}>
+            <Typography tag="h1" variant="title-1">Sign up</Typography>
             <form action="POST" className="form sing-in" onSubmit={handleSubmit}>
                 <FormInput
                     className={isInvalidData ? styles.invalid : ""}
@@ -76,6 +76,6 @@ export const Register = (): JSX.Element => {
                 >Sing up</Button>
                 <Link href="/login" className={styles.link}>or sing in</Link>
             </form>
-        </Modal>
+        </div>
     )
 }

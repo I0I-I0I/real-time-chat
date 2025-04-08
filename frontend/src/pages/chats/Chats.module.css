@@ -7,10 +7,8 @@
 }
 
 .container {
-    width: 90%;
-    height: 90%;
-    border-radius: 15px;
-    margin: 0 auto;
+    width: 100%;
+    height: 100%;
 
     overflow: hidden;
 
@@ -24,11 +22,6 @@
         "search info"
         "list chat"
         "settings prompt";
-
-    @media(width < 1200px) {
-        max-width: calc(100% - 40px);
-        max-height: calc(100% - 40px);
-    }
 
     & .add_friends {
         grid-area: search;

@@ -1,4 +1,4 @@
-import { Modal, Button, Link, Typography, FormInput } from "@/components/UI"
+import { Button, Link, Typography, FormInput } from "@/components/UI"
 
 import styles from "../Auth.module.css"
 import useInput from "@/hooks/useInput"
@@ -7,6 +7,7 @@ import { useNavigate } from "react-router"
 import { useUserStore } from "@/state/user"
 import { useState } from "react"
 import { IUser } from "@/types"
+import cls from "@/utils/cls"
 
 export const Login = (): JSX.Element => {
     const [invalidData, setInvalidData] = useState(false)
@@ -41,8 +42,8 @@ export const Login = (): JSX.Element => {
     }
 
     return (
-        <Modal className={styles.modal_login}>
-            <Typography tag="h1" variant="title-1">Sing in</Typography>
+        <div className={styles.login}>
+            <Typography tag="h1" variant="title-1">Sign in</Typography>
             <form action="POST" className="form sing-in" onSubmit={handleSubmit}>
                 <FormInput
                     className={invalidData ? styles.invalid : ""}
@@ -65,8 +66,8 @@ export const Login = (): JSX.Element => {
                     type="submit"
                     disabled={login_prop.value === "" || password_prop.value === ""}
                 >Sing in</Button>
-                <Link href="/register" className={styles.link}>or sing up</Link>
+                <Link href="/register" className={cls(styles.link, styles.or_link)}>or sing up</Link>
             </form>
-        </Modal>
+        </div>
     )
 }

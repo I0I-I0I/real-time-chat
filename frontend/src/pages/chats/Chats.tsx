@@ -68,6 +68,7 @@ const ChatsPage = (): JSX.Element => {
         if (!chats) return
         const newChats = chats.filter(chat => chat.id !== chatId)
         setChats(newChats)
+        setMessages([])
     }
 
     const onClickChatsListItem = (chat: IChat) => {
