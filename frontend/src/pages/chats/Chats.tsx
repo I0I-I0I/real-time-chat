@@ -22,6 +22,7 @@ import MessageService from "@/api/MessageService"
 import { useChatsListStore } from "@/state/all_chats"
 
 const ChatsPage = (): JSX.Element => {
+    const setAuth = useUserStore(state => state.setAuth)
     const isAuth = useUserStore(state => state.auth)
     const chats = useChatsListStore(state => state.data)
     const setChats = useChatsListStore(state => state.setChatsList)
@@ -29,10 +30,6 @@ const ChatsPage = (): JSX.Element => {
     const setCurrentChat = useChatStore(state => state.setCurrentChat)
     const setMessages = useChatStore(state => state.setMessages)
     const currentUserId = useUserStore(state => state.data?.id)
-
-    if (!isAuth) {
-        return <NotAuthPage />
-    }
 
     const [fetchUsers,, fetchUsersError] = useFetching(async () => {
         if (!currentUserId) return
@@ -88,6 +85,10 @@ const ChatsPage = (): JSX.Element => {
         setCurrentChat(chat)
     }
 
+    const disableAuth = () => {
+        setAuth(false)
+    }
+
     useEffect(() => {
         fetchUsers();
     }, []);
@@ -95,6 +96,10 @@ const ChatsPage = (): JSX.Element => {
     useEffect(() => {
         fetchMessages()
     }, [currentChat]);
+
+    if (!isAuth) {
+        return <NotAuthPage />
+    }
 
     if (fetchUsersError) {
         return <div>{fetchUsersError}</div>
@@ -117,7 +122,7 @@ const ChatsPage = (): JSX.Element => {
                     removeChat={removeChat}
                 />
                 <Chat className={styles.messages} />
-                <Settings className={styles.settings} />
+                <Settings className={styles.settings} onClickLogout={disableAuth} />
                 <MessagePrompt className={styles.prompt} />
             </div>
         </div>

@@ -4,7 +4,7 @@ import { create } from "zustand"
 interface ChatStore {
     data: IChat | null,
     messages: IMessage[],
-    setCurrentChat: (chat: IChat) => void
+    setCurrentChat: (chat: IChat | null) => void
     setMessages: (messages: IMessage[]) => void
     addMessage: (message: IMessage) => void
 }
@@ -12,7 +12,7 @@ interface ChatStore {
 export const useChatStore = create<ChatStore>()((set) => ({
     data: null,
     messages: [],
-    setCurrentChat: (chat: IChat) => set({ data: chat }),
+    setCurrentChat: (chat: IChat | null) => set({ data: chat }),
     setMessages: (messages: IMessage[]) => set({ messages }),
     addMessage: (message: IMessage) => set((state) => ({
         messages: [...(state.messages || []), message]

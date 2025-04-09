@@ -7,7 +7,21 @@ import { useUserStore } from "@/state/user"
 
 interface SettingsProps {
     className?: string
+    onClickLogout: () => void
 }
+
+const data_account = [
+    {
+        type: "logout",
+        text: "Logout",
+        icon: "/logout.svg",
+    },
+    {
+        type: "help",
+        text: "Help",
+        icon: "/help.svg",
+    }
+]
 
 const data_settings = [
     {
@@ -17,23 +31,13 @@ const data_settings = [
     }
 ]
 
-const data_account = [
-    {
-        text: "Logout",
-        icon: "/logout.svg"
-    },
-    {
-        text: "Help",
-        icon: "/help.svg"
-    }
-]
-
 type ThemeType =
     | "light"
     | "dark"
 
 export const Settings = ({
-    className = ""
+    className = "",
+    onClickLogout
 }: SettingsProps): JSX.Element => {
     const [dropdownAccountState, setDropdownState] = useState<boolean>(false)
     const [dropdownSettingsState, setDropdownSettingsState] = useState<boolean>(false)
@@ -71,15 +75,18 @@ export const Settings = ({
             <Dropdown dropdownState={dropdownAccountState} className={cls(styles.dropdown, styles.dropdown_account)}>
                 { data_account.map((item, index: number): JSX.Element => (
                     <DropdownItem className={styles.dropdown_item} key={index}>
-                        <Link href="/login">
-                            <>
-                                <ReactSVG
-                                    className={cls(styles.icon)}
-                                    src={item.icon}
-                                />
-                                <span>{item.text}</span>
-                            </>
-                        </Link>
+                        <Link
+                            href="/login"
+                            onClick={() => {
+                                if (item.type === "logout") onClickLogout()
+                            }}
+                        ><>
+                            <ReactSVG
+                                className={cls(styles.icon)}
+                                src={item.icon}
+                            />
+                            <span>{item.text}</span>
+                        </></Link>
                     </DropdownItem>
                 )) }
             </Dropdown>
