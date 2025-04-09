@@ -14,6 +14,8 @@ enum StatusCode {
     no_data,
     bad_request,
     not_found,
+    wrong_password,
+    not_unique,
     method_not_allowed,
     internal_server_error
 };
@@ -28,6 +30,8 @@ const std::unordered_map<StatusCode, StatucCodeArray> StatusCodeMap = {
     {StatusCode::no_data, {205, "No Data"}},
     {StatusCode::bad_request, {400, "Bad Request"}},
     {StatusCode::not_found, {404, "Not Found"}},
+    {StatusCode::wrong_password, {401, "Unauthorized"}},
+    {StatusCode::not_unique, {422, "Unprocessable Entity"}},
     {StatusCode::method_not_allowed, {405, "Method Not Allowed"}},
     {StatusCode::internal_server_error, {500, "Internal Server Error"}}
 };

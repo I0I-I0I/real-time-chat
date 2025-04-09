@@ -15,7 +15,7 @@ export default class SearchService {
             method: "GET"
         })
         const data = await resp.json() as IFetchData<T>
-        if (data.status !== "OK") {
+        if (data.status !== 200) {
             return null
         }
         return data.data as T[]

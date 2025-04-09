@@ -29,7 +29,7 @@ export const Login = (): JSX.Element => {
             setInvalidData(true)
             return
         }
-        if (response.message === "Wrong password") {
+        if (response.status === 401) {
             setInvalidData(false)
             setInvalidPassword(true)
             return

@@ -63,7 +63,7 @@ const ChatsPage = (): JSX.Element => {
         if (!newChat) return
 
         const status = await ChatService.addUserToChat(newChat.id, user.id)
-        if (status !== "OK") {
+        if (status !== 200) {
             ChatService.removeOne(newChat.id)
             console.error("Can't add user to chat")
             return
@@ -77,7 +77,7 @@ const ChatsPage = (): JSX.Element => {
     const removeChat = async (chatId: number) => {
         if (!chatId) return
         const status = await ChatService.removeOne(chatId)
-        if (status !== "OK") return
+        if (status !== 200) return
         if (!chats) return
         const newChats = chats.filter(chat => chat.id !== chatId)
         newChats === null ? setChats([]) : setChats(newChats)
@@ -114,7 +114,6 @@ const ChatsPage = (): JSX.Element => {
                     data={chats}
                     className={styles.list}
                     onClick={onClickChatsListItem}
-                    createNewChat={createNewChat}
                     removeChat={removeChat}
                 />
                 <Chat className={styles.messages} />

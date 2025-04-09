@@ -9,7 +9,7 @@ export default class MessageService {
             method: "GET"
         })
         const data = await resp.json() as IFetchData<IMessage>
-        if (data.status !== "OK") {
+        if (data.status !== 200) {
             return null
         }
         return data.data[0]
@@ -23,7 +23,7 @@ export default class MessageService {
         if (resp.status === 205) return []
 
         const data = await resp.json() as IFetchData<IMessage>
-        if (data.status !== "OK") {
+        if (data.status !== 200) {
             return null
         }
         return data.data
@@ -42,7 +42,7 @@ export default class MessageService {
             }])
         })
         const data = await resp.json() as IFetchData<IMessage>
-        if (data.status === "OK") {
+        if (data.status === 200) {
             return data.data[0]
         }
         return null
@@ -53,7 +53,7 @@ export default class MessageService {
             method: "DELETE",
         })
         const data = await resp.json() as IFetchData<IMessage>
-        if (data.status === "OK") {
+        if (data.status === 200) {
             return data.status
         }
         return null

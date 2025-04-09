@@ -9,7 +9,7 @@ export default class UserService {
             method: "GET"
         })
         const data = await resp.json() as IFetchData<IUser>
-        if (data.status !== "OK") {
+        if (data.status !== 200) {
             return null
         }
         return data.data[0]
@@ -20,7 +20,7 @@ export default class UserService {
             method: "GET",
         })
         const data = await resp.json() as IFetchData<IUser>
-        if (data.status !== "OK") {
+        if (data.status !== 200) {
             return null
         }
         return data.data[0]
@@ -29,7 +29,7 @@ export default class UserService {
     static async getAll(): Promise<IUser[] | null> {
         const resp = await fetch(URL)
         const data = await resp.json() as IFetchData<IUser>
-        if (data.status !== "OK") {
+        if (data.status !== 200) {
             return null
         }
         return data.data
@@ -47,13 +47,10 @@ export default class UserService {
                 password: post_data.password
             }])
         })
-        const data = await resp.json() as IFetchData<IUser>
-        if (data.status !== "OK") {
-            if (data.message === "SQL: UNIQUE constraint failed: users.login")
-                return data
+        if (resp.status !== 200 && resp.status !== 422) {
             return null
         }
-        return data
+        return await resp.json() as IFetchData<IUser>
     }
 
     static async checkOne(check_data: ICheckUser): Promise<IFetchData<IUser> | null> {
@@ -67,21 +64,18 @@ export default class UserService {
                 password: check_data.password
             }])
         })
-        const data = await resp.json() as IFetchData<IUser>
-        if (data.status !== "OK") {
-            if (data.message === "Wrong password")
-                return data
+        if (resp.status !== 200 && resp.status !== 401) {
             return null
         }
-        return data
+        return await resp.json() as IFetchData<IUser>
     }
 
-    static async removeOne(id: number): Promise<string | null>  {
+    static async removeOne(id: number): Promise<number | null>  {
         const resp = await fetch(URL + "?id=" + id, {
             method: "DELETE",
         })
         const data = await resp.json() as IFetchData<IUser>
-        if (data.status === "OK") {
+        if (data.status === 200) {
             return data.status
         }
         return null

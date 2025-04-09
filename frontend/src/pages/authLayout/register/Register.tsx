@@ -10,7 +10,7 @@ import cls from "@/utils/cls"
 
 export const Register = (): JSX.Element => {
     const [isInvalidData, setIsInvalidData] = useState(false)
-    const [isUnuniqueLogin, setIsUnuniqueLogin] = useState(false)
+    const [isUniqueLogin, setIsUniqueLogin] = useState(false)
     const [login_prop,] = useInput("")
     const [username_prop,] = useInput("")
     const [password_prop,] = useInput("")
@@ -20,7 +20,7 @@ export const Register = (): JSX.Element => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        setIsUnuniqueLogin(false)
+        setIsUniqueLogin(false)
         setIsInvalidData(false)
         const status = await UserService.createOne({
             login: login_prop.value,
@@ -31,8 +31,8 @@ export const Register = (): JSX.Element => {
             setIsInvalidData(true)
             return
         }
-        if (status.message === "Not unique") {
-            setIsUnuniqueLogin(true)
+        if (status.status === 422) {
+            setIsUniqueLogin(true)
             return
         }
         const data = await UserService.getByLogin(login_prop.value)
@@ -50,8 +50,8 @@ export const Register = (): JSX.Element => {
                     className={isInvalidData ? styles.invalid : ""}
                     type="text"
                     placeholder="Login..."
-                    invalidData={isInvalidData || isUnuniqueLogin}
-                    textOnInvalidData={isUnuniqueLogin ? "Login already exists" : "Invalid data"}
+                    invalidData={isInvalidData || isUniqueLogin}
+                    textOnInvalidData={isUniqueLogin ? "Login already exists" : "Invalid data"}
                     {...login_prop}
                 />
                 <FormInput

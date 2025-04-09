@@ -1,10 +1,10 @@
 #include <string>
 #include <sqlite3.h>
 #include <vector>
+#include "json.hpp"
 #include "../logger/logger.h"
-#include "utils/utils.h"
+#include "./utils/utils.h"
 #include "./db.h"
-
 
 using json = nlohmann::json;
 
@@ -23,7 +23,6 @@ DBResponseStruct DB::get_data(const std::string& table, const std::vector<std::s
     if (this->execute_sql(sql, ExecuteType::get) != 0) return this->response;
 
     this->response.status = StatusCode::ok;
-    this->response.body.status = "OK";
     this->response.body.msg = "SQL: OK";
     return this->response;
 }
@@ -46,7 +45,6 @@ DBResponseStruct DB::get_data_by(
     std::string sql = "SELECT " + fls + " FROM " + table + " WHERE " + by + " IN (" + valuesList + ")";
     if (this->execute_sql(sql, ExecuteType::get) != 0) return this->response;
 
-    this->response.body.status = "OK";
     this->response.body.msg = "SQL: OK";
     this->response.status = StatusCode::ok;
     return this->response;
@@ -62,23 +60,21 @@ DBResponseStruct DB::get_data_by(
     std::string sql = "SELECT " + fls + " FROM " + table + " WHERE " + by + " = '" + value + "'";
     if (this->execute_sql(sql, ExecuteType::get) != 0) return this->response;
 
-    this->response.body.status = "OK";
     this->response.body.msg = "SQL: OK";
     this->response.status = StatusCode::ok;
     return this->response;
 }
 
 DBResponseStruct DB::search_data(
-        const std::string by,
-        const std::string& table,
-        const std::string& value,
-        const std::vector<std::string>& fields
+    const std::string by,
+    const std::string& table,
+    const std::string& value,
+    const std::vector<std::string>& fields
 ) {
     std::string fls = join(fields, ", ");
     std::string sql = "SELECT " + fls + " FROM " + table + " WHERE (lower(" + by + ") LIKE '%" + value + "%')";
     if (this->execute_sql(sql, ExecuteType::get) != 0) return this->response;
 
-    this->response.body.status = "OK";
     this->response.body.msg = "SQL: OK";
     this->response.status = StatusCode::ok;
     return this->response;
@@ -109,10 +105,11 @@ DBResponseStruct DB::insert_data(const std::string& table, DBDataListStruct& dat
 
     if (type != ExecuteType::get) {
         this->response.body.data.clear();
+        StatusCode status = StatusCode::ok;
         return {
-            .status = StatusCode::ok,
+            .status = status,
             .body = {
-                .status = "OK",
+                .status = StatusCodeMap.at(status).code,
                 .msg = "SQL: Inserted successfully",
                 .data = {}
             }
@@ -142,10 +139,11 @@ DBResponseStruct DB::update_data(const std::string& table, std::string id, DBDat
     if (this->execute_sql(sql) != 0) return this->response;
 
     this->response.body.data.clear();
+    StatusCode status = StatusCode::ok;
     return {
-        .status = StatusCode::ok,
+        .status = status,
         .body = {
-            .status = "OK",
+            .status = StatusCodeMap.at(status).code,
             .msg = "SQL: Updated successfully",
             .data = {}
         }
@@ -157,10 +155,12 @@ DBResponseStruct DB::delete_data_by(std::string by,const std::string& table, std
     if (this->execute_sql(sql) != 0) return this->response;
 
     this->response.body.data.clear();
+
+    StatusCode status = StatusCode::ok;
     return {
-        .status = StatusCode::ok,
+        .status = status,
         .body = {
-            .status = "OK",
+            .status = StatusCodeMap.at(status).code,
             .msg = "SQL: Deleted successfully",
             .data = {}
         }
@@ -173,10 +173,11 @@ DBResponseStruct DB::check_password(const std::string& table, const std::string&
         return this->response;
 
     if (this->response.body.data.at(0)["password"] != password) {
+        StatusCode status = StatusCode::wrong_password;
         return {
-            .status = StatusCode::bad_request,
+            .status = status,
             .body = {
-                .status = "ERROR",
+                .status = StatusCodeMap.at(status).code,
                 .msg = "Wrong password",
                 .data = {}
             }
@@ -189,10 +190,11 @@ DBResponseStruct DB::check_password(const std::string& table, const std::string&
         data[0][field] = this->response.body.data.at(0)[field];
     }
 
+    StatusCode status = StatusCode::ok;
     return {
-        .status = StatusCode::ok,
+        .status = status,
         .body = {
-            .status = "OK",
+            .status = StatusCodeMap.at(status).code,
             .msg = "Password correct",
             .data = data
         }
@@ -251,17 +253,16 @@ int DB::execute_sql(std::string& sql, ExecuteType type) {
         logger(error, "ERROR");
         this->response.status = StatusCode::bad_request;
         this->response.body.data.clear();
-        this->response.body.status = "Bad Request";
         this->response.body.msg = error;
-        if (error.find("UNIQUE") != std::string::npos)
-            this->response.body.msg = "Not Unique";
+        if (error.find("UNIQUE") != std::string::npos) {
+            this->response.status = StatusCode::not_unique;
+        }
         return -1;
     }
 
     if (type == ExecuteType::get && this->response.body.data.empty()) {
         this->response.status = StatusCode::no_data;
         this->response.body.data.clear();
-        this->response.body.status = "No Data";
         this->response.body.msg = "SQL: No Data";
         return -2;
     }

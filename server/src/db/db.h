@@ -21,7 +21,7 @@ enum ExecuteType {
  * @param data (DBDataListStruct)
  */
 struct DBResponseBodyStruct {
-    std::string status;
+    int status;
     std::string msg;
     DBDataListStruct data;
 };

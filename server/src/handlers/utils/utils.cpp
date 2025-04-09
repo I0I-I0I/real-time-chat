@@ -1,3 +1,4 @@
+#include <experimental/filesystem>
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -16,8 +17,9 @@ bool includes(const std::vector<std::string>& arr, const std::string& str) {
 }
 
 std::string create_resp_body(const DBResponseStruct& response) {
+    int status = StatusCodeMap.at(response.status).code;
     json body = {
-        { "status", response.body.status },
+        { "status", status },
         { "data", response.body.data },
         { "message", response.body.msg },
     };

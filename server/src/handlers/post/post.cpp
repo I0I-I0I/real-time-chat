@@ -44,7 +44,6 @@ HttpResponseStruct on_users_post(const HttpRequestStruct& http, DB& db, HttpHead
 
     if ((http.url.params.find("type") != http.url.params.end()) && (http.url.params.at("type") == "check")) {
         response = db.check_password(table, data[0]["login"], data[0]["password"], { "id", "login", "username", "createdAt" });
-        std::cout << "[Status] " << response.status << std::endl;
         HttpResponseStruct resp = Http::response(response.status, create_resp_body(response), headers);
         return resp;
     }

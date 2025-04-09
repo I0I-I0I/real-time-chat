@@ -9,7 +9,7 @@ export default class ChatService {
             method: "GET"
         })
         const data = await resp.json() as IFetchData<IChat>
-        if (data.status !== "OK") {
+        if (data.status !== 200) {
             return null
         }
         return data.data[0]
@@ -21,7 +21,7 @@ export default class ChatService {
         })
         if (resp.status !== 200) return null
         const data = await resp.json() as IFetchData<IChat>
-        if (data.status !== "OK") {
+        if (data.status !== 200) {
             return null
         }
         return data.data
@@ -39,13 +39,13 @@ export default class ChatService {
             }])
         })
         const data = await resp.json() as IFetchData<IChat>
-        if (data.status === "OK") {
+        if (data.status === 200) {
             return data.data[0]
         }
         return null
     }
 
-    static async addUserToChat(chat_id: number, user_id: number): Promise<string | null>  {
+    static async addUserToChat(chat_id: number, user_id: number): Promise<number | null>  {
         const resp = await fetch(URL + "?type=addParticipants", {
             method: "POST",
             headers: {
@@ -57,19 +57,18 @@ export default class ChatService {
             }])
         })
         const data = await resp.json() as IFetchData<IChat>
-        console.log(data)
-        if (data.status === "OK") {
+        if (data.status === 200) {
             return data.status
         }
         return null
     }
 
-    static async removeOne(id: number): Promise<string | null>  {
+    static async removeOne(id: number): Promise<number | null>  {
         const resp = await fetch(URL + "?id=" + id, {
             method: "DELETE",
         })
         const data = await resp.json() as IFetchData<IChat>
-        if (data.status === "OK") {
+        if (data.status === 200) {
             return data.status
         }
         return null

@@ -7,7 +7,7 @@ export interface IUser {
 }
 
 export interface IFetchData<T> {
-    status: string
+    status: number
     data: T[]
     message: string
 }
