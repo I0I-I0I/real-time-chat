@@ -1,6 +1,5 @@
 #include "../../http/http.h"
 #include "../../db/db.h"
-#include "../utils/utils.h"
 #include <string>
 
 HttpResponseStruct validate_del(const HttpRequestStruct& http) {
@@ -16,9 +15,9 @@ HttpResponseStruct validate_del(const HttpRequestStruct& http) {
 HttpResponseStruct on_del_users(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
     std::string table = "users";
     std::string id = http.url.params.at("id");
-    DBResponseStruct response = db.delete_data_by("id", table, id);
+    ResponseDataStruct response = db.delete_data_by("id", table, id);
 
-    return Http::response(response.status, create_resp_body(response), headers);
+    return Http::response(response, headers);
 }
 
 HttpResponseStruct on_del_chats(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
@@ -27,20 +26,20 @@ HttpResponseStruct on_del_chats(const HttpRequestStruct& http, DB& db, HttpHeade
     std::string table_messages = "messages";
     std::string id = http.url.params.at("id");
 
-    DBResponseStruct response = db.delete_data_by("id", table, id);
+    ResponseDataStruct response = db.delete_data_by("id", table, id);
     if (response.status == StatusCode::ok) {
         db.delete_data_by("chatId", table_participants, id);
         db.delete_data_by("chatId", table_messages, id);
     }
 
-    return Http::response(response.status, create_resp_body(response), headers);
+    return Http::response(response, headers);
 }
 
 HttpResponseStruct on_del_messages(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
     std::string table = "messages";
     std::string id = http.url.params.at("id");
 
-    DBResponseStruct response = db.delete_data_by("id", table, id);
+    ResponseDataStruct response = db.delete_data_by("id", table, id);
 
-    return Http::response(response.status, create_resp_body(response), headers);
+    return Http::response(response, headers);
 }

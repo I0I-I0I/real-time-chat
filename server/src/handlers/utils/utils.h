@@ -14,7 +14,7 @@ struct GetFileStruct {
 };
 
 bool includes(const std::vector<std::string>& arr, const std::string& str);
-std::string create_resp_body(const DBResponseStruct& response);
+std::string create_resp_body(const ResponseDataStruct& response);
 GetFileStruct get_file(const HttpRequestStruct& http);
 std::map<std::string, std::string> get_headers_of_extantion(const std::string& path);
 std::string get_file_path(const HttpRequestStruct& http);

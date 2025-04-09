@@ -9,3 +9,20 @@ HttpResponseStruct on_chats_get(const HttpRequestStruct& http, DB& db, HttpHeade
 HttpResponseStruct on_file_get(const HttpRequestStruct& http, HttpHeadersStruct headers = {});
 HttpResponseStruct validate_get(const HttpRequestStruct& http);
 HttpResponseStruct on_search_get(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers);
+
+/*
+* Utils
+*/
+HttpResponseStruct handleGetChatById(
+    const HttpRequestStruct& http,
+    DB& db,
+    const std::string& chatsTable,
+    HttpHeadersStruct& headers
+);
+HttpResponseStruct handleGetChatsByUserId(
+    const HttpRequestStruct& http,
+    DB& db,
+    const std::string& participantsTable,
+    const std::string& chatsTable,
+    HttpHeadersStruct& headers
+);

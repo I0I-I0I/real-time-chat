@@ -14,28 +14,6 @@ enum ExecuteType {
     get
 };
 
-/**
- * @brief Database response body
- * @param status (string)
- * @param msg (string)
- * @param data (DBDataListStruct)
- */
-struct DBResponseBodyStruct {
-    int status;
-    std::string msg;
-    DBDataListStruct data;
-};
-
-/**
- * @brief Database response
- * @param status (int)
- * @param body (DBResponseBodyStruct)
- */
-struct DBResponseStruct {
-    StatusCode status;
-    DBResponseBodyStruct body;
-};
-
 class DB {
 public:
     DB(std::string path);
@@ -47,9 +25,9 @@ public:
      * @brief Get all data from a table
      * @param table (string)
      * @param fields (string) = "*"
-     * @return (DBResponseStruct)
+     * @return (ResponseDataStruct)
      */
-    DBResponseStruct get_data(const std::string& table, const std::vector<std::string>& fields = { "*" });
+    ResponseDataStruct get_data(const std::string& table, const std::vector<std::string>& fields = { "*" });
 
     /**
      * @brief Get specific data from a table by value
@@ -57,9 +35,9 @@ public:
      * @param table (string)
      * @param value (string)
      * @param fields (string) = "*"
-     * @return (DBResponseStruct)
+     * @return (ResponseDataStruct)
      */
-    DBResponseStruct get_data_by(
+    ResponseDataStruct get_data_by(
         const std::string by,
         const std::string& table,
         const std::string& value,
@@ -72,9 +50,9 @@ public:
      * @param table (string)
      * @param values (vector<string>)
      * @param fields (string) = "*"
-     * @return (DBResponseStruct)
+     * @return (ResponseDataStruct)
      */
-    DBResponseStruct get_data_by(
+    ResponseDataStruct get_data_by(
         const std::string by,
         const std::string& table,
         std::vector<std::string> values,
@@ -87,9 +65,9 @@ public:
      * @param table (string&)
      * @param value (string&)
      * @param fields (vector<string>&)
-     * @return (DBResponseStruct)
+     * @return (ResponseDataStruct)
     */
-    DBResponseStruct search_data(
+    ResponseDataStruct search_data(
         const std::string by,
         const std::string& table,
         const std::string& value,
@@ -100,26 +78,26 @@ public:
      * @brief Push data to a table
      * @param table (string)
      * @param data (DBDataListStruct)
-     * @return (DBResponseStruct)
+     * @return (ResponseDataStruct)
      */
-    DBResponseStruct insert_data(const std::string& table, DBDataListStruct& data, ExecuteType type = ExecuteType::default_);
+    ResponseDataStruct insert_data(const std::string& table, DBDataListStruct& data, ExecuteType type = ExecuteType::default_);
 
     /**
      * @brief Update particular data in a table
      * @param table (string)
      * @param id (string)
      * @param data_list (DBDataListStruct)
-     * @return (DBResponseStruct)
+     * @return (ResponseDataStruct)
      */
-    DBResponseStruct update_data(const std::string& table, std::string id, DBDataStruct& data_list);
+    ResponseDataStruct update_data(const std::string& table, std::string id, DBDataStruct& data_list);
 
     /**
      * @brief Delete data from a table
      * @param table (string)
      * @param id (string)
-     * @return (DBResponseStruct)
+     * @return (ResponseDataStruct)
      */
-    DBResponseStruct delete_data_by(std::string by,const std::string& table, std::string value);
+    ResponseDataStruct delete_data_by(std::string by,const std::string& table, std::string value);
 
     /**
      * @brief Check on exists
@@ -127,13 +105,13 @@ public:
      * @param login (string)
      * @param password (string)
      * @param fields (string)
-     * @return (DBResponseStruct)
+     * @return (ResponseDataStruct)
      */
-    DBResponseStruct check_password(const std::string& table, const std::string& login, const std::string& password, const std::vector<std::string>& fields = {});
+    ResponseDataStruct check_password(const std::string& table, const std::string& login, const std::string& password, const std::vector<std::string>& fields = {});
 
 private:
     sqlite3 *db;
-    DBResponseStruct response;
+    ResponseDataStruct response;
 
     int execute_sql(std::string& sql, ExecuteType type = ExecuteType::default_);
 };

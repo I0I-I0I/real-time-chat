@@ -88,6 +88,22 @@ HttpResponseStruct Http::response(StatusCode code, const std::string& body, Http
     return http;
 }
 
+HttpResponseStruct Http::response(const ResponseDataStruct& body, HttpHeadersStruct headers) {
+    HttpResponseStruct http;
+    http.status = std::to_string(StatusCodeMap.at(body.status).code) + " " + StatusCodeMap.at(body.status).msg;
+
+    std::string body_str = create_resp_body(body);
+
+    if (headers.find("content-type") == headers.end()) headers["content-type"] = "plain/text";
+    if (headers.find("connection") == headers.end()) headers["connection"] = "close";
+    headers["content-length"] = std::to_string(body_str.size());
+
+    http.headers = headers;
+    http.body = body_str;
+
+    return http;
+}
+
 std::string Http::to_send(HttpResponseStruct& http) {
     std::ostringstream response;
 
@@ -137,6 +153,17 @@ std::vector<std::string> Http::to_send(HttpResponseStruct& http, int size) {
 /*
  * -- private --
  */
+
+std::string Http::create_resp_body(const ResponseDataStruct& response) {
+    int status = StatusCodeMap.at(response.status).code;
+    json body = {
+        { "status", status },
+        { "data", response.data },
+        { "message", response.msg },
+    };
+    return body.dump();
+}
+
 
 HttpPathStruct Http::get_path(std::string path) {
     HttpPathStruct http_path;

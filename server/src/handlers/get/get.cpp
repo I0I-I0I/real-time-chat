@@ -32,68 +32,41 @@ HttpResponseStruct on_file_get(const HttpRequestStruct& http, HttpHeadersStruct 
 
 HttpResponseStruct on_users_get(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
     std::string table = "users";
-    DBResponseStruct db_response;
+    ResponseDataStruct db_response;
 
     std::string by = "";
     if (http.url.params.find("login") != http.url.params.end()) {
         by = "login";
     } else if (http.url.params.find("id") != http.url.params.end()) {
         by = "id";
-    }
-
-    if (by == "") {
-        db_response = db.get_data(table);
     } else {
-        db_response = db.get_data_by(
-            by,
-            table,
-            http.url.params.at(by),
-            { "id", "login", "username", "createdAt" }
-        );
+        db_response = db.get_data( table, { "id", "login", "username", "createdAt" });
+        return Http::response(db_response, headers);
     }
 
-    return Http::response(db_response.status, create_resp_body(db_response), headers);
+    db_response = db.get_data_by(
+        by,
+        table,
+        http.url.params.at(by),
+        { "id", "login", "username", "createdAt" }
+    );
+
+    return Http::response(db_response, headers);
 }
 
 HttpResponseStruct on_chats_get(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
-    DBResponseStruct db_response;
-    std::string table = "chats";
-    std::string table_participants = "chatParticipants";
+    const std::string chatsTable = "chats";
+    const std::string participantsTable = "chatParticipants";
 
-    if (http.url.params.find("id") != http.url.params.end()) {
-        db_response = db.get_data_by("id", table, http.url.params.at("id"));
-        DBDataStruct* data = &db_response.body.data[0];
-        std::string lastMessageId = data->at("lastMessageId");
-        json lastMessage = db.get_data_by("id", "messages", lastMessageId).body.data[0];
-        data->at("lastMessage") = lastMessage;
-    } else if (http.url.params.find("userId") != http.url.params.end())  {
-        db_response = db.get_data_by("userId", table_participants, http.url.params.at("userId"), { "chatId" });
-        if (db_response.status != StatusCode::ok)
-            return Http::response(StatusCode::not_found, "Not found chats for this user");
-
-        DBDataListStruct chats_ids = db_response.body.data;
-        std::vector<std::string> ids;
-        for (DBDataStruct& item : chats_ids) {
-            ids.push_back(std::to_string((int)item["chatId"]));
-        }
-
-        db_response = db.get_data_by("id", table, ids);
-        DBDataListStruct* data = &db_response.body.data;
-        for (DBDataStruct& item : *data) {
-            std::string last_message_id = std::to_string((int)item["lastMessageId"]);
-            DBResponseStruct last_message = db.get_data_by("id", "messages", last_message_id);
-            if (last_message.status != StatusCode::ok) continue;
-            item["lastMessage"] = last_message.body.data[0];
-            item.erase("lastMessageId");
-        }
-    } else {
-        return Http::response(StatusCode::bad_request, "Missing 'id' or 'userId'");
-    }
-    return Http::response(db_response.status, create_resp_body(db_response), headers);
+    if (http.url.params.find("id") != http.url.params.end())
+        return handleGetChatById(http, db, chatsTable, headers);
+    if (http.url.params.find("userId") != http.url.params.end())
+        return handleGetChatsByUserId(http, db, participantsTable, chatsTable, headers);
+    return Http::response(StatusCode::bad_request, "Missing 'id' or 'userId'");
 }
 
 HttpResponseStruct on_messages_get(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
-    DBResponseStruct db_response;
+    ResponseDataStruct db_response;
     std::string table = "messages";
     std::string by = "";
     std::string id = "";
@@ -109,7 +82,7 @@ HttpResponseStruct on_messages_get(const HttpRequestStruct& http, DB& db, HttpHe
     }
 
     db_response = db.get_data_by(by, table, id);
-    return Http::response(db_response.status, create_resp_body(db_response), headers);
+    return Http::response(db_response, headers);
 }
 
 HttpResponseStruct on_search_get(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
@@ -124,6 +97,10 @@ HttpResponseStruct on_search_get(const HttpRequestStruct& http, DB& db, HttpHead
     std::string by = http.url.params.at("by");
     std::string value = http.url.params.at("value");
 
-    DBResponseStruct db_response = db.search_data(by, table, value, { "id", "login", "username", "createdAt" });
-    return Http::response(db_response.status, create_resp_body(db_response), headers);
+    std::vector<std::string> fileds = {};
+    if (table == "users")
+        fileds = { "id", "login", "username", "createdAt" };
+
+    ResponseDataStruct db_response = db.search_data(by, table, value, fileds);
+    return Http::response(db_response, headers);
 }

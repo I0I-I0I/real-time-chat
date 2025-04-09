@@ -1,4 +1,3 @@
-#include <experimental/filesystem>
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -7,23 +6,12 @@
 #include <vector>
 #include "../../config.h"
 #include "../../http/http.h"
-#include "../../db/db.h"
 #include "./utils.h"
 
 bool includes(const std::vector<std::string>& arr, const std::string& str) {
     for (const auto& item : arr)
         if (item == str) return true;
     return false;
-}
-
-std::string create_resp_body(const DBResponseStruct& response) {
-    int status = StatusCodeMap.at(response.status).code;
-    json body = {
-        { "status", status },
-        { "data", response.body.data },
-        { "message", response.body.msg },
-    };
-    return body.dump();
 }
 
 std::map<std::string, std::string> get_headers_of_extantion(const std::string& path) {

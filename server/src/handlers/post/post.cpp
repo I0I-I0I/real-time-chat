@@ -1,7 +1,5 @@
 #include "../../http/http.h"
 #include "../../db/db.h"
-#include "../utils/utils.h"
-#include <iostream>
 #include <string>
 
 using json = nlohmann::json;
@@ -25,38 +23,37 @@ HttpResponseStruct on_messages_post(const HttpRequestStruct& http, DB& db, HttpH
     std::string chat_table = "chats";
 
     DBDataListStruct data = json::parse(http.body);
-    DBResponseStruct response = db.insert_data(table, data, ExecuteType::get);
-    if (response.status == StatusCode::ok) {
-        DBDataStruct data = response.body.data[0];
+    ResponseDataStruct db_response = db.insert_data(table, data, ExecuteType::get);
+    if (db_response.status == StatusCode::ok) {
+        DBDataStruct data = db_response.data[0];
         DBDataStruct inserted_data = {
             {"lastMessageId", std::to_string((int)data["id"])},
         };
         db.update_data(chat_table, std::to_string((int)data["chatId"]), inserted_data);
     }
 
-    return Http::response(response.status, create_resp_body(response), headers);
+    return Http::response(db_response, headers);
 }
 
 HttpResponseStruct on_users_post(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
     std::string table = "users";
-    DBResponseStruct response;
+    ResponseDataStruct response;
     DBDataListStruct data = json::parse(http.body);
 
     if ((http.url.params.find("type") != http.url.params.end()) && (http.url.params.at("type") == "check")) {
         response = db.check_password(table, data[0]["login"], data[0]["password"], { "id", "login", "username", "createdAt" });
-        HttpResponseStruct resp = Http::response(response.status, create_resp_body(response), headers);
-        return resp;
+        return Http::response(response, headers);
     }
 
     response = db.insert_data(table, data);
-    return Http::response(response.status, create_resp_body(response), headers);
+    return Http::response(response, headers);
 }
 
 HttpResponseStruct on_participants_post(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
     std::string table = "chatParticipants";
     DBDataListStruct data = json::parse(http.body);
-    DBResponseStruct response = db.insert_data(table, data);
-    return Http::response(response.status, create_resp_body(response), headers);
+    ResponseDataStruct response = db.insert_data(table, data);
+    return Http::response(response, headers);
 }
 
 HttpResponseStruct on_chats_post(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
@@ -66,19 +63,19 @@ HttpResponseStruct on_chats_post(const HttpRequestStruct& http, DB& db, HttpHead
 
     std::string table = "chats";
     DBDataListStruct data = json::parse(http.body);
-    DBResponseStruct response = db.insert_data(table, data, ExecuteType::get);
+    ResponseDataStruct response = db.insert_data(table, data, ExecuteType::get);
 
-    const int& chat_id = response.body.data[0]["id"];
+    const int& chat_id = response.data[0]["id"];
     if (http.url.params.find("userId") == http.url.params.end()) {
         db.delete_data_by("id", "chats", std::to_string(chat_id));
         return Http::response(StatusCode::bad_request, "Missing 'userId'");
     }
 
     const std::string& user_id = http.url.params.at("userId");
-    DBResponseStruct res = db.get_data_by("id", "users", user_id);
+    ResponseDataStruct res = db.get_data_by("id", "users", user_id);
     if (res.status != StatusCode::ok) {
         db.delete_data_by("id", "chats", std::to_string(chat_id));
-        return Http::response(res.status, create_resp_body(res), headers);
+        return Http::response(res, headers);
     }
 
     DBDataListStruct participants_data = {{
@@ -87,5 +84,5 @@ HttpResponseStruct on_chats_post(const HttpRequestStruct& http, DB& db, HttpHead
     }};
     db.insert_data("chatParticipants", participants_data);
 
-    return Http::response(response.status, create_resp_body(response), headers);
+    return Http::response(response, headers);
 }

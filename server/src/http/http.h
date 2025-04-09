@@ -37,6 +37,18 @@ const std::unordered_map<StatusCode, StatucCodeArray> StatusCodeMap = {
 };
 
 /**
+ * @brife Data for create a response
+ * @param status (StatusCode)
+ * @param msg (string)
+ * @param data (vector<json>)
+ */
+struct ResponseDataStruct {
+    StatusCode status;
+    std::string msg;
+    std::vector<json> data;
+};
+
+/**
  * @param path (string)
  * @param params (map<string, string>)
  */
@@ -101,6 +113,14 @@ public:
     static HttpResponseStruct response(StatusCode code, const std::string& body, HttpHeadersStruct headers = {});
 
     /**
+     * @brief Create HTTP response
+     * @param body (ResponseDataStruct)
+     * @param headers = {} (map<string, string>)
+     * @return (HttpResponseStruct)
+     */
+    static HttpResponseStruct response(const ResponseDataStruct& body, HttpHeadersStruct headers = {});
+
+    /**
      * @brief Transform HttpResponseStruct to string
      * @param http (HttpResponseStruct)
      * @return (string)
@@ -117,6 +137,8 @@ public:
 
 private:
     static HttpPathStruct get_path(std::string path);
+
+    static std::string create_resp_body(const ResponseDataStruct& response);
 
     static void log(HttpRequestStruct& http);
     static void log(HttpResponseStruct& http);
