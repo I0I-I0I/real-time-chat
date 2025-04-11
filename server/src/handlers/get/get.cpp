@@ -40,7 +40,7 @@ HttpResponseStruct on_users_get(const HttpRequestStruct& http, DB& db, HttpHeade
     } else if (http.url.params.find("id") != http.url.params.end()) {
         by = "id";
     } else {
-        db_response = db.get_data( table, { "id", "login", "username", "createdAt" });
+        db_response = db.get_data(table, { "id", "login", "username", "createdAt" });
         return Http::response(db_response, headers);
     }
 

@@ -1,11 +1,14 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <random>
 #include <sstream>
 #include <string>
 #include <vector>
+#include <openssl/sha.h>
 #include "../../config.h"
 #include "../../http/http.h"
+#include "../../db/db.h"
 #include "./utils.h"
 
 bool includes(const std::vector<std::string>& arr, const std::string& str) {
@@ -74,4 +77,79 @@ GetFileStruct get_file(const HttpRequestStruct& http) {
         buffer.str(),
         path
     };
+}
+
+/**
+ * Session managment
+ */
+
+SessionItem Sessions::create(const std::string login, std::string password) {
+    ResponseDataStruct db_response = this->db.get_data_by("login", this->db_table, login);
+    if (db_response.status == StatusCode::ok) {
+        return { "", db_response.data[0]["hash"] };
+    }
+
+    std::string salt = generate_salt(16);
+    std::string result = encode_value(password, salt);
+    DBDataStruct data = { { "login", login }, { "hash", result } };
+    DBDataListStruct data_list;
+    data_list.push_back(data);
+    db_response = this->db.insert_data(this->db_table, data_list);
+    return { salt, result };
+}
+
+int Sessions::remove(const std::string login) {
+    try {
+        this->db.delete_data_by("login", this->db_table, login);
+    } catch (...) {
+        return 1;
+    }
+    return 0;
+}
+
+int Sessions::remove(const std::string login, const std::string hash) {
+    ResponseDataStruct db_response = this->db.get_data_by("login", this->db_table, login, { "hash" });
+    if (db_response.status != StatusCode::ok) return -1;
+    if (db_response.data[0].at("hash") != hash) return -2;
+
+    try {
+        this->db.delete_data_by("login", this->db_table, login);
+    } catch (...) {
+        return 1;
+    }
+    return 0;
+}
+
+CheckSessionStruct Sessions::check(std::string hash) {
+    ResponseDataStruct sessions = this->db.get_data_by("hash", this->db_table, hash);
+    if (sessions.status != StatusCode::ok)
+        return { SessionCheckStatus::BAD_USER, "" };
+    if (sessions.data[0]["hash"] != hash)
+        return { SessionCheckStatus::BAD_PASSWORD, "" } ;
+    return { SessionCheckStatus::OK, sessions.data[0]["login"] };
+}
+
+std::string Sessions::generate_salt(int length) {
+    std::random_device rd;
+    std::mt19937 generator(rd());
+    std::uniform_int_distribution<> dist(0, this->chars.size() - 1);
+    std::string salt;
+
+    for (int i = 0; i < length; ++i)
+        salt += this->chars[dist(generator)];
+    return salt;
+}
+
+std::string Sessions::encode_value(const std::string& value, const std::string& salt) {
+    const std::string data = salt + value;
+
+    unsigned char hash[SHA256_DIGEST_LENGTH];
+    SHA256((const unsigned char*)data.c_str(), data.size(), hash);
+
+    std::stringstream ss;
+    for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
+        ss << std::hex << std::setw(2) << std::setfill('0') << (int)hash[i];
+    }
+
+    return ss.str();
 }

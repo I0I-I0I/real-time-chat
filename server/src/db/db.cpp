@@ -145,7 +145,7 @@ ResponseDataStruct DB::update_data(const std::string& table, std::string id, DBD
 }
 
 ResponseDataStruct DB::delete_data_by(std::string by,const std::string& table, std::string value) {
-    std::string sql = "DELETE FROM " + table + " WHERE " + by + " = " + value;
+    std::string sql = "DELETE FROM " + table + " WHERE " + by + " = '" + value + "'";
     if (this->execute_sql(sql) != 0) return this->response;
 
     this->response.data.clear();

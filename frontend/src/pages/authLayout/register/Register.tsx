@@ -2,11 +2,11 @@ import { Button, Link, Typography, FormInput } from "@/components/UI"
 
 import styles from "../Auth.module.css"
 import useInput from "@/hooks/useInput"
-import UserService from "@/api/UserService"
 import { useNavigate } from "react-router"
 import { useUserStore } from "@/state/user"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import cls from "@/utils/cls"
+import AuthService from "@/api/AuthService"
 
 export const Register = (): JSX.Element => {
     const [isInvalidData, setIsInvalidData] = useState(false)
@@ -17,12 +17,13 @@ export const Register = (): JSX.Element => {
     const navigate = useNavigate()
     const setUserState = useUserStore((state) => state.setUser)
     const setUserAuthState = useUserStore((state) => state.setAuth)
+    const isAuth = useUserStore((state) => state.auth)
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setIsUniqueLogin(false)
         setIsInvalidData(false)
-        const status = await UserService.createOne({
+        const status = await AuthService.register({
             login: login_prop.value,
             username: username_prop.value,
             password: password_prop.value
@@ -35,11 +36,23 @@ export const Register = (): JSX.Element => {
             setIsUniqueLogin(true)
             return
         }
-        const data = await UserService.getByLogin(login_prop.value)
-        if (!data) return
+        const data = status.data[0]
         setUserState(data)
+        if (data.hash) {
+            localStorage.setItem("token", data.hash)
+        }
         setUserAuthState(true)
         navigate("/")
+    }
+
+    useEffect(() => {
+        if (isAuth) {
+            navigate("/");
+        }
+    }, [isAuth, navigate]);
+
+    if (isAuth) {
+        return <div></div>;
     }
 
     return (

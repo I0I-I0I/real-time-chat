@@ -16,8 +16,9 @@ import { useChatsListStore } from "@/state/all_chats"
 import { useChatStore } from "@/state/chat"
 import { useUserStore } from "@/state/user"
 import { IChat } from "@/types"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import styles from "./ChatsPage.module.css"
+import AuthService from "@/api/AuthService"
 
 const ChatsPage = (): JSX.Element => {
     const setAuth = useUserStore(state => state.setAuth)
@@ -27,27 +28,19 @@ const ChatsPage = (): JSX.Element => {
     const currentChat = useChatStore(state => state.data)
     const setCurrentChat = useChatStore(state => state.setCurrentChat)
     const setMessages = useChatStore(state => state.setMessages)
-    const currentUserId = useUserStore(state => state.data?.id)
-    const [interval_, setInterval_] = useState<NodeJS.Timeout | null>(null);
+    const currentUser = useUserStore(state => state.data)
 
     useEffect(() => {
-        if (!currentUserId || !currentChat) return;
-
-        if (interval_) {
-            clearInterval(interval_);
-            setInterval_(null);
-        }
-
         const interval = setInterval(async () => {
-            console.log("currentUserId", currentUserId);
-            console.log("currentChat", currentChat);
-            if (!currentUserId || !currentChat) return;
-
             try {
-                const chats = await ChatService.getAll(currentUserId);
-                const currentChatMessages = await MessageService.getAll(currentChat.id);
-                if (chats && currentChatMessages) {
+                if (!currentUser?.id) return;
+                const chats = await ChatService.getAll(currentUser?.id);
+                if (chats) {
                     setChats(chats);
+                }
+                if (!currentChat) return;
+                const currentChatMessages = await MessageService.getAll(currentChat.id);
+                if (currentChatMessages) {
                     setMessages(currentChatMessages);
                 }
             } catch (error) {
@@ -55,19 +48,14 @@ const ChatsPage = (): JSX.Element => {
             }
         }, 3000);
 
-        setInterval_(interval);
-
         return () => {
-            if (interval_) {
-                clearInterval(interval_);
-                setInterval_(null);
-            }
+            clearInterval(interval);
         };
-    }, [currentUserId, currentChat?.id]);
+    }, [currentUser?.id, currentChat]);
 
-    const [fetchUsers,, fetchUsersError] = useFetching(async () => {
-        if (!currentUserId) return
-        const data = await ChatService.getAll(currentUserId)
+    const [fetchChats,, fetchChatsError] = useFetching(async () => {
+        if (!currentUser?.id) return
+        const data = await ChatService.getAll(currentUser?.id)
         if (data === null) {
             setChats([])
             return
@@ -83,13 +71,13 @@ const ChatsPage = (): JSX.Element => {
     })
 
     const createNewChat = async (user: createNewChatData) => {
-        if (!currentUserId) {
-            console.error("currentUserId is null")
+        if (!currentUser?.id) {
+            console.error("currentUser?.id is null")
             return
         }
         const newChat = await ChatService.createOne(
             { name: user.name, lastMessage: "0" },
-            currentUserId
+            currentUser?.id
         )
         if (!newChat) return
 
@@ -100,7 +88,7 @@ const ChatsPage = (): JSX.Element => {
             return
         }
 
-        const newChats = await ChatService.getAll(currentUserId)
+        const newChats = await ChatService.getAll(currentUser?.id)
         if (!newChats) return
         setChats(newChats)
     }
@@ -119,13 +107,19 @@ const ChatsPage = (): JSX.Element => {
         setCurrentChat(chat)
     }
 
-    const disableAuth = () => {
+    const onLogout = () => {
+        const hash = localStorage.getItem("token")
+        if (hash) {
+            if (!currentUser?.login) return
+            AuthService.logout(currentUser.login, hash)
+            localStorage.removeItem("token")
+        }
         setAuth(false)
     }
 
     useEffect(() => {
-        fetchUsers();
-    }, []);
+        fetchChats()
+    }, [currentUser?.id]);
 
     useEffect(() => {
         fetchMessages()
@@ -135,8 +129,8 @@ const ChatsPage = (): JSX.Element => {
         return <NotAuthPage />
     }
 
-    if (fetchUsersError) {
-        return <div>{fetchUsersError}</div>
+    if (fetchChatsError) {
+        return <div>{fetchChatsError}</div>
     }
 
     if (fetchMessagesError) {
@@ -156,7 +150,7 @@ const ChatsPage = (): JSX.Element => {
                     removeChat={removeChat}
                 />
                 <Chat className={styles.messages} />
-                <Settings className={styles.settings} onClickLogout={disableAuth} />
+                <Settings className={styles.settings} onClickLogout={onLogout} />
                 <MessagePrompt className={styles.prompt} />
             </div>
         </div>

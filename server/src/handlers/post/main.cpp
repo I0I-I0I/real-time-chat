@@ -13,6 +13,9 @@ OnUrlFuncsList paths_post = {
     { "/users", on_users_post },
     { "/chats", on_chats_post },
     { "/messages", on_messages_post },
+    { "/register", on_register_post },
+    { "/login", on_login_post },
+    { "/logout", on_logout_post },
 };
 
 HttpResponseStruct HandlerOn::post(const HttpRequestStruct& http) {

@@ -2,12 +2,11 @@ import { Button, Link, Typography, FormInput } from "@/components/UI"
 
 import styles from "../Auth.module.css"
 import useInput from "@/hooks/useInput"
-import UserService from "@/api/UserService"
 import { useNavigate } from "react-router"
 import { useUserStore } from "@/state/user"
-import { useState } from "react"
-import { IUser } from "@/types"
+import { useState, useEffect } from "react"
 import cls from "@/utils/cls"
+import AuthService from "@/api/AuthService"
 
 export const Login = (): JSX.Element => {
     const [invalidData, setInvalidData] = useState(false)
@@ -17,13 +16,11 @@ export const Login = (): JSX.Element => {
     const navigate = useNavigate()
     const setUserState = useUserStore((state) => state.setUser)
     const setUserAuthState = useUserStore((state) => state.setAuth)
+    const isAuth = useUserStore((state) => state.auth)
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        const response = await UserService.checkOne({
-            login: login_prop.value,
-            password: password_prop.value
-        })
+        const response = await AuthService.loginWithPassword(login_prop.value, password_prop.value)
         if (!response) {
             setInvalidPassword(false)
             setInvalidData(true)
@@ -34,11 +31,24 @@ export const Login = (): JSX.Element => {
             setInvalidPassword(true)
             return
         }
-        const data = response.data[0] as IUser
+        const data = response.data[0]
         if (!data) return
         setUserState(data)
+        if (data.hash) {
+            localStorage.setItem("token", data.hash)
+        }
         setUserAuthState(true)
         navigate("/")
+    }
+
+    useEffect(() => {
+        if (isAuth) {
+            navigate("/");
+        }
+    }, [isAuth, navigate]);
+
+    if (isAuth) {
+        return <div></div>;
     }
 
     return (

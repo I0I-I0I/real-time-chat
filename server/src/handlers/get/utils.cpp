@@ -29,7 +29,7 @@ HttpResponseStruct handleGetChatsByUserId(
 ) {
     ResponseDataStruct db_response = db.get_data_by("userId", participants_table, http.url.params.at("userId"), { "chatId" });
     if (db_response.status != StatusCode::ok)
-        return Http::response(StatusCode::not_found, "No chats found for this user");
+        return Http::response(StatusCode::no_data, "No chats found for this user");
 
     DBDataListStruct chatIds = db_response.data;
     std::vector<std::string> ids;

@@ -1,6 +1,6 @@
 CXX = clang++
 CXXFLAGS = -std=c++2a -Wall -Wextra -Wpedantic -Werror
-CXXFLAGSEND = -lsqlite3 -pthread -I./libs
+CXXFLAGSEND = -lsqlite3 -pthread -lssl -lcrypto -I./libs
 
 SRCS_HTTP = src/http/*.cpp
 SRCS_PACKET = src/packet/*.cpp

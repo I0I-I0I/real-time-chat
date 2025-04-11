@@ -1,8 +1,14 @@
 #include "../../http/http.h"
 #include "../../db/db.h"
+#include "../utils/utils.h"
+#include "./post.h"
 #include <string>
 
 using json = nlohmann::json;
+
+/**
+ * Validation
+ */
 
 HttpResponseStruct validate_post(const HttpRequestStruct& http) {
     if (http.url.path.at(0) != "/api")
@@ -17,6 +23,95 @@ HttpResponseStruct validate_post(const HttpRequestStruct& http) {
         return Http::response(StatusCode::bad_request, "Not valid json");
     return { .status = "OK", .headers = {}, .body = "" };
 }
+
+/**
+ * Auth
+ */
+
+HttpResponseStruct on_register_post(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
+    std::string table = "users";
+    DBDataListStruct all_data = json::parse(http.body);
+    DBDataStruct data = all_data[0];
+
+    if (!data.contains("login"))
+        return Http::response(StatusCode::bad_request, "Missing 'login'");
+    if (!data.contains("password"))
+        return Http::response(StatusCode::bad_request, "Missing 'password'");
+    if (!data.contains("username"))
+        return Http::response(StatusCode::bad_request, "Missing 'username'");
+
+    Sessions sessions(db);
+    SessionItem session_item = sessions.create(data.at("login"), data.at("password"));
+
+    ResponseDataStruct db_response = db.insert_data(table, all_data, ExecuteType::get);
+    if (db_response.status == StatusCode::ok)  {
+        db_response.data[0]["hash"] = session_item.hash;
+    } else {
+        sessions.remove(data.at("login"));
+    }
+
+    return Http::response(db_response, headers);
+}
+
+HttpResponseStruct on_login_post(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
+    std::string table = "users";
+    DBDataStruct data = json::parse(http.body)[0];
+
+    Sessions sessions(db);
+
+    if (data.contains("hash")) {
+        CheckSessionStruct status = sessions.check(data.at("hash"));
+        if (status.status == SessionCheckStatus::BAD_USER)
+            return Http::response(StatusCode::bad_request, "Bad login");
+        if (status.status != SessionCheckStatus::OK)
+            return Http::response(StatusCode::bad_request, "Bad password");
+        ResponseDataStruct db_response = db.get_data_by("login", table, status.login);
+        db_response.data[0]["hash"] = data.at("hash");
+        return Http::response(db_response, headers);
+    }
+
+    if (!data.contains("login"))
+        return Http::response(StatusCode::bad_request, "Missing 'login'");
+    if (!data.contains("password"))
+        return Http::response(StatusCode::bad_request, "Missing 'password'");
+
+    ResponseDataStruct db_response = db.check_password(
+        table,
+        data.at("login"),
+        data.at("password"),
+        { "id", "login", "username", "createdAt" }
+    );
+
+    SessionItem session_item = sessions.create(data.at("login"), data.at("password"));
+    if (db_response.status == StatusCode::ok)  {
+        db_response.data[0]["hash"] = session_item.hash;
+    } else {
+        sessions.remove(data.at("login"));
+    }
+
+    return Http::response(db_response, headers);
+}
+
+HttpResponseStruct on_logout_post(const HttpRequestStruct& http, DB& db, HttpHeadersStruct&) {
+    DBDataStruct data = json::parse(http.body)[0];
+
+    if (!data.contains("login"))
+        return Http::response(StatusCode::bad_request, "Missing 'login'");
+    if (!data.contains("hash"))
+        return Http::response(StatusCode::bad_request, "Missing 'hash'");
+
+    Sessions sessions(db);
+    int status = sessions.remove(data.at("login"));
+    if (status == -2)
+        return Http::response(StatusCode::bad_request, "Wrong hash");
+    if (status != 0)
+        return Http::response(StatusCode::bad_request, "Session not found");
+    return Http::response(StatusCode::ok, "Session successfully closed");
+}
+
+/**
+ * Other
+ */
 
 HttpResponseStruct on_messages_post(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
     std::string table = "messages";
@@ -37,23 +132,16 @@ HttpResponseStruct on_messages_post(const HttpRequestStruct& http, DB& db, HttpH
 
 HttpResponseStruct on_users_post(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
     std::string table = "users";
-    ResponseDataStruct response;
     DBDataListStruct data = json::parse(http.body);
-
-    if ((http.url.params.find("type") != http.url.params.end()) && (http.url.params.at("type") == "check")) {
-        response = db.check_password(table, data[0]["login"], data[0]["password"], { "id", "login", "username", "createdAt" });
-        return Http::response(response, headers);
-    }
-
-    response = db.insert_data(table, data);
-    return Http::response(response, headers);
+    ResponseDataStruct db_response = db.insert_data(table, data);
+    return Http::response(db_response, headers);
 }
 
 HttpResponseStruct on_participants_post(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
     std::string table = "chatParticipants";
     DBDataListStruct data = json::parse(http.body);
-    ResponseDataStruct response = db.insert_data(table, data);
-    return Http::response(response, headers);
+    ResponseDataStruct db_response = db.insert_data(table, data);
+    return Http::response(db_response, headers);
 }
 
 HttpResponseStruct on_chats_post(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
@@ -63,9 +151,9 @@ HttpResponseStruct on_chats_post(const HttpRequestStruct& http, DB& db, HttpHead
 
     std::string table = "chats";
     DBDataListStruct data = json::parse(http.body);
-    ResponseDataStruct response = db.insert_data(table, data, ExecuteType::get);
+    ResponseDataStruct db_response = db.insert_data(table, data, ExecuteType::get);
 
-    const int& chat_id = response.data[0]["id"];
+    const int& chat_id = db_response.data[0]["id"];
     if (http.url.params.find("userId") == http.url.params.end()) {
         db.delete_data_by("id", "chats", std::to_string(chat_id));
         return Http::response(StatusCode::bad_request, "Missing 'userId'");
@@ -84,5 +172,5 @@ HttpResponseStruct on_chats_post(const HttpRequestStruct& http, DB& db, HttpHead
     }};
     db.insert_data("chatParticipants", participants_data);
 
-    return Http::response(response, headers);
+    return Http::response(db_response, headers);
 }
