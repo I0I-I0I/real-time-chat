@@ -17,7 +17,7 @@ import { useChatStore } from "@/state/chat"
 import { useUserStore } from "@/state/user"
 import { IChat } from "@/types"
 import { useEffect, useState } from "react"
-import styles from "./Chats.module.css"
+import styles from "./ChatsPage.module.css"
 
 const ChatsPage = (): JSX.Element => {
     const setAuth = useUserStore(state => state.setAuth)
@@ -38,7 +38,6 @@ const ChatsPage = (): JSX.Element => {
             setInterval_(null);
         }
 
-        console.log("HI");
         const interval = setInterval(async () => {
             console.log("currentUserId", currentUserId);
             console.log("currentChat", currentChat);
@@ -65,7 +64,6 @@ const ChatsPage = (): JSX.Element => {
             }
         };
     }, [currentUserId, currentChat?.id]);
-
 
     const [fetchUsers,, fetchUsersError] = useFetching(async () => {
         if (!currentUserId) return
