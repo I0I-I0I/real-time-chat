@@ -1,8 +1,7 @@
-import { Dropdown, DropdownItem, Typography, Search } from "@/components/UI"
+import { Dropdown, DropdownItem, Search, Typography } from "@/components/UI"
 import { useUserStore } from "@/state/user"
-
-import styles from "./SearchWithDropdown.module.css"
 import { useEffect, useState } from "react"
+import styles from "./SearchWithDropdown.module.css"
 
 export interface DropdownData {
     id: number

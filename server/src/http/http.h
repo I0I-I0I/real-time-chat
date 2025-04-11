@@ -137,7 +137,6 @@ public:
 
 private:
     static HttpPathStruct get_path(std::string path);
-
     static std::string create_resp_body(const ResponseDataStruct& response);
 
     static void log(HttpRequestStruct& http);

@@ -1,25 +1,23 @@
-import { Gradient } from "@/components/UI"
-import styles from "./Chats.module.css"
-import { IChat } from "@/types"
-import NotAuthPage from "@/pages/notAuth/NotAuth"
-
-import { useFetching } from "@/hooks/useFetch"
-import { useUserStore } from "@/state/user"
-import { useChatStore } from "@/state/chat"
-
-import {
-    ChatInfo,
-    AddChat,
-    ChatsList,
-    Settings,
-    MessagePrompt,
-    Chat,
-    createNewChatData
-} from "@/components"
-import { useEffect } from "react"
 import ChatService from "@/api/ChatService"
 import MessageService from "@/api/MessageService"
+import {
+    AddChat,
+    Chat,
+    ChatInfo,
+    ChatsList,
+    createNewChatData,
+    MessagePrompt,
+    Settings
+} from "@/components"
+import { Gradient } from "@/components/UI"
+import { useFetching } from "@/hooks/useFetch"
+import NotAuthPage from "@/pages/notAuth/NotAuth"
 import { useChatsListStore } from "@/state/all_chats"
+import { useChatStore } from "@/state/chat"
+import { useUserStore } from "@/state/user"
+import { IChat } from "@/types"
+import { useEffect, useState } from "react"
+import styles from "./Chats.module.css"
 
 const ChatsPage = (): JSX.Element => {
     const setAuth = useUserStore(state => state.setAuth)
@@ -30,6 +28,44 @@ const ChatsPage = (): JSX.Element => {
     const setCurrentChat = useChatStore(state => state.setCurrentChat)
     const setMessages = useChatStore(state => state.setMessages)
     const currentUserId = useUserStore(state => state.data?.id)
+    const [interval_, setInterval_] = useState<NodeJS.Timeout | null>(null);
+
+    useEffect(() => {
+        if (!currentUserId || !currentChat) return;
+
+        if (interval_) {
+            clearInterval(interval_);
+            setInterval_(null);
+        }
+
+        console.log("HI");
+        const interval = setInterval(async () => {
+            console.log("currentUserId", currentUserId);
+            console.log("currentChat", currentChat);
+            if (!currentUserId || !currentChat) return;
+
+            try {
+                const chats = await ChatService.getAll(currentUserId);
+                const currentChatMessages = await MessageService.getAll(currentChat.id);
+                if (chats && currentChatMessages) {
+                    setChats(chats);
+                    setMessages(currentChatMessages);
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }, 3000);
+
+        setInterval_(interval);
+
+        return () => {
+            if (interval_) {
+                clearInterval(interval_);
+                setInterval_(null);
+            }
+        };
+    }, [currentUserId, currentChat?.id]);
+
 
     const [fetchUsers,, fetchUsersError] = useFetching(async () => {
         if (!currentUserId) return

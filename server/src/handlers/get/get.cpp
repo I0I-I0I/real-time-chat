@@ -55,13 +55,14 @@ HttpResponseStruct on_users_get(const HttpRequestStruct& http, DB& db, HttpHeade
 }
 
 HttpResponseStruct on_chats_get(const HttpRequestStruct& http, DB& db, HttpHeadersStruct& headers) {
-    const std::string chatsTable = "chats";
-    const std::string participantsTable = "chatParticipants";
+    const std::string chats_table = "chats";
+    const std::string participants_table = "chatParticipants";
 
     if (http.url.params.find("id") != http.url.params.end())
-        return handleGetChatById(http, db, chatsTable, headers);
+        return handleGetChatById(http, db, chats_table, headers);
     if (http.url.params.find("userId") != http.url.params.end())
-        return handleGetChatsByUserId(http, db, participantsTable, chatsTable, headers);
+        return handleGetChatsByUserId(http, db, participants_table, chats_table, headers);
+
     return Http::response(StatusCode::bad_request, "Missing 'id' or 'userId'");
 }
 
