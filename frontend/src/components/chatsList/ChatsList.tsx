@@ -1,8 +1,8 @@
+import { useChatStore } from "@/state/chat"
 import { IChat } from "@/types"
 import cls from "@/utils/cls"
 import styles from "./ChatsList.module.css"
 import { ChatsItem } from "./chatsItem/ChatsItem"
-// import ChatService from "@/api/ChatService"
 
 interface ChatsListProps {
     className?: string
@@ -18,6 +18,7 @@ export const ChatsList = ({
     removeChat,
     data = []
 }: ChatsListProps): JSX.Element => {
+    const currentChat = useChatStore(state => state.data)
     const compareTimes = (time1: string | undefined, time2: string | undefined) => {
         if (!time1 || !time2) return 0;
         time1 =time1.split(" ").join("T");
@@ -33,6 +34,7 @@ export const ChatsList = ({
             return 0;
         }
     }
+
     return (
         <>
             <ul className={cls(styles.list, className)}>
@@ -40,7 +42,7 @@ export const ChatsList = ({
                     .slice()
                     .sort((a: IChat, b: IChat) => compareTimes(a.lastMessage?.createdAt, b.lastMessage?.createdAt))
                     .map((item: IChat, index: number): JSX.Element => (
-                        <ChatsItem data={item} index={index+1} key={index} onClick={onClick} onClickRemove={removeChat} />
+                        <ChatsItem data={item} index={index+1} key={index} onClick={onClick} onClickRemove={removeChat} className={currentChat?.id === item.id ? styles.active : ""} />
                     ))}
             </ul>
         </>

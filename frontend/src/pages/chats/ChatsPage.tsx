@@ -72,6 +72,20 @@ const ChatsPage = (): JSX.Element => {
         setMessages(data)
     })
 
+    useEffect(() => {
+        fetchChats()
+    }, [currentUser?.id]);
+
+    useEffect(() => {
+        fetchMessages()
+    }, [currentChat?.id]);
+
+    useEffect(() => {
+        // @ts-ignore
+        addChatRef.current?.scrollIntoView({ behavior: "smooth" })
+    }, [])
+
+
     const createNewChat = async (user: createNewChatData) => {
         if (!currentUser?.id) {
             console.error("currentUser?.id is null")
@@ -125,16 +139,6 @@ const ChatsPage = (): JSX.Element => {
         }
         setAuth(false)
     }
-
-    useEffect(() => {
-        fetchChats()
-        fetchMessages()
-    }, [currentUser?.id]);
-
-    useEffect(() => {
-        // @ts-ignore
-        addChatRef.current?.scrollIntoView({ behavior: "smooth" })
-    }, [])
 
     if (!isAuth) {
         return <NotAuthPage />

@@ -14,3 +14,7 @@
 .create_chat_modal {
     z-index: 101;
 }
+
+.active {
+    background-color: rgb(var(--white) / 0.1);
+}
