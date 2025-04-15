@@ -14,3 +14,11 @@
     flex-direction: column;
     height: 100%;
 }
+
+.empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: clamp(1.5rem, 5vw - 20px, 3rem);
+}

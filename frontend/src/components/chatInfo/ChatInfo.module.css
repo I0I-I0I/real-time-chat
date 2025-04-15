@@ -11,9 +11,14 @@
     align-items: center;
     row-gap: 10px;
     column-gap: 20px;
+    position: relative;
 
     & .icon {
         grid-area: icon;
+
+        @media (width < 800px) {
+            margin-left: 60px;
+        }
     }
 
     & .name {
@@ -25,12 +30,33 @@
     }
 
     & .return_button {
-        --icon-size: 18px;
+        --icon-size: 24px;
 
         grid-area: close;
         width: 36px;
         height: 36px;
         display: none;
+        position: absolute;
+        padding: 10px;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 80px;
+        padding-bottom: 70px;
+        margin-left: -10px;
+        margin-top: -10px;
+        aspect-ratio: 1 / 1;
+        cursor: pointer;
+        stroke: rgb(var(--white));
+        fill: none;
+        transition: stroke .1s ease-in-out;
+
+        & div {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
     }
 
     @media (width < 800px) {

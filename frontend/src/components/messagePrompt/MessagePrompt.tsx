@@ -62,17 +62,21 @@ export const MessagePrompt = ({
 
     return (
         <div className={cls(styles.message_prompt, className)}>
-            <form action="" onSubmit={onSendMessage}>
-                <Label className={styles.file} htmlFor={id} variant="file" onClick={OnChooseFileClick}>
-                    <ReactSVG
-                        className={styles.icon}
-                        src="/file.svg"
-                    />
-                    <Input id={id} type="file" variant="file" />
-                </Label>
-                <Input type="text" variant="message_input" placeholder="Message..." className={styles.prompt} {...message} />
-                <Button type="submit" variant="send" disabled={message.value === ""}>Send</Button>
-            </form>
+            { currentChat && (
+                <>
+                <form action="" onSubmit={onSendMessage}>
+                    <Label className={styles.file} htmlFor={id} variant="file" onClick={OnChooseFileClick}>
+                        <ReactSVG
+                            className={styles.icon}
+                            src="/file.svg"
+                        />
+                        <Input id={id} type="file" variant="file" />
+                    </Label>
+                    <Input type="text" variant="message_input" placeholder="Message..." className={styles.prompt} {...message} />
+                    <Button type="submit" variant="send" disabled={message.value === ""}>Send</Button>
+                </form>
+                </>
+            )}
         </div>
     )
 }
