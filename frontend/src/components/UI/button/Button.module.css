@@ -63,9 +63,12 @@
 }
 
 .icon {
+    --icon-size: 18px;
+    --padding: 5px;
+
     background-color: transparent;
     border: none;
-    padding: 5px;
+    padding: var(--padding);
 
     aspect-ratio: 1 / 1;
 
@@ -76,15 +79,14 @@
     }
 
     & svg {
-        width: 18px;
-        height: 18px;
+        width: var(--icon-size);
+        height: var(--icon-size);
     }
 }
 
 .link {
     border: none;
     background: transparent;
-    /* color: inherit; */
     color: rgb(var(--black) / .8);
 
     transition: color .1s;

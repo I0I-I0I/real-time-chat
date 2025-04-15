@@ -63,7 +63,7 @@ export const MessagePrompt = ({
     return (
         <div className={cls(styles.message_prompt, className)}>
             <form action="" onSubmit={onSendMessage}>
-                <Label htmlFor={id} variant="file" onClick={OnChooseFileClick}>
+                <Label className={styles.file} htmlFor={id} variant="file" onClick={OnChooseFileClick}>
                     <ReactSVG
                         className={styles.icon}
                         src="/file.svg"

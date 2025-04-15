@@ -1,7 +1,7 @@
 import cls from "@/utils/cls"
 import styles from "./AddChat.module.css"
 import { DropdownData, SearchWithDropdown } from "@/components/UI"
-import { useEffect, useState } from "react"
+import { forwardRef, useEffect, useState } from "react"
 import { IUser } from "@/types"
 import SearchService from "@/api/SearchService"
 
@@ -16,10 +16,10 @@ interface AddChatProps {
     createNewChat: (data: createNewChatData) => void
 }
 
-export const AddChat = ({
+export const AddChat = forwardRef<HTMLDivElement, AddChatProps>(({
     className = "",
     createNewChat
-}: AddChatProps) => {
+}, ref) => {
     const [search, setSearch] = useState("")
     const [friends, setFriends] = useState<DropdownData[]>([])
 
@@ -51,8 +51,8 @@ export const AddChat = ({
     }, [search])
 
     return (
-        <div className={cls(styles.add_chat, className)}>
+        <div className={cls(styles.add_chat, className)} ref={ref}>
             <SearchWithDropdown setPrompt={setSearch} data={friends} onClickDropdownItem={onClickDropdownItem} />
         </div>
     )
-}
+})

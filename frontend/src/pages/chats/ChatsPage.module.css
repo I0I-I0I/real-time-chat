@@ -10,7 +10,7 @@
     width: 100%;
     height: 100%;
 
-    overflow: hidden;
+    /* overflow: hidden; */
 
     backdrop-filter: blur(10px);
     background-color: rgba(0, 0, 0, 0.3);
@@ -27,24 +27,57 @@
         grid-area: search;
         border-right: 1px solid var(--bd-color);
         border-bottom: 1px solid var(--bd-color);
-    }
-    & .info {
-        grid-area: info;
-        border-bottom: 1px solid var(--bd-color);
+
+        @media (width < 800px) {
+            width: 100dvw;
+        }
     }
     & .list {
         grid-area: list;
         border-right: 1px solid var(--bd-color);
+
+        @media (width < 800px) {
+            width: 100dvw
+        }
     }
-    & .messages { grid-area: chat; }
     & .settings {
         grid-area: settings;
         border-right: 1px solid var(--bd-color);
         border-top: 1px solid var(--bd-color);
+
+        @media (width < 800px) {
+            width: 100dvw
+        }
+    }
+    & .info {
+        grid-area: info;
+        border-bottom: 1px solid var(--bd-color);
+
+        @media (width < 800px) {
+            width: 100dvw;
+        }
+    }
+    & .chat {
+        grid-area: chat;
+        max-height: 100%;
+        overflow-y: auto;
+
+        @media (width < 800px) {
+            width: 100dvw;
+        }
     }
     & .prompt {
         grid-area: prompt;
         border-top: 1px solid var(--bd-color);
+
+        @media (width < 800px) {
+            width: 100dvw;
+        }
+    }
+
+    @media (width < 800px) {
+        grid-template-columns: 1fr;
+        overflow-x: hidden;
     }
 }
 

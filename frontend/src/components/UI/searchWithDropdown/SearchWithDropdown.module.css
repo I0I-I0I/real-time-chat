@@ -33,4 +33,8 @@
             color: black;
         }
     }
+
+    @media (width < 800px) {
+        min-width: 100px;
+    }
 }

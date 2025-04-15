@@ -5,9 +5,44 @@
     display: grid;
     grid-template-columns: max-content 1fr;
     grid-template-rows: max-content max-content;
+    grid-template-areas:
+        "icon name"
+        "icon last_seen";
     align-items: center;
     row-gap: 10px;
     column-gap: 20px;
+
+    & .icon {
+        grid-area: icon;
+    }
+
+    & .name {
+        grid-area: name;
+    }
+
+    & .last_seen {
+        grid-area: last_seen;
+    }
+
+    & .return_button {
+        --icon-size: 18px;
+
+        grid-area: close;
+        width: 36px;
+        height: 36px;
+        display: none;
+    }
+
+    @media (width < 800px) {
+        grid-template-columns: max-content max-content 1fr;
+        grid-template-areas:
+            "close icon name"
+            "close icon last_seen";
+
+        & .return_button {
+            display: block;
+        }
+    }
 }
 
 .icon {

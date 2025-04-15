@@ -9,7 +9,7 @@ type ButtonVariants =
     | "link"
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>  {
-    children: string | React.ReactElement
+    children?: string | React.ReactElement
     className?: string
     variant?: ButtonVariants
 }
@@ -23,6 +23,6 @@ export const Button = ({
     <button
         className={cls(styles.button, styles[variant], className)} {...props}
     >
-        {children}
+        {children && children}
     </button>
 )

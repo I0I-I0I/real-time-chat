@@ -16,7 +16,7 @@ import { useChatsListStore } from "@/state/all_chats"
 import { useChatStore } from "@/state/chat"
 import { useUserStore } from "@/state/user"
 import { IChat } from "@/types"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import styles from "./ChatsPage.module.css"
 import AuthService from "@/api/AuthService"
 
@@ -29,6 +29,8 @@ const ChatsPage = (): JSX.Element => {
     const setCurrentChat = useChatStore(state => state.setCurrentChat)
     const setMessages = useChatStore(state => state.setMessages)
     const currentUser = useUserStore(state => state.data)
+    const chatInfoRef = useRef(null)
+    const addChatRef = useRef(null)
 
     useEffect(() => {
         const interval = setInterval(async () => {
@@ -93,6 +95,11 @@ const ChatsPage = (): JSX.Element => {
         setChats(newChats)
     }
 
+    const onClickCloseMobile = () => {
+        // @ts-ignore
+        addChatRef.current?.scrollIntoView({ behavior: "smooth" })
+    }
+
     const removeChat = async (chatId: number) => {
         if (!chatId) return
         const status = await ChatService.removeOne(chatId)
@@ -105,6 +112,8 @@ const ChatsPage = (): JSX.Element => {
 
     const onClickChatsListItem = (chat: IChat) => {
         setCurrentChat(chat)
+        // @ts-ignore
+        chatInfoRef.current?.scrollIntoView({ behavior: "smooth" })
     }
 
     const onLogout = () => {
@@ -125,6 +134,11 @@ const ChatsPage = (): JSX.Element => {
         fetchMessages()
     }, [currentChat]);
 
+    useEffect(() => {
+        // @ts-ignore
+        addChatRef.current?.scrollIntoView({ behavior: "smooth" })
+    }, [])
+
     if (!isAuth) {
         return <NotAuthPage />
     }
@@ -141,15 +155,15 @@ const ChatsPage = (): JSX.Element => {
         <div className={styles.wrapper}>
             <Gradient />
             <div className={styles.container}>
-                <AddChat className={styles.add_friends} createNewChat={createNewChat} />
-                <ChatInfo className={styles.info} />
+                <AddChat className={styles.add_friends} createNewChat={createNewChat} ref={addChatRef} />
+                <ChatInfo className={styles.info} ref={chatInfoRef} onClickCloseMobile={onClickCloseMobile} />
                 <ChatsList
                     data={chats}
                     className={styles.list}
                     onClick={onClickChatsListItem}
                     removeChat={removeChat}
                 />
-                <Chat className={styles.messages} />
+                <Chat className={styles.chat} />
                 <Settings className={styles.settings} onClickLogout={onLogout} />
                 <MessagePrompt className={styles.prompt} />
             </div>

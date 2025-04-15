@@ -4,11 +4,13 @@
     flex-direction: column-reverse;
     gap: 10px;
 
-    padding-top: 10px;
-    padding-bottom: 10px;
     overflow-y: auto;
-    height: 100%;
 
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 10px;
+}
+
+.chat {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
