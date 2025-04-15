@@ -1,12 +1,10 @@
-import { Button, Typography } from "@/components/UI"
-
-import styles from "./ChatsItem.module.css"
-
-import cls from "@/utils/cls"
-import { ReactSVG } from "react-svg"
-
-import { IChat } from "@/types"
+import { Button, Dropdown, DropdownItem, Typography } from "@/components/UI"
 import { useUserStore } from "@/state/user"
+import { IChat } from "@/types"
+import cls from "@/utils/cls"
+import { useState } from "react"
+import { ReactSVG } from "react-svg"
+import styles from "./ChatsItem.module.css"
 
 interface ChatsItemProps {
     index: number | null
@@ -23,11 +21,25 @@ export const ChatsItem = ({
     onClick = () => {},
     onClickRemove
 }: ChatsItemProps) => {
+    const [isHover, setIsHover] = useState(false)
+    const [isActive, setIsActive] = useState(false)
     const currentUserLogin = useUserStore(state => state.data?.login)
-    if (!currentUserLogin) return
 
     return (
-        <li className={cls(styles.item, className)} aria-selected aria-label="Chat">
+        <li
+            className={cls(styles.item, className)}
+            aria-selected
+            aria-label="Chat"
+            onMouseEnter={() => {
+                if (window.innerWidth < 800) return
+                setIsHover(true)
+            }}
+            onMouseLeave={() => {
+                if (window.innerWidth < 800) return
+                setIsHover(false)
+                setIsActive(false)
+            }}
+        >
             <Button
                 className={styles.button}
                 onClick={() => onClick(data)}>
@@ -51,9 +63,18 @@ export const ChatsItem = ({
             </>
             </Button>
             { onClickRemove &&
-                <Button className={styles.remove_button} onClick={() => onClickRemove(data.id)}>
-                    X
+                <>
+                <Button className={cls(styles.remove_button, isHover ? styles.active : "")} onClick={() => setIsActive((state) => !state)} >
+                    <ReactSVG src="/dots.svg" />
                 </Button>
+                <Dropdown dropdownState={isActive} className={styles.dropdown}>
+                    <DropdownItem>
+                        <Button onClick={() => onClickRemove(data.id)} className={styles.remove}>
+                            <><ReactSVG src="/close-x.svg" /> Удалить</>
+                        </Button>
+                    </DropdownItem>
+                </Dropdown>
+                </>
             }
         </li>
     )
