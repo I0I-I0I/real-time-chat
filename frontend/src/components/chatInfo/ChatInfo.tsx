@@ -5,6 +5,7 @@ import { Button, Typography } from "@/components/UI"
 import { ReactSVG } from "react-svg"
 import { useChatStore } from "@/state/chat"
 import { forwardRef } from "react"
+import { useUserStore } from "@/state/user"
 
 interface ChatInfoProps {
     className?: string
@@ -15,7 +16,10 @@ export const ChatInfo = forwardRef<HTMLDivElement, ChatInfoProps>(({
     className = "",
     onClickCloseMobile
 }, ref) => {
-    const name = useChatStore(state => state.data?.name)
+    const currentChat = useChatStore(state => state.data)
+    const currentUserLogin = useUserStore(state => state.data?.login)
+
+    if (!currentChat) return null
 
     return (
         <div className={cls(styles.chat_info, className)} ref={ref}>
@@ -27,7 +31,12 @@ export const ChatInfo = forwardRef<HTMLDivElement, ChatInfoProps>(({
                 src="/account.svg"
             />
             <Typography className={styles.name} tag="h2" variant="title-4">
-                {name ? name : "Chat"}
+                { currentChat.type === "friend" ? (
+                        currentUserLogin !== currentChat.name2 ? currentChat.name2 : currentChat.name
+                    ) : (
+                        currentChat.name
+                    )
+                }
             </Typography>
             <Typography className={styles.last_seen} tag="span" variant="text_small">
                 last seen

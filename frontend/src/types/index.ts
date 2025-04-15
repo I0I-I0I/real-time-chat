@@ -27,13 +27,16 @@ export interface ICheckUser {
 export interface IChat {
     id: number
     name: string
+    name2: string
     createdAt: string
     lastMessage?: IMessage
     img?: string
+    type: "group" | "friend"
 }
 
 export interface IChatPost {
     name: string
+    name2: string
     lastMessage?: string
 }
 

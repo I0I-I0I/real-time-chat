@@ -35,6 +35,7 @@ export default class ChatService {
             },
             body: JSON.stringify([{
                 name: post_data.name,
+                name2: post_data.name2,
                 lastMessageId: post_data?.lastMessage,
             }])
         })

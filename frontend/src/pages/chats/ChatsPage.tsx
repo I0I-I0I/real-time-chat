@@ -78,7 +78,7 @@ const ChatsPage = (): JSX.Element => {
             return
         }
         const newChat = await ChatService.createOne(
-            { name: user.name, lastMessage: "0" },
+            { name: user.name, name2: currentUser.login, lastMessage: "0" },
             currentUser?.id
         )
         if (!newChat) return
@@ -128,11 +128,8 @@ const ChatsPage = (): JSX.Element => {
 
     useEffect(() => {
         fetchChats()
-    }, [currentUser?.id]);
-
-    useEffect(() => {
         fetchMessages()
-    }, [currentChat]);
+    }, [currentUser?.id]);
 
     useEffect(() => {
         // @ts-ignore
