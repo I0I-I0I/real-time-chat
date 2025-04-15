@@ -1,12 +1,11 @@
-import { Button, Link, Typography, FormInput } from "@/components/UI"
-
-import styles from "../Auth.module.css"
-import useInput from "@/hooks/useInput"
-import { useNavigate } from "react-router"
-import { useUserStore } from "@/state/user"
-import { useState, useEffect } from "react"
-import cls from "@/utils/cls"
 import AuthService from "@/api/AuthService"
+import { Button, FormInput, Link, Typography } from "@/components/UI"
+import useInput from "@/hooks/useInput"
+import { useUserStore } from "@/state/user"
+import cls from "@/utils/cls"
+import { useEffect, useState } from "react"
+import { useNavigate } from "react-router"
+import styles from "../Auth.module.css"
 
 export const Login = (): JSX.Element => {
     const [invalidData, setInvalidData] = useState(false)
