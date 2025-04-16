@@ -98,6 +98,9 @@ struct addrinfo* TCPSocket::get_addr() {
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE;
+    // AF_INET - IPv4
+    // SOCK_STREAM - TCP
+    // AI_FLAGS - for passive mode
 
     if ((rv = getaddrinfo(this->host, this->port, &hints, &servinfo)) != 0)
         error_handler(ERROR_GET_ADDR, gai_strerror(rv), false);
@@ -122,7 +125,6 @@ int TCPSocket::setup_socket() {
             error_handler(ERROR_SOCKET, "", false);
             continue;
         }
-        if (this->socket_type == "client") break;
         if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char*)&yes, sizeof(yes)) == -1)
             error_handler(ERROR_SETSOCKOPT, "", false);
         if (bind(sock, p->ai_addr, p->ai_addrlen) == -1) {

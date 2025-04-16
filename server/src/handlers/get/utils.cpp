@@ -1,6 +1,7 @@
 #include "../../http/http.h"
 #include "../../db/db.h"
 #include "./get.h"
+#include <string>
 
 HttpResponseStruct handleGetChatById(
     const HttpRequestStruct& http,
@@ -13,7 +14,7 @@ HttpResponseStruct handleGetChatById(
         return Http::response(db_response.status, "Chat not found");
 
     DBDataStruct& data = db_response.data[0];
-    std::string lastMessageId = data.at("lastMessageId");
+    std::string lastMessageId = std::to_string((int)data.at("lastMessageId"));
     DBDataStruct lastMessage = db.get_data_by("id", "messages", lastMessageId).data[0];
     data["lastMessage"] = lastMessage;
 
