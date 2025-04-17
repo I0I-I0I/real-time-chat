@@ -1,3 +1,4 @@
+#include <csignal>
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -89,13 +90,12 @@ SessionItem Sessions::create(const std::string login, std::string password) {
         return { "", db_response.data[0]["hash"] };
     }
 
-    std::string salt = generate_salt(16);
-    std::string result = encode_value(password, salt);
-    DBDataStruct data = { { "login", login }, { "hash", result } };
+    std::string salt = Encode::salt(16);
+    DBDataStruct data = { { "login", login }, { "hash", password } };
     DBDataListStruct data_list;
     data_list.push_back(data);
     db_response = this->db.insert_data(this->db_table, data_list);
-    return { salt, result };
+    return { salt, password };
 }
 
 int Sessions::remove(const std::string login) {
@@ -129,18 +129,22 @@ CheckSessionStruct Sessions::check(std::string hash) {
     return { SessionCheckStatus::OK, sessions.data[0]["login"] };
 }
 
-std::string Sessions::generate_salt(int length) {
+std::string Encode::salt(size_t length) {
     std::random_device rd;
-    std::mt19937 generator(rd());
-    std::uniform_int_distribution<> dist(0, this->chars.size() - 1);
-    std::string salt;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, 255);
 
-    for (int i = 0; i < length; ++i)
-        salt += this->chars[dist(generator)];
-    return salt;
+    std::ostringstream oss;
+    oss << std::hex << std::setfill('0');
+
+    for (size_t i = 0; i < length; ++i) {
+        oss << std::setw(2) << dis(gen);
+    }
+
+    return oss.str();
 }
 
-std::string Sessions::encode_value(const std::string& value, const std::string& salt) {
+std::string Encode::encode(const std::string& value, const std::string& salt) {
     const std::string data = salt + value;
 
     unsigned char hash[SHA256_DIGEST_LENGTH];

@@ -39,14 +39,18 @@ struct CheckSessionStruct {
     std::string login;
 };
 
+class Encode {
+public:
+    static std::string salt(size_t length);
+    static std::string encode(const std::string& value, const std::string& salt);
+};
+
 class Sessions {
 private:
     DB &db;
     const std::string db_table = "sessions";
     const std::string chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-    std::string generate_salt(int length);
-    std::string encode_value(const std::string& value, const std::string& salt);
 
 public:
     Sessions(DB &db_)

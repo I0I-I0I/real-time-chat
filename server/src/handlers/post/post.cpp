@@ -40,8 +40,14 @@ HttpResponseStruct on_register_post(const HttpRequestStruct& http, DB& db, HttpH
     if (!data.contains("username"))
         return Http::response(StatusCode::bad_request, "Missing 'username'");
 
+    std::string salt = Encode::salt(16);
+    const std::string password = Encode::encode(data.at("password"), salt);
+
     Sessions sessions(db);
-    SessionItem session_item = sessions.create(data.at("login"), data.at("password"));
+    SessionItem session_item = sessions.create(data.at("login"), password);
+
+    all_data[0].at("password") = password;
+    all_data[0].push_back({"salt", salt});
 
     ResponseDataStruct db_response = db.insert_data(table, all_data, ExecuteType::get);
     if (db_response.status == StatusCode::ok)  {
@@ -75,10 +81,19 @@ HttpResponseStruct on_login_post(const HttpRequestStruct& http, DB& db, HttpHead
     if (!data.contains("password"))
         return Http::response(StatusCode::bad_request, "Missing 'password'");
 
-    ResponseDataStruct db_response = db.check_password(
+    ResponseDataStruct db_response;
+    std::string login = data.at("login");
+    db_response = db.get_data_by("login", table, login);
+    if (db_response.status != StatusCode::ok) {
+        return Http::response(StatusCode::not_found, "User with this login does not exitsts");
+    }
+
+    std::string encoded_password = Encode::encode(data.at("password"), db_response.data[0].at("salt"));
+
+    db_response = db.check_password(
         table,
         data.at("login"),
-        data.at("password"),
+        encoded_password,
         { "id", "login", "username", "createdAt" }
     );
 
