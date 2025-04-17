@@ -40,7 +40,7 @@ HttpResponseStruct on_register_post(const HttpRequestStruct& http, DB& db, HttpH
     if (!data.contains("username"))
         return Http::response(StatusCode::bad_request, "Missing 'username'");
 
-    std::string salt = Encode::salt(16);
+    const std::string salt = Encode::salt(16);
     const std::string password = Encode::encode(data.at("password"), salt);
 
     Sessions sessions(db);

@@ -91,11 +91,12 @@ SessionItem Sessions::create(const std::string login, std::string password) {
     }
 
     std::string salt = Encode::salt(16);
-    DBDataStruct data = { { "login", login }, { "hash", password } };
+    std::string session_hash = Encode::encode(password, salt);
+    DBDataStruct data = { { "login", login }, { "hash", session_hash } };
     DBDataListStruct data_list;
     data_list.push_back(data);
     db_response = this->db.insert_data(this->db_table, data_list);
-    return { salt, password };
+    return { salt, session_hash };
 }
 
 int Sessions::remove(const std::string login) {
