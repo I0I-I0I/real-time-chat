@@ -23,20 +23,20 @@ export const Register = (): JSX.Element => {
         e.preventDefault()
         setIsUniqueLogin(false)
         setIsInvalidData(false)
-        const status = await AuthService.register({
+        const response = await AuthService.register({
             login: login_prop.value,
             username: username_prop.value,
             password: password_prop.value
         })
-        if (!status) {
+        if (!response) {
             setIsInvalidData(true)
             return
         }
-        if (status.status === 422) {
+        if (response.status === 422) {
             setIsUniqueLogin(true)
             return
         }
-        const data = status.data[0]
+        const data = response.data[0]
         setUserState(data)
         if (data.hash) {
             localStorage.setItem("token", data.hash)

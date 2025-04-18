@@ -41,12 +41,12 @@ HttpResponseStruct on_register_post(const HttpRequestStruct& http, DB& db, HttpH
         return Http::response(StatusCode::bad_request, "Missing 'username'");
 
     const std::string salt = Encode::salt(16);
-    const std::string password = Encode::encode(data.at("password"), salt);
+    const std::string password_hash = Encode::encode(data.at("password"), salt);
 
     Sessions sessions(db);
-    SessionItem session_item = sessions.create(data.at("login"), password);
+    SessionItem session_item = sessions.create(data.at("login"), password_hash);
 
-    all_data[0].at("password") = password;
+    all_data[0].at("password") = password_hash;
     all_data[0].push_back({"salt", salt});
 
     ResponseDataStruct db_response = db.insert_data(table, all_data, ExecuteType::get);

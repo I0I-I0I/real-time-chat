@@ -4,7 +4,6 @@
 #include <regex>
 #include "json.hpp"
 #include "../logger/logger.h"
-#include "../config.h"
 #include "./http.h"
 
 using json = nlohmann::json;

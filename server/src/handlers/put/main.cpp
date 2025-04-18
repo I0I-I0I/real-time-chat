@@ -26,7 +26,7 @@ HttpResponseStruct HandlerOn::put(const HttpRequestStruct& http) {
         { "content-type", "application/json" }
     };
 
-    DB db(DB_PATH);
+    DB db(getDbPath());
 
     return paths_put.at(table)(http, db, headers);
 }

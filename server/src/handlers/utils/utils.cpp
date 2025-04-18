@@ -61,12 +61,12 @@ std::string get_file_path(const HttpRequestStruct& http) {
 
 GetFileStruct get_file(const HttpRequestStruct& http) {
     std::string path = get_file_path(http);
-    std::ifstream file(FRONTED_PATH + path);
+    std::ifstream file(getFrontendPath() + path);
 
     if (!file.is_open()) {
         if (SPA_MODE) {
             path = "/index.html";
-            file = std::ifstream(std::string(FRONTED_PATH) + path);
+            file = std::ifstream(std::string(getFrontendPath()) + path);
         } else {
             return { "File not found", path };
         }

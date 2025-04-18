@@ -11,7 +11,7 @@ export default class AuthService {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify([{
-                login: post_data.login,
+                login: post_data.login.toLowerCase(),
                 username: post_data.username,
                 password: post_data.password
             }])
@@ -47,7 +47,7 @@ export default class AuthService {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify([{
-                login: login,
+                login: login.toLowerCase(),
                 password: password
             }])
         })
@@ -64,7 +64,7 @@ export default class AuthService {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify([{
-                login: login,
+                login: login.toLowerCase(),
                 hash: hash
             }])
         })

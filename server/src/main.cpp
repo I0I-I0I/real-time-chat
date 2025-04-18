@@ -1,6 +1,5 @@
 #include <string>
 #include "json.hpp"
-#include "./config.h"
 #include "./socket/socket.h"
 #include "./handlers/handlers.h"
 #include "./http/http.h"

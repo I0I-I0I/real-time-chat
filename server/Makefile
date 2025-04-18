@@ -1,6 +1,7 @@
 CXX = clang++
 CXXFLAGS = -std=c++2a -Wall -Wextra -Wpedantic -Werror
 CXXFLAGSEND = -lsqlite3 -pthread -lssl -lcrypto -I./libs
+CXXOPTIMIZATIONS = -O3 -flto
 
 SRCS_HTTP = src/http/*.cpp
 SRCS_PACKET = src/packet/*.cpp
@@ -28,6 +29,7 @@ SERVER_SRCS = src/main.cpp \
 
 BUILD_DIR = build
 SERVER_EXEC = $(BUILD_DIR)/server
+SERVER_BUILD_EXEC = ../build/server
 
 all: create server
 
@@ -41,6 +43,10 @@ run: create server
 server: $(SERVER_SRCS)
 	@echo "Compiling server..."
 	@$(CXX) $(CXXFLAGS) $^ -o $(SERVER_EXEC) $(CXXFLAGSEND)
+
+for_build: $(SERVER_SRCS)
+	@echo "Compiling build version of server..."
+	@$(CXX) $(CXXFLAGS) $(CXXOPTIMIZATIONS) $^ -o $(SERVER_EXEC) $(CXXFLAGSEND) -L/usr/lib
 
 debug: $(SERVER_SRCS)
 	@echo "Compiling server (for debug)..."

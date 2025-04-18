@@ -31,7 +31,7 @@ HttpResponseStruct HandlerOn::get(const HttpRequestStruct& http) {
         { "content-type", "application/json" }
     };
 
-    DB db(DB_PATH);
+    DB db(getDbPath());
 
     return paths_get.at(table)(http, db, headers);
 }

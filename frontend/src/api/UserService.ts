@@ -16,7 +16,7 @@ export default class UserService {
     }
 
     static async getByLogin(login: string): Promise<IUser | null> {
-        const resp = await fetch(URL + "?login=" + login, {
+        const resp = await fetch(URL + "?login=" + login.toLowerCase(), {
             method: "GET",
         })
         const data = await resp.json() as IFetchData<IUser>
@@ -42,7 +42,7 @@ export default class UserService {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify([{
-                login: post_data.login,
+                login: post_data.login.toLowerCase(),
                 username: post_data.username,
                 password: post_data.password
             }])
@@ -60,7 +60,7 @@ export default class UserService {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify([{
-                login: check_data.login,
+                login: check_data.login.toLowerCase(),
                 password: check_data.password
             }])
         })

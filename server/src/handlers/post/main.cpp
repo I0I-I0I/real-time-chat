@@ -30,7 +30,7 @@ HttpResponseStruct HandlerOn::post(const HttpRequestStruct& http) {
     HttpHeadersStruct headers = {};
     headers["content-type"] = "application/json";
 
-    DB db(DB_PATH);
+    DB db(getDbPath());
 
     return paths_post.at(table)(http, db, headers);
 }
