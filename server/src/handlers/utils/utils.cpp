@@ -61,7 +61,7 @@ std::string get_file_path(const HttpRequestStruct& http) {
 
 GetFileStruct get_file(const HttpRequestStruct& http) {
     std::string path = get_file_path(http);
-    std::ifstream file(getFrontendPath() + path);
+    std::ifstream file(std::string(getFrontendPath()) + path);
 
     if (!file.is_open()) {
         if (SPA_MODE) {

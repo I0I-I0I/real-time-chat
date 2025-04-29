@@ -24,7 +24,8 @@ HttpResponseStruct HandlerOn::del(const HttpRequestStruct& http) {
     HttpHeadersStruct headers = {};
     headers["content-type"] = "application/json";
 
-    DB db(getDbPath());
+    std::string dbPath = getDbPath();
+    DB db(dbPath);
 
     return paths_del.at(table)(http, db, headers);
 }
