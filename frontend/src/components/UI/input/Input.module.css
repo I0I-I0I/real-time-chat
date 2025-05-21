@@ -15,14 +15,14 @@
     font-family: inherit;
     border: none;
 
-    transition: background-color .1s ease-in-out;
+    transition: background-color 0.1s ease-in-out;
 }
 
 .default {
     padding: 5px;
     border-radius: 4px;
-    border: 2px solid rgb(var(--black) / .6);
-    transition: border .2s ease-in-out;
+    border: 2px solid rgb(var(--black) / 0.6);
+    transition: border 0.2s ease-in-out;
 
     &:focus-visible {
         border: 2px solid rgb(var(--black));
@@ -35,10 +35,11 @@
     height: 0;
 
     label:has(&) {
-        transition: background-color .1s ease-in-out;
+        transition: background-color 0.1s ease-in-out;
     }
 
-    &:hover, &:focus-visible {
+    &:hover,
+    &:focus-visible {
         label:has(&) {
             background-color: rgb(var(--white) / 0.3);
         }
@@ -55,7 +56,8 @@
     min-width: 100%;
     min-height: 100%;
 
-    &:hover, &:focus-visible {
+    &:hover,
+    &:focus-visible {
         background-color: rgb(var(--white) / 0.3);
     }
 }

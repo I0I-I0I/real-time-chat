@@ -25,7 +25,7 @@
         color: rgb(var(--white));
         background-color: rgb(var(--black) / 0.9);
         padding: 12px 0;
-        transition: all .15s ease-in-out;
+        transition: all 0.15s ease-in-out;
         cursor: pointer;
 
         &:hover {

@@ -20,7 +20,8 @@
     opacity: 0.6;
     background-color: rgb(var(--black));
 
-    &:hover, &:focus-visible {
+    &:hover,
+    &:focus-visible {
         background-color: rgb(var(--black));
     }
 }
@@ -28,13 +29,14 @@
 .default {
     padding: 5px 10px;
     border-radius: 4px;
-    background-color: rgb(var(--black) / .8);
+    background-color: rgb(var(--black) / 0.8);
     color: rgb(var(--white));
     border: none;
 
-    transition: background-color .1s ease-in-out;
+    transition: background-color 0.1s ease-in-out;
 
-    &:hover, &:focus-visible {
+    &:hover,
+    &:focus-visible {
         background-color: rgb(var(--black));
     }
 }
@@ -44,9 +46,10 @@
     background: transparent;
     color: rgb(var(--white));
 
-    transition: background-color .1s ease-in-out;
+    transition: background-color 0.1s ease-in-out;
 
-    &:hover, &:focus-visible {
+    &:hover,
+    &:focus-visible {
         background-color: rgb(var(--white) / 0.1);
     }
 }
@@ -57,7 +60,8 @@
     color: rgb(var(--white));
     padding: 10px 30px;
 
-    &:hover, &:focus-visible {
+    &:hover,
+    &:focus-visible {
         background-color: rgb(var(--white) / 0.1);
     }
 }
@@ -72,9 +76,10 @@
 
     aspect-ratio: 1 / 1;
 
-    transition: background-color .1s ease-in-out;
+    transition: background-color 0.1s ease-in-out;
 
-    &:hover, &:focus-visible {
+    &:hover,
+    &:focus-visible {
         background-color: rgb(var(--white) / 0.1);
     }
 
@@ -87,11 +92,12 @@
 .link {
     border: none;
     background: transparent;
-    color: rgb(var(--black) / .8);
+    color: rgb(var(--black) / 0.8);
 
-    transition: color .1s;
+    transition: color 0.1s;
 
-    &:hover, &:focus-visible {
+    &:hover,
+    &:focus-visible {
         color: rgb(var(--black));
     }
 }

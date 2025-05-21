@@ -15,16 +15,14 @@ interface MessagePromptProps {
     className?: string
 }
 
-export const MessagePrompt = ({
-    className = ""
-}: MessagePromptProps): JSX.Element => {
+export const MessagePrompt = ({ className = "" }: MessagePromptProps): JSX.Element => {
     const id = useId()
-    const chat = useChatStore(state => state.data)
-    const addMessages = useChatStore(state => state.addMessage)
-    const setCurrentChat = useChatStore(state => state.setCurrentChat)
-    const setLastMessage = useChatsListStore(state => state.setLastMessage)
-    const currentChat = useChatStore(state => state.data)
-    const user = useUserStore(state => state.data)
+    const chat = useChatStore((state) => state.data)
+    const addMessages = useChatStore((state) => state.addMessage)
+    const setCurrentChat = useChatStore((state) => state.setCurrentChat)
+    const setLastMessage = useChatsListStore((state) => state.setLastMessage)
+    const currentChat = useChatStore((state) => state.data)
+    const user = useUserStore((state) => state.data)
     const [message, setMessage] = useInput("")
 
     const OnChooseFileClick = (e: React.MouseEvent) => {
@@ -62,19 +60,29 @@ export const MessagePrompt = ({
 
     return (
         <div className={cls(styles.message_prompt, className)}>
-            { currentChat && (
+            {currentChat && (
                 <>
-                <form action="" onSubmit={onSendMessage}>
-                    <Label className={styles.file} htmlFor={id} variant="file" onClick={OnChooseFileClick}>
-                        <ReactSVG
-                            className={styles.icon}
-                            src="/file.svg"
+                    <form action="" onSubmit={onSendMessage}>
+                        <Label
+                            className={styles.file}
+                            htmlFor={id}
+                            variant="file"
+                            onClick={OnChooseFileClick}
+                        >
+                            <ReactSVG className={styles.icon} src="/file.svg" />
+                            <Input id={id} type="file" variant="file" />
+                        </Label>
+                        <Input
+                            type="text"
+                            variant="message_input"
+                            placeholder="Message..."
+                            className={styles.prompt}
+                            {...message}
                         />
-                        <Input id={id} type="file" variant="file" />
-                    </Label>
-                    <Input type="text" variant="message_input" placeholder="Message..." className={styles.prompt} {...message} />
-                    <Button type="submit" variant="send" disabled={message.value === ""}>Send</Button>
-                </form>
+                        <Button type="submit" variant="send" disabled={message.value === ""}>
+                            Send
+                        </Button>
+                    </form>
                 </>
             )}
         </div>

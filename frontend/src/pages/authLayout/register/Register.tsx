@@ -11,9 +11,9 @@ import AuthService from "@/api/AuthService"
 export const Register = (): JSX.Element => {
     const [isInvalidData, setIsInvalidData] = useState(false)
     const [isUniqueLogin, setIsUniqueLogin] = useState(false)
-    const [login_prop,] = useInput("")
-    const [username_prop,] = useInput("")
-    const [password_prop,] = useInput("")
+    const [login_prop] = useInput("")
+    const [username_prop] = useInput("")
+    const [password_prop] = useInput("")
     const navigate = useNavigate()
     const setUserState = useUserStore((state) => state.setUser)
     const setUserAuthState = useUserStore((state) => state.setAuth)
@@ -26,7 +26,7 @@ export const Register = (): JSX.Element => {
         const response = await AuthService.register({
             login: login_prop.value,
             username: username_prop.value,
-            password: password_prop.value
+            password: password_prop.value,
         })
         if (!response) {
             setIsInvalidData(true)
@@ -47,17 +47,19 @@ export const Register = (): JSX.Element => {
 
     useEffect(() => {
         if (isAuth) {
-            navigate("/");
+            navigate("/")
         }
-    }, [isAuth, navigate]);
+    }, [isAuth, navigate])
 
     if (isAuth) {
-        return <div></div>;
+        return <div></div>
     }
 
     return (
         <div className={styles.login}>
-            <Typography tag="h1" variant="title-1">Sign up</Typography>
+            <Typography tag="h1" variant="title-1">
+                Sign up
+            </Typography>
             <form action="POST" className="form sing-in" onSubmit={handleSubmit}>
                 <FormInput
                     className={isInvalidData ? styles.invalid : ""}
@@ -86,10 +88,18 @@ export const Register = (): JSX.Element => {
                 <Button
                     className={styles.button}
                     type="submit"
-                    disabled={login_prop.value === "" || username_prop.value === "" || password_prop.value === ""}
-                >Sing up</Button>
+                    disabled={
+                        login_prop.value === "" ||
+                        username_prop.value === "" ||
+                        password_prop.value === ""
+                    }
+                >
+                    Sing up
+                </Button>
             </form>
-            <Link href="/login" className={cls(styles.link, styles.or_link)}>or sing in</Link>
+            <Link href="/login" className={cls(styles.link, styles.or_link)}>
+                or sing in
+            </Link>
         </div>
     )
 }

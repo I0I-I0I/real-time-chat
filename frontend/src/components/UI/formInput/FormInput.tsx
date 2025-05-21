@@ -21,7 +21,13 @@ export const FormInput = ({
                 className={cls(className, styles.form_input, invalidData ? styles.invalid : "")}
                 {...props}
             />
-            <Typography tag="span" variant="text_small" className={cls(styles.invalid_text, invalidData ? styles.on : "")}>{textOnInvalidData}</Typography>
+            <Typography
+                tag="span"
+                variant="text_small"
+                className={cls(styles.invalid_text, invalidData ? styles.on : "")}
+            >
+                {textOnInvalidData}
+            </Typography>
         </div>
     )
 }

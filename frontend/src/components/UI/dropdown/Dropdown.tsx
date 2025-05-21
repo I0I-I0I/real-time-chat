@@ -9,18 +9,16 @@ interface DropdownProps {
 }
 
 interface DropdownItemProps extends React.HTMLAttributes<HTMLLIElement> {
-    children: React.ReactNode,
+    children: React.ReactNode
     className?: string
 }
 
 export const Dropdown = ({
     dropdownState,
     className = "",
-    children
+    children,
 }: DropdownProps): JSX.Element => (
-    <ul className={cls(className, styles.dropdown, dropdownState ? "" : "hidden" )}>
-        {children}
-    </ul>
+    <ul className={cls(className, styles.dropdown, dropdownState ? "" : "hidden")}>{children}</ul>
 )
 
 export const DropdownItem = ({

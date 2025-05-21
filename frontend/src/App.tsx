@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import AuthService from "./api/AuthService"
-import { useUserStore }  from "./state/user"
+import { useUserStore } from "./state/user"
 import { BrowserRouter, Routes, Route } from "react-router"
 
 import ChatsPage from "@/pages/chats/ChatsPage"
@@ -16,7 +16,7 @@ export const App = () => {
     useEffect(() => {
         const hash = localStorage.getItem("token")
         if (!hash) return
-        (async () => {
+        ;(async () => {
             const response = await AuthService.loginWithHash(hash)
             if (response) {
                 setCurrentUser(response)
@@ -24,7 +24,6 @@ export const App = () => {
             }
         })()
     }, [])
-
 
     return (
         <BrowserRouter>

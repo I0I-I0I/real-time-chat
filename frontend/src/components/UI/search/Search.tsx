@@ -19,7 +19,7 @@ export const Search = ({
     children,
     ...props
 }: SearchProps): JSX.Element => {
-    const [value,] = useInput("")
+    const [value] = useInput("")
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -42,13 +42,10 @@ export const Search = ({
                     />
                 </Label>
                 <Button className={styles.button} variant="icon">
-                    <ReactSVG
-                        className={styles.icon}
-                        src="/search.svg"
-                    />
+                    <ReactSVG className={styles.icon} src="/search.svg" />
                 </Button>
             </form>
-            { children && children }
+            {children && children}
         </search>
     )
 }

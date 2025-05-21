@@ -1,0 +1,39 @@
+{
+    "semi": false,
+    "trailingComma": "es5",
+    "tabWidth": 4,
+    "printWidth": 100,
+    "endOfLine": "auto",
+    "bracketSpacing": true,
+    "arrowParens": "always",
+    "jsxSingleQuote": false,
+    "quoteProps": "as-needed",
+    "useTabs": false,
+    "vueIndentScriptAndStyle": false,
+    "overrides": [
+        {
+            "files": "*.ts",
+            "options": {
+                "parser": "typescript"
+            }
+        },
+        {
+            "files": "*.tsx",
+            "options": {
+                "parser": "typescript"
+            }
+        },
+        {
+            "files": "*.html",
+            "options": {
+                "parser": "html"
+            }
+        },
+        {
+            "files": "*.json",
+            "options": {
+                "parser": "json"
+            }
+        }
+    ]
+}

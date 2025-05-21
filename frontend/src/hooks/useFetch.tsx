@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useState } from "react"
 
-export const useFetching = (callback: (...args: any) => Promise<void>): [() => void, boolean, string] => {
+export const useFetching = (
+    callback: (...args: any) => Promise<void>
+): [() => void, boolean, string] => {
     const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState('')
+    const [error, setError] = useState("")
 
     const fetching = async (...args: any[]) => {
         try {

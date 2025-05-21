@@ -7,7 +7,7 @@ import {
     ChatsList,
     createNewChatData,
     MessagePrompt,
-    Settings
+    Settings,
 } from "@/components"
 import { Gradient } from "@/components/UI"
 import { useFetching } from "@/hooks/useFetch"
@@ -21,41 +21,41 @@ import styles from "./ChatsPage.module.css"
 import AuthService from "@/api/AuthService"
 
 const ChatsPage = (): JSX.Element => {
-    const setAuth = useUserStore(state => state.setAuth)
-    const isAuth = useUserStore(state => state.auth)
-    const chats = useChatsListStore(state => state.data)
-    const setChats = useChatsListStore(state => state.setChatsList)
-    const currentChat = useChatStore(state => state.data)
-    const setCurrentChat = useChatStore(state => state.setCurrentChat)
-    const setMessages = useChatStore(state => state.setMessages)
-    const currentUser = useUserStore(state => state.data)
+    const setAuth = useUserStore((state) => state.setAuth)
+    const isAuth = useUserStore((state) => state.auth)
+    const chats = useChatsListStore((state) => state.data)
+    const setChats = useChatsListStore((state) => state.setChatsList)
+    const currentChat = useChatStore((state) => state.data)
+    const setCurrentChat = useChatStore((state) => state.setCurrentChat)
+    const setMessages = useChatStore((state) => state.setMessages)
+    const currentUser = useUserStore((state) => state.data)
     const chatInfoRef = useRef(null)
     const addChatRef = useRef(null)
 
     useEffect(() => {
         const interval = setInterval(async () => {
             try {
-                if (!currentUser?.id) return;
-                const chats = await ChatService.getAll(currentUser?.id);
+                if (!currentUser?.id) return
+                const chats = await ChatService.getAll(currentUser?.id)
                 if (chats) {
-                    setChats(chats);
+                    setChats(chats)
                 }
-                if (!currentChat) return;
-                const currentChatMessages = await MessageService.getAll(currentChat.id);
+                if (!currentChat) return
+                const currentChatMessages = await MessageService.getAll(currentChat.id)
                 if (currentChatMessages) {
-                    setMessages(currentChatMessages);
+                    setMessages(currentChatMessages)
                 }
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error("Error fetching data:", error)
             }
-        }, 3000);
+        }, 3000)
 
         return () => {
-            clearInterval(interval);
-        };
-    }, [currentUser?.id, currentChat]);
+            clearInterval(interval)
+        }
+    }, [currentUser?.id, currentChat])
 
-    const [fetchChats,, fetchChatsError] = useFetching(async () => {
+    const [fetchChats, , fetchChatsError] = useFetching(async () => {
         if (!currentUser?.id) return
         const data = await ChatService.getAll(currentUser?.id)
         if (data === null) {
@@ -65,8 +65,8 @@ const ChatsPage = (): JSX.Element => {
         setChats(data)
     })
 
-    const [fetchMessages,, fetchMessagesError] = useFetching(async () => {
-        if (currentChat === null) return;
+    const [fetchMessages, , fetchMessagesError] = useFetching(async () => {
+        if (currentChat === null) return
         let data = await MessageService.getAll(currentChat.id)
         if (data == null) data = []
         setMessages(data)
@@ -74,17 +74,16 @@ const ChatsPage = (): JSX.Element => {
 
     useEffect(() => {
         fetchChats()
-    }, [currentUser?.id]);
+    }, [currentUser?.id])
 
     useEffect(() => {
         fetchMessages()
-    }, [currentChat?.id]);
+    }, [currentChat?.id])
 
     useEffect(() => {
         // @ts-ignore
         addChatRef.current?.scrollIntoView({ behavior: "smooth" })
     }, [])
-
 
     const createNewChat = async (user: createNewChatData) => {
         if (!currentUser?.id) {
@@ -119,7 +118,7 @@ const ChatsPage = (): JSX.Element => {
         const status = await ChatService.removeOne(chatId)
         if (status !== 200) return
         if (!chats) return
-        const newChats = chats.filter(chat => chat.id !== chatId)
+        const newChats = chats.filter((chat) => chat.id !== chatId)
         newChats === null ? setChats([]) : setChats(newChats)
         setMessages([])
     }
@@ -156,8 +155,16 @@ const ChatsPage = (): JSX.Element => {
         <div className={styles.wrapper}>
             <Gradient />
             <div className={styles.container}>
-                <AddChat className={styles.add_friends} createNewChat={createNewChat} ref={addChatRef} />
-                <ChatInfo className={styles.info} ref={chatInfoRef} onClickCloseMobile={onClickCloseMobile} />
+                <AddChat
+                    className={styles.add_friends}
+                    createNewChat={createNewChat}
+                    ref={addChatRef}
+                />
+                <ChatInfo
+                    className={styles.info}
+                    ref={chatInfoRef}
+                    onClickCloseMobile={onClickCloseMobile}
+                />
                 <ChatsList
                     data={chats}
                     className={styles.list}

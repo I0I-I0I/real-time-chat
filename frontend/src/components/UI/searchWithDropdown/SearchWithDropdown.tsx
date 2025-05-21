@@ -18,7 +18,7 @@ interface SearchWithDropdownProps {
 export const SearchWithDropdown = ({
     setPrompt,
     onClickDropdownItem,
-    data
+    data,
 }: SearchWithDropdownProps): JSX.Element => {
     const [input, setInput] = useState("")
     const [dropdownState, setDropdownState] = useState(false)
@@ -37,7 +37,7 @@ export const SearchWithDropdown = ({
         onClickDropdownItem({
             id: currentUser.id,
             name: currentUser.name,
-            login: currentUser.login
+            login: currentUser.login,
         })
         setDropdownState(false)
     }, [currentUser])
@@ -66,16 +66,17 @@ export const SearchWithDropdown = ({
                             className={styles.dropdown_item}
                             onClick={() => setCurrentUser(user)}
                         >
-                            <Typography tag="span" variant="text_tiny" className={styles.name}><>
-                                {user.name}
-                            </></Typography>
-                            { user.login &&
+                            <Typography tag="span" variant="text_tiny" className={styles.name}>
+                                <>{user.name}</>
+                            </Typography>
+                            {user.login && (
                                 <Typography tag="span" variant="text_tiny" className={styles.login}>
                                     {` (@${user.login})`}
                                 </Typography>
-                            }
+                            )}
                         </DropdownItem>
-                )})}
+                    )
+                })}
             </Dropdown>
         </Search>
     )

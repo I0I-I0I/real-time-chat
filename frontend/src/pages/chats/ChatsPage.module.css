@@ -37,7 +37,7 @@
         border-right: 1px solid var(--bd-color);
 
         @media (width < 800px) {
-            width: 100dvw
+            width: 100dvw;
         }
     }
     & .settings {
@@ -46,7 +46,7 @@
         border-top: 1px solid var(--bd-color);
 
         @media (width < 800px) {
-            width: 100dvw
+            width: 100dvw;
         }
     }
     & .info {

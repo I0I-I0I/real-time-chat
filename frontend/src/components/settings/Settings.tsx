@@ -20,25 +20,20 @@ const data_account = [
         type: "help",
         text: "Help",
         icon: "/help.svg",
-    }
+    },
 ]
 
 const data_settings = [
     {
         text: "Theme",
         icon: "/moon.svg",
-        icon2: "/sun.svg"
-    }
+        icon2: "/sun.svg",
+    },
 ]
 
-type ThemeType =
-    | "light"
-    | "dark"
+type ThemeType = "light" | "dark"
 
-export const Settings = ({
-    className = "",
-    onClickLogout
-}: SettingsProps): JSX.Element => {
+export const Settings = ({ className = "", onClickLogout }: SettingsProps): JSX.Element => {
     const [dropdownAccountState, setDropdownState] = useState<boolean>(false)
     const [dropdownSettingsState, setDropdownSettingsState] = useState<boolean>(false)
     const [themeState, setThemeState] = useState<ThemeType>("light")
@@ -72,54 +67,69 @@ export const Settings = ({
 
     return (
         <div className={cls(styles.settings, className)}>
-            <Dropdown dropdownState={dropdownAccountState} className={cls(styles.dropdown, styles.dropdown_account)}>
-                { data_account.map((item, index: number): JSX.Element => (
-                    <DropdownItem className={styles.dropdown_item} key={index}>
-                        <Link
-                            href="/login"
-                            onClick={() => {
-                                if (item.type === "logout") onClickLogout()
-                            }}
-                        ><>
-                            <ReactSVG
-                                className={cls(styles.icon)}
-                                src={item.icon}
-                            />
-                            <span>{item.text}</span>
-                        </></Link>
-                    </DropdownItem>
-                )) }
+            <Dropdown
+                dropdownState={dropdownAccountState}
+                className={cls(styles.dropdown, styles.dropdown_account)}
+            >
+                {data_account.map(
+                    (item, index: number): JSX.Element => (
+                        <DropdownItem className={styles.dropdown_item} key={index}>
+                            <Link
+                                href="/login"
+                                onClick={() => {
+                                    if (item.type === "logout") onClickLogout()
+                                }}
+                            >
+                                <>
+                                    <ReactSVG className={cls(styles.icon)} src={item.icon} />
+                                    <span>{item.text}</span>
+                                </>
+                            </Link>
+                        </DropdownItem>
+                    )
+                )}
             </Dropdown>
             <Button variant="icon" className={styles.button} onClick={onAccountClick}>
-                <ReactSVG
-                    className={cls(styles.icon, styles.icon_account)}
-                    src="/account.svg"
-                />
+                <ReactSVG className={cls(styles.icon, styles.icon_account)} src="/account.svg" />
             </Button>
-            { userData !== null && <Typography tag="h2" variant="title-4">{userData.username}</Typography> }
-            { userData !== null && <Button onClick={onLoginClick} variant="link" className={styles.login}><>@{userData.login}</></Button> }
-            { popupState && <Popup className={styles.popup} direction="down_top">Copied!</Popup> }
+            {userData !== null && (
+                <Typography tag="h2" variant="title-4">
+                    {userData.username}
+                </Typography>
+            )}
+            {userData !== null && (
+                <Button onClick={onLoginClick} variant="link" className={styles.login}>
+                    <>@{userData.login}</>
+                </Button>
+            )}
+            {popupState && (
+                <Popup className={styles.popup} direction="down_top">
+                    Copied!
+                </Popup>
+            )}
 
-            <Dropdown dropdownState={dropdownSettingsState} className={cls(styles.dropdown, styles.dropdown_settings)}>
-                { data_settings.map((_, index: number): JSX.Element => (
-                    <DropdownItem className={styles.dropdown_item} key={index}>
-                        <Link href="#" onClick={onThemeChange}>
-                            <>
-                                <ReactSVG
-                                    className={cls(styles.icon)}
-                                    src={themeState + ".svg"}
-                                />
-                                <span>{themeState}</span>
-                            </>
-                        </Link>
-                    </DropdownItem>
-                )) }
+            <Dropdown
+                dropdownState={dropdownSettingsState}
+                className={cls(styles.dropdown, styles.dropdown_settings)}
+            >
+                {data_settings.map(
+                    (_, index: number): JSX.Element => (
+                        <DropdownItem className={styles.dropdown_item} key={index}>
+                            <Link href="#" onClick={onThemeChange}>
+                                <>
+                                    <ReactSVG
+                                        className={cls(styles.icon)}
+                                        src={themeState + ".svg"}
+                                    />
+                                    <span>{themeState}</span>
+                                </>
+                            </Link>
+                        </DropdownItem>
+                    )
+                )}
             </Dropdown>
             <Button variant="icon" className={styles.button} onClick={onSettingsClick}>
-                <ReactSVG
-                    className={cls(styles.icon_search, styles.icon)}
-                    src="/settings.svg"
-                />
+                <ReactSVG className={cls(styles.icon_search, styles.icon)} src="/settings.svg" />
             </Button>
         </div>
     )

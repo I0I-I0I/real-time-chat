@@ -23,7 +23,7 @@
     cursor: pointer;
     stroke: rgb(var(--black));
     fill: none;
-    transition: stroke .1s ease-in-out;
+    transition: stroke 0.1s ease-in-out;
     background-image: url("/close-x.svg");
     background-size: 100% 100%;
     background-color: transparent;

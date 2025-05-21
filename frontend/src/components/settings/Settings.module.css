@@ -14,9 +14,10 @@
 }
 
 .button {
-    transition: background-color .1s ease-in-out;
+    transition: background-color 0.1s ease-in-out;
 
-    &:hover, &:focus-visible {
+    &:hover,
+    &:focus-visible {
         background-color: rgb(var(--white) / 0.1);
     }
 }
@@ -25,7 +26,8 @@
     color: gray;
     font-size: 16px;
 
-    &:hover, &:focus-visible {
+    &:hover,
+    &:focus-visible {
         color: rgb(var(--white));
     }
 }
@@ -58,11 +60,11 @@
 }
 
 .dropdown {
-    background-color: rgb(var(--white) / .8);
-    color: rgb(var(--black) / .8);
+    background-color: rgb(var(--white) / 0.8);
+    color: rgb(var(--black) / 0.8);
     box-shadow: 0 0 10px rgb(0 0 0 / 0.2);
 
-    transition: fill .1s ease-in-out;
+    transition: fill 0.1s ease-in-out;
 
     & a {
         color: inherit;
@@ -79,13 +81,15 @@
         display: flex;
         gap: 5px;
 
-        &:hover, &:focus-visible {
-            background-color: rgb(var(--black) / .2);
+        &:hover,
+        &:focus-visible {
+            background-color: rgb(var(--black) / 0.2);
         }
     }
 
     & > * {
-        &:hover, &:focus-visible {
+        &:hover,
+        &:focus-visible {
             & svg[data-src="/help.svg"] {
                 fill: rgb(var(--black));
             }

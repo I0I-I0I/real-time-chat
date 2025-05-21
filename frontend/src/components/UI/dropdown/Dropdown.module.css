@@ -23,10 +23,11 @@
         & svg {
             stroke: rgb(var(--black));
             fill: none;
-            transition: stroke .1s ease-in-out;
+            transition: stroke 0.1s ease-in-out;
         }
 
-        &:hover, &:focus-visible {
+        &:hover,
+        &:focus-visible {
             & svg {
                 stroke: rgb(var(--black));
             }

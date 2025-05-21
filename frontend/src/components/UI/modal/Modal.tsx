@@ -8,15 +8,9 @@ interface ModalProps {
     onExit?: () => void
 }
 
-export const Modal = ({
-    children,
-    exit = false,
-    onExit,
-    className = ""
-}: ModalProps) => (
+export const Modal = ({ children, exit = false, onExit, className = "" }: ModalProps) => (
     <div className={cls(styles.modal, className, exit ? styles.exit : "")}>
         {exit && <button onClick={onExit} className={styles.exit_button} />}
         {children}
     </div>
 )
-

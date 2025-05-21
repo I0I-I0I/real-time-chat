@@ -4,13 +4,14 @@
     font-size: inherit;
     cursor: pointer;
 
-    transition: color .1s ease-in-out;
+    transition: color 0.1s ease-in-out;
 
     &:focus {
         outline: none;
     }
 
-    &:hover, &:focus-visible {
+    &:hover,
+    &:focus-visible {
         color: rgb(var(--black));
     }
 }

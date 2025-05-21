@@ -9,7 +9,7 @@ import styles from "./Auth.module.css"
 import { useEffect } from "react"
 
 const AuthLayout = () => {
-    const authState = useUserStore(state => state.auth)
+    const authState = useUserStore((state) => state.auth)
     const setUser = useUserStore((state) => state.setUser)
     const setCurrentChat = useChatStore((state) => state.setCurrentChat)
     const setMessages = useChatStore((state) => state.setMessages)

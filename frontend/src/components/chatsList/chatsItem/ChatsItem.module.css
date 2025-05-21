@@ -17,11 +17,10 @@
     align-items: center;
     gap: 20px;
     width: 100%;
-
 }
 
 .remove_button {
-    transition: all .1s ease-in-out;
+    transition: all 0.1s ease-in-out;
     position: absolute;
     top: 0;
     right: 0;
@@ -54,13 +53,14 @@
     border: none;
     border-radius: 0;
 
-    transition: background-color .1s ease-in-out;
+    transition: background-color 0.1s ease-in-out;
 
     &:focus {
         outline: none;
     }
 
-    &:hover, &:focus-visible {
+    &:hover,
+    &:focus-visible {
         background-color: rgb(var(--white) / 0.1);
     }
 }

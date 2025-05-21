@@ -49,7 +49,7 @@
         cursor: pointer;
         stroke: rgb(var(--white));
         fill: none;
-        transition: stroke .1s ease-in-out;
+        transition: stroke 0.1s ease-in-out;
 
         & div {
             position: absolute;

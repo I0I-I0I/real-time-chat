@@ -15,10 +15,7 @@ body {
 .container {
     --page-width: 1200px;
     --page-padding: 20px;
-    --main-width: calc(
-        var(--page-width) +
-            (var(--page-padding) * 2)
-    );
+    --main-width: calc(var(--page-width) + (var(--page-padding) * 2));
 
     max-width: var(--main-width);
     padding: 0 var(--page-padding);

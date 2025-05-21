@@ -12,9 +12,9 @@ export default class SearchService {
         value: string
     ): Promise<T[] | null> {
         const resp = await fetch(URL + "?by=" + by + "&table=" + table + "&value=" + value, {
-            method: "GET"
+            method: "GET",
         })
-        const data = await resp.json() as IFetchData<T>
+        const data = (await resp.json()) as IFetchData<T>
         if (data.status !== 200) {
             return null
         }

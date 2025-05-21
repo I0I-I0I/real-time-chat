@@ -9,12 +9,6 @@ interface MessageProps {
     variant?: Variants
 }
 
-export const Message = ({
-    children,
-    variant = "left",
-    className = ""
-}: MessageProps) => (
-    <li className={cls(styles.message, className, styles[variant])}>
-        {children}
-    </li>
+export const Message = ({ children, variant = "left", className = "" }: MessageProps) => (
+    <li className={cls(styles.message, className, styles[variant])}>{children}</li>
 )

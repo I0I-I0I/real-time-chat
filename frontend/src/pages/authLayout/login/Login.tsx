@@ -10,8 +10,8 @@ import styles from "../Auth.module.css"
 export const Login = (): JSX.Element => {
     const [invalidData, setInvalidData] = useState(false)
     const [invalidPassword, setInvalidPassword] = useState(false)
-    const [login_prop,] = useInput("")
-    const [password_prop,] = useInput("")
+    const [login_prop] = useInput("")
+    const [password_prop] = useInput("")
     const navigate = useNavigate()
     const setUserState = useUserStore((state) => state.setUser)
     const setUserAuthState = useUserStore((state) => state.setAuth)
@@ -42,17 +42,19 @@ export const Login = (): JSX.Element => {
 
     useEffect(() => {
         if (isAuth) {
-            navigate("/");
+            navigate("/")
         }
-    }, [isAuth, navigate]);
+    }, [isAuth, navigate])
 
     if (isAuth) {
-        return <div></div>;
+        return <div></div>
     }
 
     return (
         <div className={styles.login}>
-            <Typography tag="h1" variant="title-1">Sign in</Typography>
+            <Typography tag="h1" variant="title-1">
+                Sign in
+            </Typography>
             <form action="POST" className="form sing-in" onSubmit={handleSubmit}>
                 <FormInput
                     className={invalidData ? styles.invalid : ""}
@@ -74,9 +76,13 @@ export const Login = (): JSX.Element => {
                     className={styles.button}
                     type="submit"
                     disabled={login_prop.value === "" || password_prop.value === ""}
-                >Sing in</Button>
+                >
+                    Sing in
+                </Button>
             </form>
-            <Link href="/register" className={cls(styles.link, styles.or_link)}>or sing up</Link>
+            <Link href="/register" className={cls(styles.link, styles.or_link)}>
+                or sing up
+            </Link>
         </div>
     )
 }

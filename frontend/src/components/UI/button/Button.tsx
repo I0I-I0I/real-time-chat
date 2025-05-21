@@ -2,13 +2,9 @@ import cls from "@/utils/cls"
 import React from "react"
 import styles from "./Button.module.css"
 
-type ButtonVariants =
-    | "default"
-    | "send"
-    | "icon"
-    | "link"
+type ButtonVariants = "default" | "send" | "icon" | "link"
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>  {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     children?: string | React.ReactElement
     className?: string
     variant?: ButtonVariants
@@ -20,9 +16,7 @@ export const Button = ({
     variant = "default",
     ...props
 }: ButtonProps): JSX.Element => (
-    <button
-        className={cls(styles.button, styles[variant], className)} {...props}
-    >
+    <button className={cls(styles.button, styles[variant], className)} {...props}>
         {children && children}
     </button>
 )
