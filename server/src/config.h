@@ -6,8 +6,8 @@
 extern const char* LOG_LEVEL;
 constexpr const bool SPA_MODE = true;
 
-constexpr const char* DEFAULT_DB_PATH = "/home/i0i/code/work/real-time-chat/db/db.sqlite3";
-constexpr const char* DEFAULT_FRONTEND_PATH = "/home/i0i/code/work/real-time-chat/frontend/dist/";
+constexpr const char* DEFAULT_DB_PATH = "<set/path/to/db>";
+constexpr const char* DEFAULT_FRONTEND_PATH = "<set/path/to/frontend>";
 
 inline const char* getFrontendPath() {
     const char* envPath = std::getenv("FRONTED_PATH");

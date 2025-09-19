@@ -33,6 +33,8 @@ SERVER_BUILD_EXEC = ../build/server
 
 all: create server
 
+build: create build_exe
+
 create:
 	@[ -d $(BUILD_DIR) ] || (mkdir $(BUILD_DIR) && echo "Directory $(BUILD_DIR) created")
 
@@ -44,7 +46,7 @@ server: $(SERVER_SRCS)
 	@echo "Compiling server..."
 	@$(CXX) $(CXXFLAGS) $^ -o $(SERVER_EXEC) $(CXXFLAGSEND)
 
-for_build: $(SERVER_SRCS)
+build_exe: $(SERVER_SRCS)
 	@echo "Compiling build version of server..."
 	@$(CXX) $(CXXFLAGS) $(CXXOPTIMIZATIONS) $^ -o $(SERVER_EXEC) $(CXXFLAGSEND) -L/usr/lib
 
@@ -56,4 +58,4 @@ clean:
 	@echo "Cleaning..."
 	@rm -f $(BUILD_DIR)/*
 
-.PHONY: all create server clean
+.PHONY: all create server clean build
