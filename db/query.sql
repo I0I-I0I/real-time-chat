@@ -1,6 +1,7 @@
 create table if not exists users (
     id integer primary key autoincrement,
     login text not null unique,
+    salt text not null,
     username text not null,
     password text not null,
     createdAt timestamp default current_timestamp
@@ -20,6 +21,7 @@ create table if not exists messages (
 create table if not exists chats (
     id integer primary key autoincrement,
     name text not null,
+    name2 text not null,
     lastMessageId integer,
     createdAt timestamp default current_timestamp,
 
