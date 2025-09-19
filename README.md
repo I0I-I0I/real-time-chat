@@ -122,27 +122,13 @@ The server can be built and run using the provided `Makefile`.
 -   `pnpm lint`: Lints the codebase using ESLint.
 -   `pnpm preview`: Serves the production build locally for preview.
 
-1.  Navigate to the frontend directory:
-    ```bash
-    cd frontend
-    ```
-2.  Install dependencies:
-    ```bash
-    pnpm install
-    ```
-3.  Run the development server:
-    ```bash
-    pnpm dev
-    ```
-    The application will be available at `http://localhost:5173`.
-
 ## 5. Usage
 
 Default paths located in `server/src/config.h`
 
 ```cpp
-constexpr const char* DEFAULT_DB_PATH = "Default path";
-constexpr const char* DEFAULT_FRONTEND_PATH = "Default path";
+constexpr const char* DEFAULT_DB_PATH = "You need to change this";
+constexpr const char* DEFAULT_FRONTEND_PATH = "You need to change this";
 ```
 
 After setting the paths:
